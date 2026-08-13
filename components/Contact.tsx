@@ -156,7 +156,7 @@ export const Contact: React.FC = () => {
             </p>
 
             {/* Mission Statement */}
-            <div className="mb-8 p-4 border-l-2 border-brand-500 bg-brand-500/5">
+            <div className="mb-8 pt-6 border-t border-white/10 max-w-md">
               <p className="text-sm text-slate-300 italic">
                 "コードを書かなくても、システムは作れる。<br/>
                 AIを味方につけた者が、次の時代を創る。"

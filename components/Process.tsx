@@ -91,18 +91,20 @@ export const Process: React.FC = () => {
                   <div className={`w-4 h-4 rounded-full ${item.active ? 'bg-brand-500 shadow-[0_0_15px_var(--brand)]' : 'bg-slate-600 group-hover:bg-brand-500'} transition-all duration-300 ${item.active ? 'timeline-dot' : ''}`}></div>
                 </div>
 
-                {/* Content */}
-                <div className={`flex-1 ${item.active ? 'bg-gradient-to-r from-brand-500/10 to-transparent border-l-2 border-brand-500 pl-6 py-4' : 'py-2'}`}>
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
-                    <h4 className={`font-mono text-xs ${item.active ? 'text-brand-500' : 'text-slate-500 group-hover:text-brand-400'} transition-colors`}>{item.step}</h4>
-                    <p className={`text-2xl md:text-3xl lg:text-4xl font-black ${item.active ? 'text-white' : 'text-slate-400 group-hover:text-white'} transition-colors group-hover:translate-x-1 duration-300`}>
+                {/* Content — 状態はドットと文字の明度だけで示す。囲みも縦線も置かない */}
+                <div className="flex-1 pb-7 md:pb-8">
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2">
+                    <h4 className={`font-mono text-[11px] tracking-[0.2em] ${item.active ? 'text-brand-500' : 'text-slate-600 group-hover:text-brand-400'} transition-colors`}>
+                      {item.step}
+                    </h4>
+                    <p className={`text-2xl md:text-3xl lg:text-[2.5rem] font-black tracking-[-0.03em] ${item.active ? 'text-white' : 'text-slate-500 group-hover:text-white'} transition-colors duration-300`}>
                       {item.title}
                     </p>
-                    <span className={`font-mono text-[10px] px-2 py-1 w-fit ${item.type === 'practice' ? 'bg-slate-800 text-slate-400' : 'bg-brand-500/20 text-brand-400 border border-brand-500/30'}`}>
+                    <span className={`text-[11px] ${item.active ? 'text-slate-400' : 'text-slate-600'}`}>
                       {item.time}
                     </span>
                   </div>
-                  <p className={`text-sm ${item.active ? 'text-slate-300' : 'text-slate-600'} max-w-xl leading-relaxed`}>{item.desc}</p>
+                  <p className={`text-sm ${item.active ? 'text-slate-400' : 'text-slate-600'} max-w-xl leading-relaxed`}>{item.desc}</p>
                 </div>
               </div>
             ))}

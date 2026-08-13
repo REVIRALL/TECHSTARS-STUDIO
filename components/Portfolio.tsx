@@ -144,9 +144,7 @@ export const Portfolio: React.FC = () => {
                             />
                           </div>
 
-                          <div className="font-mono text-xs text-slate-400 bg-slate-900/50 p-3 border-l-2 border-brand-500/30 group-hover:border-brand-500 transition-colors">
-                            <span className="text-brand-500">$</span> {item.description}
-                          </div>
+                          <p className="text-[13px] text-slate-400 leading-relaxed">{item.description}</p>
 
                           <div className="mt-3 flex items-center gap-3">
                             <div className="flex-1 h-1 bg-slate-800 overflow-hidden">
@@ -193,12 +191,6 @@ export const Portfolio: React.FC = () => {
                   <ImageFrame key={active.slot} slot={active.slot} density="compact">
                     <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent" />
                     <div className="absolute inset-0 pointer-events-none scanlines opacity-30" />
-
-                    {/* コーナーブラケット */}
-                    <div className="absolute top-3 left-3 w-8 h-8 border-l-2 border-t-2 border-brand-500/70 pointer-events-none" />
-                    <div className="absolute top-3 right-3 w-8 h-8 border-r-2 border-t-2 border-brand-500/70 pointer-events-none" />
-                    <div className="absolute bottom-3 left-3 w-8 h-8 border-l-2 border-b-2 border-brand-500/70 pointer-events-none" />
-                    <div className="absolute bottom-3 right-3 w-8 h-8 border-r-2 border-b-2 border-brand-500/70 pointer-events-none" />
 
                     {/* ラベル */}
                     <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">

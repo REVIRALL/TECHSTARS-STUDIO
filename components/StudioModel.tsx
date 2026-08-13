@@ -109,22 +109,20 @@ export const StudioModel: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="space-y-2.5 text-sm">
+                {/* 囲みも縦線も置かず、区切りは水平の細い罫線だけにする */}
+                <ul className="text-sm border-t border-white/[0.07]">
                   {[
                     'プログラミングスクールで基礎学習',
                     '膨大なコードを暗記・写経',
                     'エラーで何時間も詰まる日々',
                     'やっと「初心者エンジニア」へ',
                   ].map((t) => (
-                    <div
-                      key={t}
-                      className="flex items-start gap-3 p-3 bg-slate-900/70 backdrop-blur-sm border-l-2 border-red-500/50"
-                    >
-                      <span className="text-red-500 font-mono text-xs shrink-0">ERR</span>
+                    <li key={t} className="flex items-baseline gap-3.5 py-3 border-b border-white/[0.07]">
+                      <span className="text-slate-600 text-xs shrink-0" aria-hidden="true">×</span>
                       <span className="text-slate-400">{t}</span>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             </div>
 
@@ -174,22 +172,19 @@ export const StudioModel: React.FC = () => {
                   <div className="w-20 h-1 bg-brand-500 mt-2 group-hover:w-full transition-all duration-500" />
                 </div>
 
-                <div className="space-y-2.5 text-sm">
+                <ul className="text-sm border-t border-brand-500/20">
                   {[
                     'AIがコードを生成、あなたは指示と判断',
                     '「何を作るか」に集中できる',
                     'エラーもAIが解決をサポート',
                     '最短距離で「作れるエンジニア」へ',
                   ].map((t) => (
-                    <div
-                      key={t}
-                      className="flex items-start gap-3 p-3 bg-brand-500/10 backdrop-blur-sm border-l-2 border-brand-500"
-                    >
-                      <span className="text-brand-500 font-mono text-xs shrink-0">OK</span>
-                      <span className="text-slate-200">{t}</span>
-                    </div>
+                    <li key={t} className="flex items-baseline gap-3.5 py-3 border-b border-brand-500/20">
+                      <span className="text-brand-500 text-xs shrink-0" aria-hidden="true">✓</span>
+                      <span className="text-slate-100">{t}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             </div>
           </div>
