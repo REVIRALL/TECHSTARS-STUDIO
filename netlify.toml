@@ -21,32 +21,43 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
 
 # Cache static assets
+# ─────────────────────────────────────────────────────────────────────
+# キャッシュ
+#
+# immutable（1年間、再検証なし）を使ってよいのは、
+# ファイル名にハッシュが入っていて「中身が変わればURLも変わる」ものだけ。
+# Vite が吐く /assets/* がそれに当たる。
+#
+# 逆に /showcase.css や /img/* はパスが固定なので、immutable にすると
+# 中身を差し替えても既訪問者には1年間古いファイルが配られ続ける。
+# 実際にこの設定のまま showcase.css を更新してしまっていた。
+# ─────────────────────────────────────────────────────────────────────
+
+# ハッシュ付き。URLが変わるので永久キャッシュしてよい
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# パス固定のCSS。差し替えたら即座に反映させたいので毎回再検証する
+# （変わっていなければ 304 が返るだけなので、実質ほぼ無料）
+[[headers]]
+  for = "/showcase.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# パス固定の画像。1日は使い回し、その後は裏で取り直しつつ表示は止めない
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
+
 [[headers]]
   for = "*.jpg"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
 
 [[headers]]
   for = "*.png"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.webp"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.avif"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
