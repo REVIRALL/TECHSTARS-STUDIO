@@ -1,0 +1,7 @@
+# dist/ はそのまま配信する成果物。Windows で clone しても改行を CRLF に変換させない
+dist/** -text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.mp4 binary

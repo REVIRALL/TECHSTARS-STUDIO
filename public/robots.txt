@@ -1,0 +1,6 @@
+# TechStars AI - Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap (sitemap.xml は未作成。生成したらこの行を有効化する)
+# Sitemap: https://techstars.studio/sitemap.xml

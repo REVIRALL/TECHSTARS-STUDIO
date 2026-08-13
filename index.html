@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechStars - AIを相棒に、7日間でプロの世界へ</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="TechStarsは、AIを活用した7日間の超実践型プログラム。未経験からでも動くシステムを3つ完成させ、プロの開発者への第一歩を踏み出せます。">
+    <meta name="keywords" content="AI開発, プログラミング学習, 7日間, TechStars, Web開発, システム開発">
+    <meta name="author" content="TechStars">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TechStars - AIを相棒に、7日間でプロの世界へ">
+    <meta property="og:description" content="AIを活用した7日間の超実践型プログラム。未経験からでも動くシステムを3つ完成させます。">
+    <meta property="og:image" content="/logo.png">
+    <meta property="og:locale" content="ja_JP">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TechStars - AIを相棒に、7日間でプロの世界へ">
+    <meta name="twitter:description" content="AIを活用した7日間の超実践型プログラム。未経験からでも動くシステムを3つ完成させます。">
+    <meta name="twitter:image" content="/logo.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="apple-touch-icon" href="/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/showcase.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Inter"', '"Noto Sans JP"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+              brand: {
+                50: '#f0fdfa',
+                100: '#ccfbf1',
+                200: '#99f6e4',
+                300: '#5eead4',
+                400: '#2dd4bf',
+                500: '#00E5FF', // High Voltage Cyan
+                600: '#0891b2',
+                700: '#0e7490',
+                800: '#155e75',
+                900: '#164e63',
+              }
+            },
+            animation: {
+              'blink': 'blink 1s step-end infinite',
+              'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+              'fade-in': 'fadeIn 0.3s ease-out',
+              'fade-in-up': 'fadeInUp 0.4s ease-out',
+              // SURGE animations - バチバチ、電気的
+              'hero-title': 'surgeTitleSlide 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+              'hero-badge': 'surgeFlash 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards',
+              'hero-desc': 'surgeSlideIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards',
+              'hero-cards': 'surgeRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards',
+              // Glitch line effect
+              'surge-line': 'surgeLine 0.6s ease-out forwards',
+              'reveal': 'reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'reveal-up': 'revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'reveal-left': 'revealLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'reveal-right': 'revealRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'reveal-scale': 'revealScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+              'card-hover': 'cardHover 0.3s ease-out forwards',
+            },
+            keyframes: {
+              blink: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              // SURGE Hero animations - バチバチ電気的
+              surgeTitleSlide: {
+                '0%': { transform: 'translateY(80px) skewY(4deg)', opacity: '0', filter: 'blur(8px)' },
+                '40%': { transform: 'translateY(-8px) skewY(-1deg)', opacity: '1', filter: 'blur(0)' },
+                '60%': { transform: 'translateY(4px) skewY(0.5deg)' },
+                '100%': { transform: 'translateY(0) skewY(0)', opacity: '1' },
+              },
+              surgeFlash: {
+                '0%': { transform: 'scale(0.5) rotate(-10deg)', opacity: '0' },
+                '50%': { transform: 'scale(1.15) rotate(2deg)', opacity: '1' },
+                '70%': { transform: 'scale(0.95) rotate(-1deg)' },
+                '100%': { transform: 'scale(1) rotate(0)', opacity: '1' },
+              },
+              surgeSlideIn: {
+                '0%': { transform: 'translateX(-60px)', opacity: '0', filter: 'blur(4px)' },
+                '50%': { transform: 'translateX(8px)', opacity: '1', filter: 'blur(0)' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              },
+              surgeRise: {
+                '0%': { transform: 'translateY(60px) scale(0.95)', opacity: '0' },
+                '60%': { transform: 'translateY(-5px) scale(1.02)', opacity: '1' },
+                '100%': { transform: 'translateY(0) scale(1)', opacity: '1' },
+              },
+              surgeLine: {
+                '0%': { width: '0%', opacity: '1' },
+                '100%': { width: '100%', opacity: '1' },
+              },
+              // Scroll reveal animations
+              reveal: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              revealUp: {
+                '0%': { transform: 'translateY(50px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              revealLeft: {
+                '0%': { transform: 'translateX(-50px)', opacity: '0' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              },
+              revealRight: {
+                '0%': { transform: 'translateX(50px)', opacity: '0' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              },
+              revealScale: {
+                '0%': { transform: 'scale(0.9)', opacity: '0' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              },
+              cardHover: {
+                '0%': { transform: 'translateY(0)' },
+                '100%': { transform: 'translateY(-8px)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow-x: clip;
+        max-width: 100vw;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #000000;
+      }
+      ::selection {
+        background-color: #00E5FF;
+        color: #000;
+      }
+      .tech-grid {
+        background-size: 60px 60px;
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      }
+      .tech-grid-lg {
+        background-size: 120px 120px;
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      }
+      /* Hide scrollbar for overlays */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Scroll-triggered animations - Initial hidden state */
+      .anim-hidden {
+        opacity: 0;
+      }
+      .anim-up { transform: translateY(60px); }
+      .anim-left { transform: translateX(-60px) skewX(2deg); }
+      .anim-right { transform: translateX(60px) skewX(-2deg); }
+      .anim-scale { transform: scale(0.85); }
+
+      /* SURGE Animated state - ゆっくり、バチバチ感 */
+      .anim-visible {
+        opacity: 1 !important;
+        transform: translateY(0) translateX(0) scale(1) skewX(0) !important;
+        transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      /* Stagger delays - ゆっくり間隔 */
+      .delay-1 { transition-delay: 0.15s !important; }
+      .delay-2 { transition-delay: 0.3s !important; }
+      .delay-3 { transition-delay: 0.45s !important; }
+      .delay-4 { transition-delay: 0.6s !important; }
+      .delay-5 { transition-delay: 0.75s !important; }
+      .delay-6 { transition-delay: 0.9s !important; }
+
+      /* SURGE hover effects - バチッとした動き */
+      .hover-lift {
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    box-shadow 0.4s ease,
+                    border-color 0.3s ease;
+      }
+      .hover-lift:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 25px 50px -15px rgba(0, 229, 255, 0.4),
+                    0 0 0 1px rgba(0, 229, 255, 0.2);
+      }
+
+      /* SURGE glow effect on hover */
+      .hover-glow {
+        transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .hover-glow:hover {
+        box-shadow: 0 0 40px rgba(0, 229, 255, 0.5),
+                    inset 0 0 20px rgba(0, 229, 255, 0.1);
+        transform: scale(1.02);
+      }
+
+      /* Surge line animation - 電気が走る線 */
+      .surge-line {
+        position: relative;
+        overflow: hidden;
+      }
+      .surge-line::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #00E5FF, transparent);
+        animation: surgeScan 0.8s ease-out forwards;
+      }
+      @keyframes surgeScan {
+        0% { width: 0; left: 0; }
+        50% { width: 100%; left: 0; }
+        100% { width: 0; left: 100%; }
+      }
+
+      /* Electric flash on appear */
+      .surge-flash {
+        animation: electricFlash 0.3s ease-out;
+      }
+      @keyframes electricFlash {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.3); }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-black text-white antialiased">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
