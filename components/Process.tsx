@@ -33,7 +33,7 @@ export const Process: React.FC = () => {
         <div className={`flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12 lg:mb-16 border-b border-slate-800 pb-8 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
            <div>
              <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// SCHEDULE</p>
-             <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">
+             <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">
                学習スケジュール
              </h2>
            </div>

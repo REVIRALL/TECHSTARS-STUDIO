@@ -470,6 +470,136 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     },
   }),
 
+
+  /* ---------------------------------------------------------------- ICON
+   * lucide の線アイコンを、実際にレンダリングされた立体オブジェクトに置き換える枠。
+   * 背景は真っ黒で作り、UI側は mix-blend-screen で合成するので黒が抜ける。
+   * 画像が無い間は元の lucide アイコンにフォールバックするので、崩れない。
+   * ------------------------------------------------------------------- */
+  slot({
+    id: 'icon.legacy',
+    label: 'アイコン: 旧世代（LEGACY）',
+    section: 'ICON',
+    role: 'StudioModel の「従来の学習」バッジ。唯一シアンを使わないアイコン。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small machined warning marker: a matte grey-steel triangle standing upright, its edges worn and slightly pitted, a thin dark seam running down its face. Cold dead grey metal, no glow, no cyan, no light source inside it. It reads as obsolete hardware.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  slot({
+    id: 'icon.ai',
+    label: 'アイコン: AI駆動（AI_DRIVEN）',
+    section: 'ICON',
+    role: 'StudioModel の「AI時代の学習」バッジ。icon.legacy と対になる。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small machined lightning bolt cut from matte black metal, its inner edges glowing with intense electric cyan light that spills onto the bevels. The bolt is a solid physical object, not a flat symbol. Sharp chamfered edges catching a cyan rim light.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  slot({
+    id: 'icon.web',
+    label: 'アイコン: Webサイト制作',
+    section: 'ICON',
+    role: '「7日後にできること」01。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small stack of three black glass plates floating in tight parallax, each plate edge-lit in electric cyan, arranged like layers of a page. The top plate is lifted slightly and glows brighter. Clean machined edges, no text or UI on the plates.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  slot({
+    id: 'icon.automation',
+    label: 'アイコン: 業務自動化',
+    section: 'ICON',
+    role: '「7日後にできること」02。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small precision gear machined from matte black metal, its teeth outlined in electric cyan light, with a second smaller gear meshed behind it. Fine milled detail on the hub. Caught mid-rotation with a faint cyan motion arc.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  slot({
+    id: 'icon.client',
+    label: 'アイコン: 案件獲得',
+    section: 'ICON',
+    role: '「7日後にできること」03。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small matte black hard case, lid cracked open by a few millimetres, with intense electric cyan light escaping from the seam and cutting a thin wedge upward. Solid machined latches and a carry handle. The case itself stays almost silhouette-dark.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  slot({
+    id: 'icon.community',
+    label: 'アイコン: コミュニティ',
+    section: 'ICON',
+    role: '「7日後にできること」04。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small three-dimensional cluster of electric cyan light nodes connected by taut glowing threads into an irregular network ball. Five or six nodes burn brighter than the rest. Depth is readable — near nodes larger and sharper, far nodes smaller and softer.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  slot({
+    id: 'icon.check',
+    label: 'アイコン: 該当（MATCH）',
+    section: 'ICON',
+    role: 'Contact「こういう人向け」6枚のカードで共通して使う。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [1024, 1024],
+      aspect: '1:1',
+      deliver: 256,
+      subject: `A small check mark cut from matte black metal as a solid three-dimensional object, its inner groove filled with intense electric cyan light. Chamfered edges catching a cyan rim light. Precise and machined, not hand-drawn.`,
+      composition: `Centered single object, 85mm macro product shot, filling about 70% of the frame with even black margin on all sides. Slight three-quarter angle from above. The background is pure flat black #000000 with no floor, no horizon, no shadow cast onto anything — the object floats. Crisp focus across the whole object.`,
+    },
+  }),
+  /* --------------------------------------------------------------- CARD
+   * カード面のテクスチャ。1枚を横に長く作り、カードごとに
+   * object-position をずらして使い回すので、6枚とも違う面に見える。
+   * ------------------------------------------------------------------- */
+  slot({
+    id: 'card.surface',
+    label: 'カード面のテクスチャ',
+    section: 'CARD',
+    role: 'カードの背景。CSSのベタ塗りをやめて実素材の面にする。1枚を位置をずらして複数枚で共用する。',
+    alt: '',
+    decorative: true,
+    desktop: {
+      size: [2400, 800],
+      aspect: '3:1',
+      deliver: 1600,
+      subject: `A wide sheet of matte black anodized metal photographed straight on, filling the entire frame. The surface carries fine machining marks, a faint brushed grain, micro-scratches and a few tiny dust specks. Very subtle unevenness in the finish so no two areas look identical. A single soft electric cyan light grazes across it from the upper left, falling off to near-black at the lower right.`,
+      composition: `Perfectly flat-on, no perspective, no visible edges of the sheet, no objects on it. Even exposure with a gentle diagonal light falloff. This is a texture, not a scene — it must tile visually with itself when cropped at different positions. Keep it dark: the brightest point should stay below 25% luminance.`,
+    },
+  }),
   /* ------------------------------------------------------------------ OGP */
   slot({
     id: 'meta.ogp',

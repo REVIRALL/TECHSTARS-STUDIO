@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
 import { CheckCircle, Terminal } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { Icon } from './Icon';
 
 /**
  * AI診断フォームは react-markdown と @google/genai を引き連れてくる。
@@ -73,7 +74,7 @@ export const Contact: React.FC = () => {
         <div className="mb-20 lg:mb-32 relative z-10">
           <div className={`mb-10 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
             <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// TARGET_PROFILE.scan()</p>
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black italic tracking-tighter text-white">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black jp-display text-white">
               <span className="text-brand-500">こういう人</span>向け
             </h2>
           </div>
@@ -91,22 +92,27 @@ export const Contact: React.FC = () => {
                 key={i}
                 className={`group relative bg-black border border-slate-800 hover:border-brand-500/50 transition-all duration-300 overflow-hidden anim-hidden anim-up ${isVisible ? `anim-visible delay-${(i % 3) + 1}` : ''}`}
               >
-                {/* Terminal Header */}
-                <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800">
-                  <span className="font-mono text-[10px] text-slate-500">{item.id}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="font-mono text-[10px] text-green-400">{item.status}</span>
-                  </div>
+                {/* カード面のテクスチャ。1枚の素材を6枚で位置をずらして共用する */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <ImageFrame
+                    slot="card.surface"
+                    fill
+                    density="compact"
+                    imgClassName="opacity-[0.55] group-hover:opacity-80 transition-opacity duration-500"
+                    placeholderClassName="opacity-20"
+                    chipPosition="bottom-2 right-2"
+                    hideChip={i !== 0}
+                    imgStyle={{ objectPosition: `${(i * 17) % 100}% ${(i * 29) % 100}%` }}
+                  />
                 </div>
 
                 {/* Content */}
-                <div className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-brand-500/10 border border-brand-500/30 flex items-center justify-center shrink-0 group-hover:bg-brand-500 group-hover:border-brand-500 transition-all">
-                      <CheckCircle className="w-4 h-4 text-brand-500 group-hover:text-black transition-colors" />
-                    </div>
-                    <p className="text-sm text-slate-300 group-hover:text-white transition-colors leading-relaxed">{item.text}</p>
+                <div className="relative p-5 sm:p-6">
+                  <div className="flex items-start gap-3.5">
+                    <span className="shrink-0 flex items-center justify-center w-10 h-10 -mt-1 text-brand-500">
+                      <Icon slot="icon.check" fallback={CheckCircle} size={40} className="text-brand-500" />
+                    </span>
+                    <p className="jp-body text-sm text-slate-300 group-hover:text-white transition-colors">{item.text}</p>
                   </div>
                 </div>
 
@@ -157,7 +163,7 @@ export const Contact: React.FC = () => {
 
             {/* Mission Statement */}
             <div className="mb-8 pt-6 border-t border-white/10 max-w-md">
-              <p className="text-sm text-slate-300 italic">
+              <p className="text-sm text-slate-300">
                 "コードを書かなくても、システムは作れる。<br/>
                 AIを味方につけた者が、次の時代を創る。"
               </p>

@@ -30,27 +30,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
               sans: ['"Inter"', '"Noto Sans JP"', 'sans-serif'],
-              mono: ['"JetBrains Mono"', 'monospace'],
+              mono: ['"JetBrains Mono"', '"Noto Sans JP"', 'monospace'],
             },
             colors: {
+              // 全段を同じ色相(≈187°)で揃えたシアンのランプ。
+              // 以前は 50〜400 が teal(緑) で 500 だけシアンだったため、
+              // ホバー色 brand-400 に触れた瞬間に色がミント緑へ転んでいた。
               brand: {
-                50: '#f0fdfa',
-                100: '#ccfbf1',
-                200: '#99f6e4',
-                300: '#5eead4',
-                400: '#2dd4bf',
+                50: '#ECFEFF',
+                100: '#CBF8FF',
+                200: '#9DF1FF',
+                300: '#6BE8FF',
+                400: '#33DFFF', // hover 用。500 と同色相のまま明るいだけ
                 500: '#00E5FF', // High Voltage Cyan
-                600: '#0891b2',
-                700: '#0e7490',
-                800: '#155e75',
-                900: '#164e63',
+                600: '#00B8D4',
+                700: '#0F8CA6',
+                800: '#12657A',
+                900: '#12495A',
               }
             },
             animation: {
@@ -149,6 +152,10 @@
     <style>
       html {
         scroll-behavior: smooth;
+      }
+      /* 固定ナビの下に見出しが潜らないようにする */
+      section[id] {
+        scroll-margin-top: 96px;
       }
       body {
         overflow-x: clip;
@@ -272,10 +279,10 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/assets/index-DIqplaKS.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-C1MuoUcx.css">
+  <script type="module" crossorigin src="/assets/index-CT6QA1AD.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-D5-bxlIV.css">
 </head>
-  <body class="bg-black text-white antialiased">
+  <body class="bg-black text-white">
     <div id="root"></div>
 </body>
 </html>

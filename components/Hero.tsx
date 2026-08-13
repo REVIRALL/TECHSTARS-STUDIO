@@ -115,7 +115,7 @@ export const Hero: React.FC = () => {
                 </span>
                 {s.unit && <span className="text-base sm:text-lg font-bold text-slate-400">{s.unit}</span>}
               </dd>
-              <dt className="text-[11px] sm:text-xs text-slate-500 tracking-wide">{s.label}</dt>
+              <dt className="text-[13px] sm:text-sm text-slate-300">{s.label}</dt>
             </div>
           ))}
         </dl>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
 import { Zap, AlertTriangle } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { Icon } from './Icon';
 
 const FLOW = [
   {
@@ -62,7 +63,7 @@ export const StudioModel: React.FC = () => {
         {/* ===== 時代背景 ===== */}
         <div className={`mb-16 lg:mb-28 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
           <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// WHY NOW?</p>
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black italic tracking-tighter text-white mb-10 lg:mb-14">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black jp-display text-white mb-10 lg:mb-14">
             エンジニアリングの
             <br />
             <span className="text-gradient-cyan">ルールが変わった。</span>
@@ -89,8 +90,8 @@ export const StudioModel: React.FC = () => {
               <div className="relative z-10 p-6 sm:p-8 lg:p-10 flex flex-col justify-end w-full">
                 <div className="flex justify-between items-start mb-auto">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 border border-slate-700 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                      <AlertTriangle className="w-6 h-6 text-slate-500" />
+                    <div className="w-14 h-14 flex items-center justify-center">
+                      <Icon slot="icon.legacy" fallback={AlertTriangle} size={56} className="text-slate-500" />
                     </div>
                     <div>
                       <span className="font-mono text-[10px] text-slate-600 tracking-widest block">LEGACY</span>
@@ -149,8 +150,8 @@ export const StudioModel: React.FC = () => {
               <div className="relative z-10 p-6 sm:p-8 lg:p-10 flex flex-col justify-end w-full">
                 <div className="flex justify-between items-start mb-auto">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-brand-500 flex items-center justify-center shadow-[0_0_20px_rgba(0,229,255,0.4)]">
-                      <Zap className="w-6 h-6 text-black" />
+                    <div className="w-14 h-14 flex items-center justify-center">
+                      <Icon slot="icon.ai" fallback={Zap} size={56} className="text-brand-500" />
                     </div>
                     <div>
                       <span className="font-mono text-[10px] text-brand-400 tracking-widest block">AI_DRIVEN</span>
@@ -166,7 +167,7 @@ export const StudioModel: React.FC = () => {
                 </div>
 
                 <div className="mt-8 mb-6">
-                  <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-brand-500 leading-none glitch-hover [text-shadow:0_0_50px_rgba(0,229,255,0.4)]">
+                  <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-brand-500 leading-none surge-pulse [text-shadow:0_0_50px_rgba(0,229,255,0.4)]">
                     7日間
                   </p>
                   <div className="w-20 h-1 bg-brand-500 mt-2 group-hover:w-full transition-all duration-500" />
@@ -200,7 +201,7 @@ export const StudioModel: React.FC = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-12 lg:mb-20">
           <div className={`anim-hidden anim-left ${isVisible ? 'anim-visible delay-4' : ''}`}>
             <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// HOW_IT_WORKS</p>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-white">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-white">
               学習の
               <br />
               流れ

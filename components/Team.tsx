@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SectionId, TeamMember } from '../types';
 import { Code, Briefcase, Rocket, Users } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { Icon } from './Icon';
 
 const members: TeamMember[] = [
   {
@@ -25,6 +26,7 @@ const outcomes = [
     slot: 'outcome.01',
     no: '01',
     Icon: Code,
+    iconSlot: 'icon.web',
     title: 'Webサイト制作',
     desc: 'LP、ポートフォリオを0から実装できる。レスポンシブ対応、SEO基礎も含む。',
     meta: 'HTML / CSS / JS',
@@ -33,6 +35,7 @@ const outcomes = [
     slot: 'outcome.02',
     no: '02',
     Icon: Rocket,
+    iconSlot: 'icon.automation',
     title: '業務自動化',
     desc: 'GASでGmail自動返信、スプレッドシート集計、Slack通知を構築できる。',
     meta: 'GMAIL / GAS / SLACK',
@@ -41,6 +44,7 @@ const outcomes = [
     slot: 'outcome.03',
     no: '03',
     Icon: Briefcase,
+    iconSlot: 'icon.client',
     title: '案件獲得',
     desc: '見積もりの出し方、提案書テンプレートを提供。卒業翌週から営業開始可能。',
     meta: 'READY_TO_LAUNCH',
@@ -49,6 +53,7 @@ const outcomes = [
     slot: 'outcome.04',
     no: '04',
     Icon: Users,
+    iconSlot: 'icon.community',
     title: 'コミュニティ',
     desc: '卒業生Slackに招待。案件情報、技術相談、勉強会の案内を共有。',
     meta: 'ACTIVE_MEMBERS',
@@ -88,7 +93,7 @@ export const Team: React.FC = () => {
         <div className="mb-24 lg:mb-36">
           <div className={`mb-12 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
             <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// OUTPUT</p>
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black italic tracking-tighter text-white mb-4">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black jp-display text-white mb-4">
               7日後に<span className="text-brand-500">できること</span>
             </h2>
             <p className="text-slate-400 max-w-2xl">具体的に何ができるようになるか。曖昧な約束はしない。</p>
@@ -112,13 +117,12 @@ export const Team: React.FC = () => {
                     <div className="absolute inset-0 pointer-events-none scanlines opacity-25" />
                   </ImageFrame>
 
-                  <span className="absolute top-3 left-3 z-10 flex items-center gap-2">
-                    <span className="w-9 h-9 bg-black/80 backdrop-blur border border-brand-500/40 flex items-center justify-center text-brand-500 group-hover:bg-brand-500 group-hover:text-black transition-colors">
-                      <item.Icon className="w-4 h-4" />
+                  {/* 立体アイコン。画像が無い間は lucide の線アイコンに戻る */}
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-2.5">
+                    <span className="flex items-center justify-center w-12 h-12 text-brand-500">
+                      <Icon slot={item.iconSlot} fallback={item.Icon} size={48} className="text-brand-500" />
                     </span>
-                    <span className="font-mono text-[10px] text-brand-500 bg-black/70 backdrop-blur px-2 py-1 tracking-widest">
-                      {item.no}
-                    </span>
+                    <span className="font-mono text-[10px] text-brand-400 tracking-widest">{item.no}</span>
                   </span>
                 </div>
 
@@ -156,7 +160,7 @@ export const Team: React.FC = () => {
           <div className="relative z-10">
             <div className={`mb-12 md:mb-16 anim-hidden anim-left ${isVisible ? 'anim-visible delay-5' : ''}`}>
               <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// INSTRUCTORS</p>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-white">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-white">
                 講師陣
               </h2>
             </div>
@@ -169,7 +173,7 @@ export const Team: React.FC = () => {
                     isVisible ? `anim-visible delay-${index + 2}` : ''
                   }`}
                 >
-                  <div className="absolute inset-4 glitch-img">
+                  <div className="absolute inset-4">
                     <div className="hex-profile w-full h-full overflow-hidden">
                       <img
                         src={member.image}
@@ -185,14 +189,13 @@ export const Team: React.FC = () => {
                     className="absolute inset-0 pointer-events-none opacity-30 group-hover:opacity-0 transition-opacity scanlines"
                   />
 
-                  <div className="relative z-10 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="relative z-10">
                     <p className="font-mono text-xs text-brand-500 mb-1">{member.role}</p>
-                    <h3 className="text-xl font-bold text-white mb-2 glitch-hover">{member.name}</h3>
-                    <div className="h-0 group-hover:h-auto overflow-hidden transition-all duration-300">
-                      <p className="text-xs text-slate-300 font-mono mt-2 border-t border-brand-500/30 pt-2">
-                        {member.bio}
-                      </p>
-                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{member.name}</h3>
+                    {/* hover 依存だとタッチ端末で経歴が読めないので常時表示にする */}
+                    <p className="jp-body text-[13px] text-slate-300 mt-3 pt-3 border-t border-white/15">
+                      {member.bio}
+                    </p>
                   </div>
                 </div>
               ))}

@@ -37,6 +37,10 @@ interface ImageFrameProps {
    * 装飾用の背景枠は `opacity-30` などで弱めて、本文の邪魔をしないようにする
    */
   placeholderClassName?: string;
+  /** img のインラインスタイル。同じ素材を位置をずらして使い回すとき用 */
+  imgStyle?: React.CSSProperties;
+  /** 同じ素材を並べる場合、PROMPT チップは1枚目にだけ出せば足りる */
+  hideChip?: boolean;
 }
 
 function useDevice(): Device {
@@ -69,6 +73,8 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
   density = 'full',
   chipPosition = 'bottom-4 right-4',
   placeholderClassName = '',
+  imgStyle,
+  hideChip = false,
 }) => {
   const def = getSlot(slot);
   const device = useDevice();
@@ -121,6 +127,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
             // @ts-expect-error fetchPriority は React 19 で有効だが型定義が追いついていない場合がある
             fetchpriority={priority ? 'high' : undefined}
             className={`absolute inset-0 w-full h-full object-cover ${imgClassName}`}
+            style={imgStyle}
           />
         </picture>
       )}
@@ -138,6 +145,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
             >
               <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
             </div>
+            {!hideChip && (
             <button
               type="button"
               onClick={() => setOpenPrompt(true)}
@@ -148,6 +156,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
                 {def.id} / PROMPT
               </span>
             </button>
+            )}
           </>
         ) : (
           <button

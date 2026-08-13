@@ -69,7 +69,7 @@ export const Portfolio: React.FC = () => {
         <div className={`flex flex-wrap items-end justify-between gap-4 mb-12 lg:mb-16 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
           <div>
             <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// CURRICULUM</p>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-white">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-white">
               カリキュラム
             </h2>
           </div>
@@ -188,14 +188,14 @@ export const Portfolio: React.FC = () => {
 
                 {/* 画像エリア */}
                 <div className="relative">
-                  <ImageFrame key={active.slot} slot={active.slot} density="compact">
+                  <ImageFrame slot={active.slot} density="compact">
                     <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent" />
                     <div className="absolute inset-0 pointer-events-none scanlines opacity-30" />
 
                     {/* ラベル */}
                     <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
                       <p className="font-mono text-[10px] text-brand-400 tracking-widest">{active.category}</p>
-                      <p className="text-2xl font-black italic tracking-tighter text-white">{active.name}</p>
+                      <p className="text-2xl font-black jp-display text-white">{active.name}</p>
                     </div>
                   </ImageFrame>
                 </div>

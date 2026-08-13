@@ -75,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
 
             <a
               href={`#${SectionId.Contact}`}
-              className="ml-4 px-6 py-2 bg-white text-black font-sans font-black italic tracking-tighter text-sm hover:bg-brand-500 transition-colors duration-300"
+              className="ml-4 px-6 py-2 bg-white text-black font-sans font-black jp-display text-sm hover:bg-brand-500 transition-colors duration-300"
             >
               無料で詳細を見る
             </a>
@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             <a
               key={link.label}
               href={link.href}
-              className="text-2xl sm:text-3xl md:text-4xl font-black italic tracking-tighter text-white py-3 sm:py-4 border-b border-slate-800 hover:text-brand-500 transition-colors flex items-center gap-3 sm:gap-4"
+              className="text-2xl sm:text-3xl md:text-4xl font-black jp-display text-white py-3 sm:py-4 border-b border-slate-800 hover:text-brand-500 transition-colors flex items-center gap-3 sm:gap-4"
               onClick={() => setIsMenuOpen(false)}
             >
               <span className="text-xs font-mono text-brand-500">0{idx + 1}</span>
@@ -117,13 +117,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           ))}
           <button
             onClick={() => { setIsMenuOpen(false); onOpenPage(PageType.Company); }}
-            className="text-left text-xl sm:text-2xl md:text-3xl font-black italic tracking-tighter text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
+            className="text-left text-xl sm:text-2xl md:text-3xl font-black jp-display text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
           >
              料金プラン
           </button>
            <button
             onClick={() => { setIsMenuOpen(false); onOpenPage(PageType.FAQ); }}
-            className="text-left text-xl sm:text-2xl md:text-3xl font-black italic tracking-tighter text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
+            className="text-left text-xl sm:text-2xl md:text-3xl font-black jp-display text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
           >
              よくある質問
           </button>
