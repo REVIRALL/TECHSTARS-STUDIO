@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
+import { ImageFrame } from './ImageFrame';
 
 export const Process: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,28 +21,51 @@ export const Process: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} id={SectionId.Process} className="relative bg-black text-white pt-28 lg:pt-44 pb-28 lg:pb-44 overflow-x-hidden">
+    <section ref={sectionRef} id={SectionId.Process} className="relative bg-black text-white pt-28 lg:pt-44 pb-28 lg:pb-44 overflow-hidden">
       {/* 上部の水平ネオンライン（セクション区切り） */}
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-brand-500/60 via-brand-500/20 to-transparent"></div>
+      <div className="absolute top-0 left-0 w-full section-rule"></div>
 
       {/* Cyber Grid Background - 視認性向上 */}
-      <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none"></div>
+      <div className="absolute inset-0 cyber-grid opacity-[0.18] pointer-events-none"></div>
+      <div className="aurora opacity-40"></div>
 
       <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
-        <div className={`flex flex-col md:flex-row justify-between items-end mb-12 lg:mb-24 border-b border-slate-800 pb-8 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
-           <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">
-             学習スケジュール
-           </h2>
+        <div className={`flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12 lg:mb-16 border-b border-slate-800 pb-8 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
+           <div>
+             <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// SCHEDULE</p>
+             <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">
+               学習スケジュール
+             </h2>
+           </div>
            <span className="font-mono text-xs text-brand-500 mb-2">
              // 7日間の流れ
            </span>
         </div>
 
+        {/* 7日間の光の帯。日を追うごとに光が強くなる＝進捗そのものを絵にする */}
+        <div className={`relative mb-8 lg:mb-12 overflow-hidden border border-white/10 anim-hidden anim-scale ${isVisible ? 'anim-visible delay-1' : ''}`}>
+          <ImageFrame slot="process.banner" density="compact" imgClassName="edge-fade-bottom">
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/25 to-black/60" />
+            <div className="absolute inset-0 pointer-events-none scanlines opacity-25" />
+            <div className="absolute inset-x-0 bottom-0 z-10 flex justify-between px-4 sm:px-8 pb-3 pointer-events-none">
+              {['DAY 01', 'DAY 02', 'DAY 03', 'DAY 04', 'DAY 05', 'DAY 06', 'DAY 07'].map((d, i) => (
+                <span
+                  key={d}
+                  className="font-mono text-[8px] sm:text-[10px] tracking-widest"
+                  style={{ color: `rgba(0, 229, 255, ${0.35 + i * 0.1})` }}
+                >
+                  {d}
+                </span>
+              ))}
+            </div>
+          </ImageFrame>
+        </div>
+
         {/* Vertical Neon Line Pattern */}
-        <div className="relative p-8 bg-black border border-white/10 rounded-xl overflow-hidden">
+        <div className="relative p-6 sm:p-8 bg-black/60 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
           {/* Vertical timeline line */}
-          <div className="absolute left-12 md:left-16 top-0 bottom-0 w-[2px] bg-slate-800"></div>
-          <div className="absolute left-12 md:left-16 top-0 h-[calc(100%*4/7)] w-[2px] bg-gradient-to-b from-brand-500 to-brand-500/30 shadow-[0_0_10px_var(--brand)]"></div>
+          <div className="absolute left-10 sm:left-12 md:left-16 top-0 bottom-0 w-[2px] bg-slate-800"></div>
+          <div className="absolute left-10 sm:left-12 md:left-16 top-0 h-[calc(100%*4/7)] w-[2px] bg-gradient-to-b from-brand-500 to-brand-500/30 shadow-[0_0_10px_var(--brand)]"></div>
 
           <div className="space-y-8 relative z-10">
             {[

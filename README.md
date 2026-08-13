@@ -17,6 +17,27 @@ npm run dev      # http://localhost:3000
 npm run build    # dist/ を生成
 ```
 
+## ★画像は「フレーム先行」方式で運用している
+
+サイト内のビジュアルは、**画像が無くても成立するフレーム**として先に実装してある。
+画像を作って `public/img/` に置いた分だけ、順に本物の画像へ切り替わる。**コードの変更は不要**。
+
+- 枠の定義（サイズ・PC/SP・生成プロンプト・alt）の正本は **`content/imageSlots.ts`**（20スロット / 23カット）
+- 描画は **`components/ImageFrame.tsx`**
+  - `public/img/` にファイルがあれば `<picture>` で表示（PC / モバイルで別カットを出し分ける）
+  - 無ければ、**生成プロンプトを内蔵したプレースホルダー枠**を表示する
+- 画面上の枠の `PROMPT` ボタン、または **`?prompts=1`**（`Ctrl/Cmd + Shift + I`）の一覧コンソールから
+  プロンプトをコピーできる。未生成カットの残数もそこで分かる
+
+手順の詳細・書き出し設定・優先順位は **`docs/IMAGE_GENERATION.md`**。
+
+注意点:
+
+- **画像に文字を焼き込まない。** 見出し・本文はすべて HTML のまま（SEO・レスポンシブのため）。
+  プロンプト側にも「文字を入れるな」と明示してある
+- **講師2名の顔写真は実写のまま**（`public/sakamoto.jpg` / `public/numakura.jpg`）。実在の人物なので生成画像に差し替えない
+- `meta.ogp` を作ったときだけ、`index.html` の `og:image` / `twitter:image` を手で差し替える必要がある
+
 ## デプロイ
 
 Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
@@ -84,6 +105,8 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 
 ## 未処理
 
+- **画像が1枚も入っていない。** `docs/IMAGE_GENERATION.md` の優先順位に沿って
+  `hero.backdrop` → `contact.cta` → `curriculum.*` の順に作れば、少ない枚数で見栄えが変わる
 - 特商法に **販売価格の記載が無い**。商材の価格が確定したら追加する
 - `components/Team.tsx` の坂本純一さんが「代表 / メイン講師」表記。特商法の運営統括責任者は沼倉隆平なので、
   読み手には食い違って見える（bio は「2社経営の代表取締役」＝ご本人の会社を指す）。表記の要否は要判断

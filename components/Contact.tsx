@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
 import { IdeaValidator } from './IdeaValidator';
 import { CheckCircle } from 'lucide-react';
+import { ImageFrame } from './ImageFrame';
 
 export const Contact: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -22,12 +23,13 @@ export const Contact: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} id={SectionId.Contact} className="pt-28 lg:pt-44 pb-28 lg:pb-48 bg-black relative overflow-x-hidden">
+    <section ref={sectionRef} id={SectionId.Contact} className="pt-28 lg:pt-44 pb-28 lg:pb-48 bg-black relative overflow-hidden">
       {/* 上部の水平ネオンライン（セクション区切り） */}
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-brand-500/60 via-brand-500/20 to-transparent"></div>
+      <div className="absolute top-0 left-0 w-full section-rule"></div>
 
       {/* Cyber Grid Background - 視認性向上 */}
-      <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none"></div>
+      <div className="absolute inset-0 cyber-grid opacity-[0.18] pointer-events-none"></div>
+      <div className="aurora opacity-40"></div>
       <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
 
         {/* ===== こんな人におすすめ - Data Display Terminal Pattern ===== */}
@@ -89,11 +91,26 @@ export const Contact: React.FC = () => {
         </div>
 
         {/* ===== お問い合わせ - Cyberpunk Terminal Pattern ===== */}
+        <div className="relative">
+          {/* サイト最後の締め。コンセプト「TECH × 星」を回収する背景 */}
+          <div className="absolute -inset-x-6 lg:-inset-x-12 -top-24 -bottom-16 pointer-events-none">
+            <ImageFrame
+              slot="contact.cta"
+              fill
+              density="compact"
+              imgClassName="opacity-50 edge-fade"
+              placeholderClassName="opacity-25"
+              chipPosition="top-2 right-6"
+            >
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
+            </ImageFrame>
+          </div>
+
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 relative z-10">
 
           <div className={`anim-hidden anim-left ${isVisible ? 'anim-visible delay-5' : ''}`}>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter mb-6">
-              君も、<br /><span className="text-brand-500">星になれ。</span>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter mb-6 [text-shadow:0_0_60px_rgba(0,0,0,0.9)]">
+              君も、<br /><span className="text-brand-500 [text-shadow:0_0_50px_rgba(0,229,255,0.45)]">星になれ。</span>
             </h2>
             <p className="text-lg text-slate-400 font-medium mb-8 max-w-md">
               TECHSTARSは「TECH × 星」。<br/>
@@ -131,7 +148,7 @@ export const Contact: React.FC = () => {
 
           <div className={`anim-hidden anim-right ${isVisible ? 'anim-visible delay-6' : ''}`}>
              {/* Terminal Window Frame */}
-             <div className="border border-slate-800 bg-black overflow-hidden">
+             <div className="border border-slate-800 bg-black/90 backdrop-blur-sm overflow-hidden">
                 {/* Terminal Header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
                   <div className="flex items-center gap-2">
@@ -157,6 +174,7 @@ export const Contact: React.FC = () => {
              </div>
           </div>
 
+        </div>
         </div>
       </div>
     </section>

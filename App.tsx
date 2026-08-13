@@ -8,6 +8,7 @@ import { Team } from './components/Team';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { FixedPageOverlay } from './components/FixedPageOverlay';
+import { PromptConsole } from './components/PromptConsole';
 import { PageType } from './types';
 
 const App: React.FC = () => {
@@ -40,6 +41,12 @@ const App: React.FC = () => {
       <Footer onOpenPage={handleOpenPage} />
 
       <FixedPageOverlay page={currentPage} onClose={handleClosePage} />
+
+      {/* 画面全体のフィルムグレイン。画像とCSSの質感を一枚の膜で揃える */}
+      <div className="grain-overlay" aria-hidden="true" />
+
+      {/* 画像生成プロンプトの作業台。?prompts=1 または Ctrl/Cmd + Shift + I で開く */}
+      <PromptConsole />
     </div>
   );
 };
