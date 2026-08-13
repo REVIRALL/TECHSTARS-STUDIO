@@ -5,6 +5,10 @@
 React 19 + Vite 6 + Tailwind (CDN) の SPA。プライバシーポリシー・利用規約・特定商取引法に基づく表記は
 別ページではなく `components/FixedPageOverlay.tsx` 1ファイル内のオーバーレイとして実装されている。
 
+出自は **Google AI Studio** で生成したアプリ:
+https://ai.studio/apps/drive/1Hi4U8HCcWireqNVPK5cuKO347wdVhpl5
+（AI Studio 側にも同じアプリが残っている。あちらを編集しても本番には反映されないので注意）
+
 ## 開発
 
 ```bash
