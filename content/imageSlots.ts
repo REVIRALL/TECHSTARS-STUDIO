@@ -326,9 +326,11 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     role: '7日間のタイムラインの上に敷く横長の帯。日を追うごとに光が強くなる＝進捗の可視化。',
     alt: '',
     decorative: true,
+    // 5:1 で指定していたが、画像生成AIはここまで極端な横長を出せず 2.5:1 前後になる。
+    // 出せる比率に合わせた。枠側は高さ固定 + object-cover なので多少ぶれても破綻しない。
     desktop: {
-      size: [3000, 600],
-      aspect: '5:1',
+      size: [2000, 800],
+      aspect: '5:2',
       subject: `Seven vertical pillars of cyan light standing in a row inside an infinite black void, receding slightly in perspective. The leftmost pillar is dim and thin; each successive pillar is brighter, thicker and more defined, until the rightmost burns intensely and throws a hard reflection across the wet black floor. Volumetric haze pools around the bases.`,
       composition: `Ultra-wide panoramic, 24mm, camera low and centered on the row so the pillars stretch the full width. Even horizontal rhythm. Top half of the frame is empty black; the floor reflection anchors the bottom.`,
     },

@@ -79,7 +79,7 @@ export const StudioModel: React.FC = () => {
                 slot="model.legacy"
                 fill
                 density="compact"
-                imgClassName="opacity-40 grayscale contrast-75"
+                imgClassName="opacity-[0.65] grayscale contrast-90"
                 placeholderClassName="opacity-50"
                 chipPosition="bottom-4 right-4"
               >

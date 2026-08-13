@@ -42,9 +42,17 @@ export const Process: React.FC = () => {
            </span>
         </div>
 
-        {/* 7日間の光の帯。日を追うごとに光が強くなる＝進捗そのものを絵にする */}
-        <div className={`relative mb-8 lg:mb-12 overflow-hidden border border-white/10 anim-hidden anim-scale ${isVisible ? 'anim-visible delay-1' : ''}`}>
-          <ImageFrame slot="process.banner" density="compact" imgClassName="edge-fade-bottom">
+        {/* 7日間の光の帯。日を追うごとに光が強くなる＝進捗そのものを絵にする。
+            高さを固定して fill で敷く。生成した画像の縦横比が多少ぶれても、
+            柱の根元と床の反射（一番効く部分）が残るように object-position を下寄りにしている */}
+        <div className={`relative h-[220px] sm:h-[300px] lg:h-[380px] mb-8 lg:mb-12 overflow-hidden border border-white/10 anim-hidden anim-scale ${isVisible ? 'anim-visible delay-1' : ''}`}>
+          <ImageFrame
+            slot="process.banner"
+            fill
+            density="compact"
+            imgClassName="object-[50%_65%] edge-fade-bottom"
+            chipPosition="top-3 right-3"
+          >
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/25 to-black/60" />
             <div className="absolute inset-0 pointer-events-none scanlines opacity-25" />
             <div className="absolute inset-x-0 bottom-0 z-10 flex justify-between px-4 sm:px-8 pb-3 pointer-events-none">
