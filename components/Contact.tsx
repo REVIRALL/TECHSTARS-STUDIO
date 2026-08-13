@@ -1,8 +1,45 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
-import { IdeaValidator } from './IdeaValidator';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Terminal } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+
+/**
+ * AI診断フォームは react-markdown と @google/genai を引き連れてくる。
+ * 初期表示ではまず見えない位置にあるので、別チャンクに切り出して
+ * このセクションが画面に入るまで読み込まない。
+ * 見た目が変わらないよう、読み込み前は同じ形のスケルトンを出す。
+ */
+const IdeaValidator = lazy(() =>
+  import('./IdeaValidator').then((m) => ({ default: m.IdeaValidator }))
+);
+
+const ValidatorSkeleton: React.FC = () => (
+  <div className="w-full" aria-hidden="true">
+    <div className="flex items-center gap-2 mb-4 text-brand-500">
+      <Terminal className="w-4 h-4" />
+      <span className="text-[10px] font-mono tracking-widest uppercase">AI_DIAGNOSTIC_SYSTEM v2.0</span>
+      <div className="flex-1" />
+      <div className="flex items-center gap-2">
+        <div className="w-2 h-2 bg-slate-700 rounded-full" />
+        <span className="text-[10px] font-mono text-slate-600">STANDBY</span>
+      </div>
+    </div>
+    <div className="border border-slate-800 bg-slate-900/50 overflow-hidden">
+      <div className="relative">
+        <div className="absolute top-4 left-4 font-mono text-brand-500/50 text-sm">&gt;_</div>
+        <div className="w-full pl-10 pr-4 py-4 font-mono text-sm text-slate-700 min-h-[92px]">
+          あなたの目標やお悩みを入力...
+        </div>
+      </div>
+      <div className="bg-slate-900 px-4 py-3 flex justify-between items-center border-t border-slate-800">
+        <span className="text-[10px] text-slate-600 font-mono">GEMINI_ENGINE</span>
+        <div className="px-6 py-2 bg-slate-800 text-slate-600 text-xs font-mono font-bold tracking-widest">
+          EXECUTE
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export const Contact: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -169,7 +206,13 @@ export const Contact: React.FC = () => {
                     <span className="font-mono text-brand-500 text-lg">&gt;</span>
                     <h3 className="text-xl font-bold text-white">無料で詳細を確認</h3>
                   </div>
-                  <IdeaValidator />
+                  {isVisible ? (
+                    <Suspense fallback={<ValidatorSkeleton />}>
+                      <IdeaValidator />
+                    </Suspense>
+                  ) : (
+                    <ValidatorSkeleton />
+                  )}
                 </div>
              </div>
           </div>
