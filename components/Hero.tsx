@@ -82,8 +82,9 @@ export const Hero: React.FC = () => {
             事実（期間・形式・価格・運営）を1文に畳んで平文で置いておく。
           */}
           <p className="mt-4 text-[13px] sm:text-sm leading-relaxed text-slate-400">
-            {COURSE.mode}・マンツーマン指導の{COURSE.durationLabel}プログラム。受講料は
-            {COURSE.price.toLocaleString('ja-JP')}円（{COURSE.priceNote}）、運営は{ORG.legalName}です。
+            生成AI（Claude Code）で開発する、{COURSE.mode}・マンツーマン指導の
+            {COURSE.durationLabel}プログラム。未経験の社会人・学生が対象です。受講料
+            {COURSE.price.toLocaleString('ja-JP')}円（{COURSE.priceNote}）、運営は{ORG.legalName}。
           </p>
         </div>
 

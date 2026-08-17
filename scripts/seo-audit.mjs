@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { parse } from 'node-html-parser';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -64,6 +65,17 @@ const hasType = (nodes, t) => nodes.some((n) => typeOf(n).includes(t));
 const pick = (nodes, t) => nodes.find((n) => typeOf(n).includes(t));
 
 /* ────────────────────────────── 採点 ────────────────────────────── */
+
+/**
+ * 表記ゆれ辞書は TypeScript（content/synonyms.ts）にあり、素のNodeからは読めない。
+ * ビルド時に作られるSSRバンドル経由で受け取る。
+ */
+const SSR = path.join(ROOT, 'dist-ssr', 'entry-server.js');
+if (!fs.existsSync(SSR)) {
+  console.error('dist-ssr/entry-server.js がない。先に `npm run build` を流すこと。');
+  process.exit(1);
+}
+const { QUERY_GROUPS } = await import(pathToFileURL(SSR).href);
 
 const results = [];
 /** @param {string} cat @param {string} id @param {number} max @param {boolean|number} ok @param {string} note */
@@ -356,6 +368,86 @@ function run() {
 
   score(F, 'F5 更新日時が機械可読', 2,
     !!home.dom.querySelector('time[datetime]') && !!webpage?.dateModified, '');
+
+  /* ══════════════ G. 表記ゆれ・検索クエリ網羅 (16) ══════════════ */
+  const G = 'G. 表記ゆれ/検索クエリ網羅';
+
+  /** 全インデックス対象ページの本文を1本に連結したもの */
+  const allText = pages
+    .filter((p) => p.html && p.url !== '/404.html')
+    .map((p) => p.dom.querySelector('body')?.text ?? '')
+    .join(' ')
+    .replace(/\s+/g, ' ');
+
+  const homeText = bodyText;
+  const ldAll = pages.filter((p) => p.html).flatMap((p) => jsonLd(p.dom));
+
+  /**
+   * 検索エンジン側の正規化を再現する。
+   * 全角半角（NFKC）→ カタカナをひらがなへ → 長音符と中黒を落とす → 小文字化。
+   * ここまで畳んで一致するものは、片方だけ書いてあれば両方で拾われる。
+   */
+  const fold = (s) =>
+    s
+      .normalize('NFKC')
+      .replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60))
+      .replace(/[ー・\s]/g, '')
+      .toLowerCase();
+
+  const foldedAll = fold(allText);
+  const foldedHome = fold(homeText);
+  const foldedLd = fold(JSON.stringify(ldAll));
+
+  // G1: 表記の統一。ゆれた形が本文に混入していないか（吸収されるので書く必要がない）
+  const strayForms = [];
+  for (const g of QUERY_GROUPS) {
+    for (const v of g.orthographic) {
+      if (allText.includes(v)) strayForms.push(`${g.id}: ${v}`);
+    }
+  }
+  score(G, 'G1 表記ゆれが本文に混入していない（統一されている）', 3, strayForms.length === 0,
+    `混入 ${strayForms.join(' / ')}。ひらがな/カタカナ/全角半角は検索側が吸収するので両方書く必要はなく、書くと不自然になるだけ`);
+
+  // G2: 半角カタカナ・全角英数字。検索でも読み上げでも不利になる
+  const halfKana = [...new Set([...allText.matchAll(/[｡-ﾟ]+/g)].map((m) => m[0]))];
+  const wideAlnum = [...new Set([...allText.matchAll(/[０-９Ａ-Ｚａ-ｚ]+/g)].map((m) => m[0]))];
+  score(G, 'G2 半角カタカナ / 全角英数字を使っていない', 2,
+    halfKana.length === 0 && wideAlnum.length === 0,
+    `半角カナ: ${halfKana.join(',') || 'なし'} / 全角英数: ${wideAlnum.join(',') || 'なし'}`);
+
+  // G3: 言い換え（語彙が違うもの）のカバー率。ここだけは本文に出さないと届かない
+  const lexMissing = [];
+  let lexTotal = 0;
+  let lexHit = 0;
+  for (const g of QUERY_GROUPS) {
+    for (const v of [g.canonical, ...g.lexical]) {
+      lexTotal++;
+      if (foldedAll.includes(fold(v))) lexHit++;
+      else lexMissing.push(`${g.id}:${v}`);
+    }
+  }
+  score(G, 'G3 言い換え語彙のカバー率（サイト全体）', 5, (lexHit / lexTotal) * 5,
+    `${lexHit}/${lexTotal}。未収録: ${lexMissing.join(', ') || 'なし'}`);
+
+  // G4: トップページ単体でも主要な軸に触れられているか
+  const homeMust = QUERY_GROUPS.map((g) => g.canonical);
+  const homeMissing = homeMust.filter((v) => !foldedHome.includes(fold(v)));
+  score(G, 'G4 トップ単体で全軸の正規表記に触れている', 3,
+    ((homeMust.length - homeMissing.length) / homeMust.length) * 3,
+    `未収録: ${homeMissing.join(', ') || 'なし'}`);
+
+  // G5: ラテン文字ブランドのカタカナ表記。自動では結び付かないので明示が要る
+  const brandKanaInBody = foldedAll.includes(fold('テックスターズ'));
+  const brandAliasInLd = ['TechStars Studio', 'テックスターズスタジオ', 'techstars.studio'].every((a) =>
+    foldedLd.includes(fold(a))
+  );
+  score(G, 'G5 ブランド名のカタカナ表記（本文 + alternateName）', 2,
+    (brandKanaInBody ? 1 : 0) + (brandAliasInLd ? 1 : 0),
+    `本文=${brandKanaInBody} / JSON-LD alternateName=${brandAliasInLd}`);
+
+  // G6: 同名の別事業者との識別。ブランド名が競合すると検索意図ごと持っていかれる
+  score(G, 'G6 同名の別事業者（Techstars）との識別を明記', 1,
+    /アクセラレーター/.test(allText) && /無関係|関係はありません|関係あり/.test(allText), '');
 
   /* ────────────────────────────── 出力 ────────────────────────────── */
   const total = results.reduce((n, r) => n + r.got, 0);

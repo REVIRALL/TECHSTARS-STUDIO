@@ -13,6 +13,9 @@ import { RouteMeta, ROUTES } from './content/site';
 
 export { ROUTES } from './content/site';
 export { ORIGIN, BUILD_DATE, BUILD_DAY, FAQS, COURSE, ORG, INSTRUCTORS } from './content/site';
+// 監査スクリプト（scripts/seo-audit.mjs）は素のNodeで動くのでTSを読めない。
+// ビルド済みのSSRバンドル経由で辞書を渡す
+export { QUERY_GROUPS, BRAND_ALIASES } from './content/synonyms';
 
 export interface Rendered {
   route: RouteMeta;

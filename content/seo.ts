@@ -10,6 +10,7 @@
  * 繋がっている方が、検索エンジンにも生成AIにも「同一の事業者の話」として届く。
  */
 
+import { BRAND_ALIASES, SCHEMA_KEYWORDS } from './synonyms';
 import {
   BUILD_DATE,
   COURSE,
@@ -42,7 +43,9 @@ function organizationNode() {
     '@id': ID.org,
     name: ORG.brand,
     legalName: ORG.legalName,
-    alternateName: [ORG.englishName, 'テックスターズスタジオ'],
+    // ラテン文字のブランド名とカタカナ転写は検索エンジンが自動で結び付けない。
+    // 本文に羅列するのではなく、機械向けの欄であるここで名寄せする
+    alternateName: [ORG.englishName, ...BRAND_ALIASES.filter((a) => a !== ORG.brand)],
     url: `${ORIGIN}/`,
     logo: {
       '@type': 'ImageObject',
@@ -108,7 +111,9 @@ function courseNode() {
     '@type': 'Course',
     '@id': ID.course,
     name: COURSE.name,
-    description: `未経験からでも7日間で、Webサイト・業務自動化ツール・データベース連携アプリの3つを作りきるAI開発プログラム。コードを暗記せず、AIへの指示で開発を進める。オンライン完結。`,
+    alternateName: ['7日間AI開発プログラム', 'テックスターズ 7日間プログラム'],
+    description: `未経験からでも7日間で、Webサイト・業務自動化ツール・データベース連携アプリの3つを作りきるAI開発プログラム。コードを暗記せず、生成AI（Claude Code）への指示で開発を進める。オンライン完結・マンツーマン指導。`,
+    keywords: SCHEMA_KEYWORDS.join(', '),
     url: `${ORIGIN}/`,
     courseCode: COURSE.programId,
     inLanguage: 'ja',
@@ -188,6 +193,9 @@ function webPageNode(route: RouteMeta) {
     inLanguage: 'ja',
     isPartOf: { '@id': ID.site },
     about: { '@id': ID.course },
+    // schema.org の keywords。廃止された meta keywords とは別物で、
+    // Course / WebPage の正当な属性として定義されている
+    keywords: SCHEMA_KEYWORDS.join(', '),
     publisher: { '@id': ID.org },
     datePublished: '2026-01-15T00:00:00+09:00',
     dateModified: BUILD_DATE,

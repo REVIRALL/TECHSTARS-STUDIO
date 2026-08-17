@@ -44,8 +44,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
               </span>
             </div>
             <p className="text-xs text-slate-400 max-w-xs leading-relaxed mb-5">
-              {COURSE.durationLabel}でプロへ。AIと作る、動くシステム3つ。
-              {ORG.legalName}が運営するAI開発スクールです。
+              {/* ラテン文字のブランド名とカタカナ表記は検索エンジンが結び付けてくれない。
+                  「テックスターズ」で探した人に届くよう、読みを1度だけ本文に置く */}
+              TECHSTARS STUDIO（テックスターズスタジオ）は、{ORG.legalName}が運営する
+              AI開発スクールです。{COURSE.durationLabel}でプロへ。AIと作る、動くシステム3つ。
             </p>
             {/* 事業者の実体。検索エンジンにも人間にも、誰が売っているのかを明示する */}
             <address className="not-italic text-[11px] text-slate-500 leading-relaxed">
