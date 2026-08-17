@@ -5,22 +5,41 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA Routing - fallback to index.html
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# ─────────────────────────────────────────────────────────────────────
+# ルーティング
+#
+# 以前は `/* → /index.html 200` の catch-all を置いていた。
+# クライアントルーティングをしていないこのサイトでは害しかなく、
+# 存在しないURL（/foo, /wp-login.php, 誤ったリンク）がすべて
+# 「200 でトップページの中身」を返していた。検索エンジンにはこれが
+# ソフト404 かつ大量の重複コンテンツとして見える。
+#
+# 現在は /pricing/ /faq/ /privacy/ /terms/ /tokushoho/ が実ファイルとして
+# 生成されているので、catch-all は不要。未知のURLは 404.html が
+# きちんと 404 ステータスで返る。
+# ─────────────────────────────────────────────────────────────────────
 
-# Security Headers
+# 旧オーバーレイのハッシュURLから実ページへ寄せる（外部に貼られていた場合の受け皿）
+[[redirects]]
+  from = "/company"
+  to = "/pricing/"
+  status = 301
+
+[[redirects]]
+  from = "/tokusho"
+  to = "/tokushoho/"
+  status = 301
+
+# セキュリティヘッダ
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
-# Cache static assets
 # ─────────────────────────────────────────────────────────────────────
 # キャッシュ
 #
@@ -28,9 +47,8 @@
 # ファイル名にハッシュが入っていて「中身が変わればURLも変わる」ものだけ。
 # Vite が吐く /assets/* がそれに当たる。
 #
-# 逆に /showcase.css や /img/* はパスが固定なので、immutable にすると
+# 逆に /img/* はパスが固定なので、immutable にすると
 # 中身を差し替えても既訪問者には1年間古いファイルが配られ続ける。
-# 実際にこの設定のまま showcase.css を更新してしまっていた。
 # ─────────────────────────────────────────────────────────────────────
 
 # ハッシュ付き。URLが変わるので永久キャッシュしてよい
@@ -39,12 +57,28 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# パス固定のCSS。差し替えたら即座に反映させたいので毎回再検証する
-# （変わっていなければ 304 が返るだけなので、実質ほぼ無料）
+# HTMLは常に取り直す。プリレンダリング済みなので中身が変われば即反映したい
 [[headers]]
-  for = "/showcase.css"
+  for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# クローラー向けファイル。更新を待たせない
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Type = "text/plain; charset=utf-8"
 
 # パス固定の画像。1日は使い回し、その後は裏で取り直しつつ表示は止めない
 [[headers]]

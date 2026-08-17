@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { X, Copy, Check, Download, Sparkles, CircleCheck, CircleDashed } from 'lucide-react';
 import { IMAGE_SLOTS, slotsBySection, ImageSlot, Device } from '../content/imageSlots';
 import { PromptModal, useCopy } from './PromptModal';
+import { hasImage } from '../content/generatedImages';
 
 /**
  * PromptConsole — 画像生成の作業台（開発・運用向け）
@@ -11,16 +12,9 @@ import { PromptModal, useCopy } from './PromptModal';
  * 「どれがまだ未生成か」もここで一望できる。
  */
 
-interface Status {
-  id: string;
-  device: Device;
-  ready: boolean;
-}
-
 export const PromptConsole: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [detail, setDetail] = useState<ImageSlot | null>(null);
-  const [statuses, setStatuses] = useState<Record<string, boolean>>({});
   const [copied, copy] = useCopy();
 
   // 起動条件: ?prompts=1 / #prompts / Ctrl(Cmd)+Shift+I
@@ -38,35 +32,20 @@ export const PromptConsole: React.FC = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // 開いたときに全画像の存在チェック
-  useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-    const checks: Promise<Status>[] = [];
+  /**
+   * 生成済み / 未生成の判定。
+   * 以前は開くたびに全スロットへリクエストを飛ばして 404 の数を数えていた。
+   * いまはビルド時に public/img を走査した一覧を見るだけなので、
+   * 同期で確定するし、未生成ぶんの 404 も出ない。
+   */
+  const statuses = useMemo<Record<string, boolean>>(() => {
+    const next: Record<string, boolean> = {};
     for (const s of IMAGE_SLOTS) {
-      const variants: [Device, string][] = [['desktop', s.desktop.src]];
-      if (s.mobile) variants.push(['mobile', s.mobile.src]);
-      for (const [device, src] of variants) {
-        checks.push(
-          new Promise<Status>((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve({ id: s.id, device, ready: true });
-            img.onerror = () => resolve({ id: s.id, device, ready: false });
-            img.src = src;
-          })
-        );
-      }
+      next[`${s.id}:desktop`] = hasImage(s.desktop.src);
+      if (s.mobile) next[`${s.id}:mobile`] = hasImage(s.mobile.src);
     }
-    Promise.all(checks).then((results) => {
-      if (cancelled) return;
-      const next: Record<string, boolean> = {};
-      for (const r of results) next[`${r.id}:${r.device}`] = r.ready;
-      setStatuses(next);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [open]);
+    return next;
+  }, []);
 
   const sections = useMemo(() => slotsBySection(), []);
 

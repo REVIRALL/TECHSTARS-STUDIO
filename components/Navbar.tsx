@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SectionId, PageType } from '../types';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { PageLink } from './PageLink';
 
 interface NavbarProps {
   onOpenPage: (page: PageType) => void;
@@ -36,12 +37,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
       >
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 flex justify-between items-center">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 md:gap-3 group z-50 shrink-0">
-            <img src="/logo.png" alt="TechStars" className="h-8 md:h-10 w-auto group-hover:scale-105 transition-transform duration-300" />
-            <div className="flex items-baseline gap-1 whitespace-nowrap">
+          <a href="/" aria-label="TECHSTARS STUDIO トップページ" className="flex items-center gap-2 md:gap-3 group z-50 shrink-0">
+            <img
+              src="/logo.png"
+              alt=""
+              aria-hidden="true"
+              width={40}
+              height={40}
+              className="h-8 md:h-10 w-auto group-hover:scale-105 transition-transform duration-300"
+            />
+            <span className="flex items-baseline gap-1 whitespace-nowrap">
               <span className="font-black text-white text-xs md:text-base tracking-tight">TECHSTARS</span>
-              <span className="font-mono text-brand-500 text-[8px] md:text-xs tracking-widest">AI</span>
-            </div>
+              <span className="font-mono text-brand-500 text-[8px] md:text-xs tracking-widest">STUDIO</span>
+            </span>
           </a>
 
           {/* Desktop Menu */}
@@ -58,20 +66,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
                 ))}
             </div>
 
-            <div className="h-6 w-[1px] bg-slate-800"></div>
+            <span className="h-6 w-[1px] bg-slate-800" aria-hidden="true" />
 
-            <button
-                onClick={() => onOpenPage(PageType.Company)}
+            <PageLink
+                route="pricing"
+                onOpenPage={onOpenPage}
                 className="font-mono text-xs font-bold text-slate-300 hover:text-white transition-colors flex items-center gap-1"
             >
-                料金 <ArrowUpRight className="w-3 h-3" />
-            </button>
-             <button
-                onClick={() => onOpenPage(PageType.FAQ)}
+                料金 <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
+            </PageLink>
+            <PageLink
+                route="faq"
+                onOpenPage={onOpenPage}
                 className="font-mono text-xs font-bold text-slate-300 hover:text-white transition-colors flex items-center gap-1"
             >
-                よくある質問 <ArrowUpRight className="w-3 h-3" />
-            </button>
+                よくある質問 <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
+            </PageLink>
 
             <a
               href={`#${SectionId.Contact}`}
@@ -115,18 +125,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
               {link.label}
             </a>
           ))}
-          <button
-            onClick={() => { setIsMenuOpen(false); onOpenPage(PageType.Company); }}
+          <PageLink
+            route="pricing"
+            onOpenPage={(p) => { setIsMenuOpen(false); onOpenPage(p); }}
             className="text-left text-xl sm:text-2xl md:text-3xl font-black jp-display text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
           >
              料金プラン
-          </button>
-           <button
-            onClick={() => { setIsMenuOpen(false); onOpenPage(PageType.FAQ); }}
+          </PageLink>
+          <PageLink
+            route="faq"
+            onOpenPage={(p) => { setIsMenuOpen(false); onOpenPage(p); }}
             className="text-left text-xl sm:text-2xl md:text-3xl font-black jp-display text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
           >
              よくある質問
-          </button>
+          </PageLink>
           <a
             href="https://techstars-lms.netlify.app/"
             target="_blank"

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!--
+      このファイルは Vite のエントリであると同時に、プリレンダリングの雛形でもある。
+
+      <head> の中身（title / description / OGP / JSON-LD 等）は
+      ページごとに content/seo.ts が生成し、scripts/prerender.mjs が
+      <!== SEO_HEAD ==> の位置へ差し込む。ここに手でメタタグを書き足さないこと。
+      事実の変更は content/site.ts に対して行う。
+    -->
+    <!-- charset / viewport / title を含む <head> の中身は、すべて
+         下の <!==SEO_HEAD==> に差し込まれる。ここに重複して書かないこと
+         （title が2つあると、検索エンジンは先に出てきた方を採用する） -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>利用規約｜TECHSTARS STUDIO</title>
+    <meta name="description" content="株式会社リバイラルが提供する TECHSTARS STUDIO のサービス利用条件を定めた利用規約です。適用範囲、利用登録、利用料金、禁止事項、免責事項、準拠法を記載しています。">
+    <link rel="canonical" href="https://techstars.studio/terms/">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="株式会社リバイラル">
+    <meta name="publisher" content="株式会社リバイラル">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+    <meta name="format-detection" content="telephone=no">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="TECHSTARS STUDIO">
+    <meta property="og:title" content="利用規約｜TECHSTARS STUDIO">
+    <meta property="og:description" content="株式会社リバイラルが提供する TECHSTARS STUDIO のサービス利用条件を定めた利用規約です。適用範囲、利用登録、利用料金、禁止事項、免責事項、準拠法を記載しています。">
+    <meta property="og:url" content="https://techstars.studio/terms/">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:image" content="https://techstars.studio/img/ogp.jpg">
+    <meta property="og:image:secure_url" content="https://techstars.studio/img/ogp.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="TECHSTARS STUDIO — 7日間でプロへ。AIと作る、動くシステム3つ。">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="利用規約｜TECHSTARS STUDIO">
+    <meta name="twitter:description" content="株式会社リバイラルが提供する TECHSTARS STUDIO のサービス利用条件を定めた利用規約です。適用範囲、利用登録、利用料金、禁止事項、免責事項、準拠法を記載しています。">
+    <meta name="twitter:image" content="https://techstars.studio/img/ogp.jpg">
+    <meta name="twitter:image:alt" content="TECHSTARS STUDIO — 7日間でプロへ。AIと作る、動くシステム3つ。">
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["EducationalOrganization","Organization"],"@id":"https://techstars.studio/#organization","name":"TECHSTARS STUDIO","legalName":"株式会社リバイラル","alternateName":["Revirall Co., Ltd.","テックスターズスタジオ"],"url":"https://techstars.studio/","logo":{"@type":"ImageObject","url":"https://techstars.studio/logo.png","width":512,"height":512,"caption":"TECHSTARS STUDIO ロゴ"},"image":"https://techstars.studio/img/ogp.jpg","description":"株式会社リバイラルが運営するAI開発スクール。7日間で動くシステムを3つ作る実践型プログラムを提供している。","email":"support@techstars.studio","telephone":"03-6821-4341","address":{"@type":"PostalAddress","postalCode":"171-0022","addressRegion":"東京都","addressLocality":"豊島区","streetAddress":"南池袋一丁目3番9号2F","addressCountry":"JP"},"contactPoint":[{"@type":"ContactPoint","contactType":"customer support","email":"support@techstars.studio","telephone":"03-6821-4341","areaServed":"JP","availableLanguage":["ja"]}],"sameAs":["https://techstars-lms.netlify.app/"],"founder":[{"@id":"https://techstars.studio/#person-%E5%9D%82%E6%9C%AC%E7%B4%94%E4%B8%80"},{"@id":"https://techstars.studio/#person-%E6%B2%BC%E5%80%89%E9%9A%86%E5%B9%B3"}]},{"@type":"WebSite","@id":"https://techstars.studio/#website","url":"https://techstars.studio/","name":"TECHSTARS STUDIO","description":"未経験から7日間で、動くシステムを3つ作るAI開発スクール。コードは書かず、Claude Codeへの指示で開発します。オンライン完結・マンツーマン指導、受講料398,000円（税別）。","inLanguage":"ja","publisher":{"@id":"https://techstars.studio/#organization"}},{"@type":"WebPage","@id":"https://techstars.studio/terms/#webpage","url":"https://techstars.studio/terms/","name":"利用規約｜TECHSTARS STUDIO","description":"株式会社リバイラルが提供する TECHSTARS STUDIO のサービス利用条件を定めた利用規約です。適用範囲、利用登録、利用料金、禁止事項、免責事項、準拠法を記載しています。","inLanguage":"ja","isPartOf":{"@id":"https://techstars.studio/#website"},"about":{"@id":"https://techstars.studio/#course"},"publisher":{"@id":"https://techstars.studio/#organization"},"datePublished":"2026-01-15T00:00:00+09:00","dateModified":"2026-08-17T02:26:33.151Z","primaryImageOfPage":{"@type":"ImageObject","url":"https://techstars.studio/img/ogp.jpg","width":1200,"height":630},"breadcrumb":{"@id":"https://techstars.studio/terms/#breadcrumb"}},{"@type":"Person","@id":"https://techstars.studio/#person-%E5%9D%82%E6%9C%AC%E7%B4%94%E4%B8%80","name":"坂本 純一","jobTitle":"代表取締役 / メイン講師","description":"2社経営の代表取締役。創業80期を迎える老舗企業を率いながら、AI駆動開発の最前線で実践中。","image":"https://techstars.studio/img/sakamoto.jpg","worksFor":{"@id":"https://techstars.studio/#organization"},"knowsAbout":["AI駆動開発","Claude Code","Webアプリケーション開発","業務自動化"]},{"@type":"Person","@id":"https://techstars.studio/#person-%E6%B2%BC%E5%80%89%E9%9A%86%E5%B9%B3","name":"沼倉 隆平","jobTitle":"AIスペシャリスト / 講師","description":"AI×開発のスペシャリスト。1000万円クラスの案件を1ヶ月で20本受注した超実践派。","image":"https://techstars.studio/img/numakura.jpg","worksFor":{"@id":"https://techstars.studio/#organization"},"knowsAbout":["AI駆動開発","Claude Code","Webアプリケーション開発","業務自動化"]},{"@type":"BreadcrumbList","@id":"https://techstars.studio/terms/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://techstars.studio/"},{"@type":"ListItem","position":2,"name":"利用規約","item":"https://techstars.studio/terms/"}]}]}</script>
+
+    <!-- Google Fonts。CSSの取得でレンダリングを止めないよう、
+         media="print" → onload で all に戻す定番の非同期読み込みにしている。
+         JS無効時は <noscript> 側が同期で読み込む -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+      />
+    </noscript>
+    <script type="module" crossorigin src="/assets/index-_Y4MAogf.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-9EperzrW.css">
+  </head>
+  <body class="bg-black text-white">
+    <div id="root"><link rel="preload" as="image" href="/logo.png"/><div class="font-sans bg-black text-white min-h-screen flex flex-col"><a href="#main" class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:bg-brand-500 focus:text-black focus:px-4 focus:py-2 focus:font-bold">本文へスキップ</a><header class="border-b border-slate-800 bg-black"><div class="max-w-[1400px] mx-auto px-6 lg:px-12 py-4 flex items-center justify-between gap-4"><a href="/" class="flex items-center gap-3 shrink-0"><img src="/logo.png" alt="" aria-hidden="true" width="40" height="40" class="h-8 md:h-10 w-auto"/><span class="flex items-baseline gap-1 whitespace-nowrap"><span class="font-black text-white text-sm md:text-base tracking-tight">TECHSTARS</span><span class="font-mono text-brand-500 text-[10px] md:text-xs tracking-widest">STUDIO</span></span></a><a href="/" class="inline-flex items-center gap-2 font-mono text-xs text-slate-400 hover:text-brand-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left w-3.5 h-3.5" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>トップに戻る</a></div></header><nav aria-label="パンくずリスト" class="border-b border-slate-900 bg-black"><div class="max-w-[1400px] mx-auto px-6 lg:px-12 py-3"><ol class="flex flex-wrap items-center gap-2 font-mono text-[11px] text-slate-500"><li><a href="/" class="hover:text-brand-500 transition-colors">ホーム</a></li><li aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right w-3 h-3" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></li><li class="text-slate-300" aria-current="page">利用規約</li></ol></div></nav><main id="main" class="flex-1 bg-black text-slate-300"><div class="max-w-[1400px] mx-auto px-6 lg:px-12 py-16 lg:py-24"><div class="animate-slide-up max-w-3xl"><div class="mb-4 flex items-center gap-4 text-brand-500"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text w-8 h-8 md:w-12 md:h-12 shrink-0" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg><h1 class="text-2xl md:text-4xl font-black jp-display text-white">利用規約</h1></div><p class="text-xs text-slate-500 mb-12">最終更新日: <time dateTime="2026-08-17">2026年08月17日</time></p><div class="space-y-10 text-sm leading-relaxed"><p class="opacity-80">本規約は「<!-- -->株式会社リバイラル<!-- -->」（以下「当社」）が提供するウェブサービスの利用条件を定めるものです。ユーザーは本規約に従ってサービスを利用するものとします。</p><section><h2 class="text-white font-bold mb-4 text-lg">第1条（適用）</h2><p class="opacity-80">本規約は、ユーザーと当社との間のすべての関係に適用されます。</p></section><section><h2 class="text-white font-bold mb-4 text-lg">第2条（利用登録）</h2><p class="opacity-80">登録希望者が当社の定める方法によって利用登録を申請し、当社がこれを承認することによって、利用登録が完了するものとします。</p></section><section><h2 class="text-white font-bold mb-4 text-lg">第3条（利用料金）</h2><p class="opacity-80">ユーザーは、当社が指定する方法により利用料金を支払う義務を負います。</p></section><section><h2 class="text-white font-bold mb-4 text-lg">第4条（禁止事項）</h2><p class="opacity-80 mb-4">ユーザーは、以下の行為をしてはなりません。</p><ul class="opacity-80 list-disc list-inside space-y-2"><li>法令または公序良俗に違反する行為</li><li>犯罪行為に関連する行為</li><li>当社のサーバーまたはネットワークの機能を破壊したり、妨害したりする行為</li><li>他のユーザーに関する個人情報等を収集または蓄積する行為</li><li>他のユーザーに成りすます行為</li><li>反社会的勢力に対して直接または間接に利益を供与する行為</li><li>その他、当社が不適切と判断する行為</li></ul></section><section><h2 class="text-white font-bold mb-4 text-lg">第5条（サービス提供の停止）</h2><p class="opacity-80">当社は、以下のいずれかの事由があると判断した場合、ユーザーに事前に通知することなくサービスの全部または一部の提供を停止または中断することができるものとします。</p></section><section><h2 class="text-white font-bold mb-4 text-lg">第6条（免責事項）</h2><p class="opacity-80">当社の債務不履行責任は、当社の故意または重過失によらない場合には免責されるものとします。</p></section><section><h2 class="text-white font-bold mb-4 text-lg">第7条（準拠法・裁判管轄）</h2><p class="opacity-80">本規約の解釈にあたっては、日本法を準拠法とします。本サービスに関して紛争が生じた場合には、当社本店所在地を管轄する裁判所を専属的合意管轄とします。</p></section><div class="pt-8 mt-8 border-t border-slate-800 text-xs text-slate-500"><p>© 2026 <!-- -->Revirall Co., Ltd.<!-- --> All rights reserved.</p></div></div></div></div></main><section aria-label="運営者情報" class="bg-black border-t border-slate-900"><div class="max-w-[1400px] mx-auto px-6 lg:px-12 py-10"><h2 class="font-mono text-xs text-brand-500 tracking-widest mb-4">// 運営者情報</h2><address class="not-italic text-sm text-slate-400 leading-relaxed">株式会社リバイラル<!-- -->（<!-- -->TECHSTARS STUDIO<!-- -->）<br/>〒171-0022 東京都豊島区南池袋一丁目3番9号2F<br/>TEL:<!-- --> <a href="tel:0368214341" class="hover:text-brand-500 underline underline-offset-4">03-6821-4341</a> / <!-- -->Email:<!-- --> <a href="mailto:support@techstars.studio" class="hover:text-brand-500 underline underline-offset-4">support@techstars.studio</a></address></div></section><footer class="bg-black text-white pt-28 lg:pt-44 pb-12 relative overflow-x-hidden"><div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-brand-500/60 via-brand-500/20 to-transparent"></div><div class="absolute inset-0 cyber-grid opacity-30 pointer-events-none"></div><div class="max-w-[1600px] mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12 mb-16"><div class="anim-hidden anim-up "><div class="flex items-center gap-3 mb-4"><img src="/logo.png" alt="" aria-hidden="true" width="40" height="40" class="h-10 w-auto"/><span class="flex items-baseline gap-1"><span class="font-black text-white text-base tracking-tight">TECHSTARS</span><span class="font-mono text-brand-500 text-xs tracking-widest">STUDIO</span></span></div><p class="text-xs text-slate-400 max-w-xs leading-relaxed mb-5">7日間<!-- -->でプロへ。AIと作る、動くシステム3つ。<!-- -->株式会社リバイラル<!-- -->が運営するAI開発スクールです。</p><address class="not-italic text-[11px] text-slate-500 leading-relaxed">株式会社リバイラル<br/>〒171-0022 東京都豊島区南池袋一丁目3番9号2F<br/><a href="tel:0368214341" class="hover:text-brand-500 transition-colors">03-6821-4341</a> / <a href="mailto:support@techstars.studio" class="hover:text-brand-500 transition-colors">support@techstars.studio</a></address></div><nav aria-label="フッターナビゲーション" class="flex flex-wrap gap-8 md:gap-12 font-mono text-xs anim-hidden anim-up "><div class="flex flex-col gap-2"><h2 class="text-slate-500 font-bold pb-2">プログラム</h2><a href="/" class="text-left py-2 hover:text-brand-500 transition-colors">トップ</a><a href="/pricing/" class="text-left py-2 hover:text-brand-500 transition-colors">料金プラン</a><a href="/faq/" class="text-left py-2 hover:text-brand-500 transition-colors">よくある質問</a></div><div class="flex flex-col gap-2"><h2 class="text-slate-500 font-bold pb-2">受講生</h2><a href="https://techstars-lms.netlify.app/" target="_blank" rel="noopener noreferrer" class="py-2 text-brand-500 hover:text-brand-400 transition-colors">受講生専用ページ</a></div><div class="flex flex-col gap-2"><h2 class="text-slate-500 font-bold pb-2">法的情報</h2><a href="/privacy/" class="text-left py-2 hover:text-brand-500 transition-colors">プライバシーポリシー</a><a href="/terms/" class="text-left py-2 hover:text-brand-500 transition-colors">利用規約</a><a href="/tokushoho/" class="text-left py-2 hover:text-brand-500 transition-colors">特定商取引法に基づく表記</a></div></nav></div><div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 anim-hidden anim-up "><p class="font-mono text-[10px] text-slate-600">COPYRIGHT © <!-- -->2026<!-- --> <!-- -->REVIRALL CO., LTD.<!-- --> ALL RIGHTS RESERVED.<span class="ml-2">最終更新 <time dateTime="2026-08-17">2026-08-17</time></span></p><p class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full" aria-hidden="true"></span><span class="font-mono text-[10px] text-slate-500">受付中</span></p></div></div></footer></div></div>
+  </body>
+</html>

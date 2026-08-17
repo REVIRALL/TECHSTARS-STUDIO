@@ -1,11 +1,13 @@
 {
-  "name": "techstars-ai",
+  "name": "techstars-studio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "assets": "node scripts/gen-assets.mjs",
+    "build": "npm run assets && vite build && vite build --ssr entry-server.tsx --outDir dist-ssr --logLevel warn && node scripts/prerender.mjs",
+    "seo": "node scripts/seo-audit.mjs",
     "preview": "vite preview",
     "img": "node scripts/optimize-images.mjs"
   },
@@ -19,7 +21,11 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.20",
+    "node-html-parser": "^7.0.1",
+    "postcss": "^8.4.49",
     "sharp": "^0.35.3",
+    "tailwindcss": "^3.4.17",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

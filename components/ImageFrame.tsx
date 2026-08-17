@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ImageIcon, Sparkles, Monitor, Smartphone } from 'lucide-react';
 import { getSlot, variantFor, Device } from '../content/imageSlots';
 import { PromptModal } from './PromptModal';
+import { hasImage } from '../content/generatedImages';
 
 /**
  * ImageFrame — 「画像に差し替える枠」
@@ -43,11 +44,16 @@ interface ImageFrameProps {
   hideChip?: boolean;
 }
 
+/**
+ * 初期値は必ず 'desktop'。
+ * サーバー（プリレンダリング）とクライアントの初回描画を一致させるためで、
+ * ここで window を見てしまうとモバイルでハイドレーション不一致になる。
+ * 実際の出し分けは <picture> の media が担うので、この値は
+ * プレースホルダーの寸法表示とアスペクト比の指定にしか効かない。
+ */
 function useDevice(): Device {
   const query = '(max-width: 767px)';
-  const [device, setDevice] = useState<Device>(() =>
-    typeof window !== 'undefined' && window.matchMedia(query).matches ? 'mobile' : 'desktop'
-  );
+  const [device, setDevice] = useState<Device>('desktop');
   useEffect(() => {
     const mq = window.matchMedia(query);
     const handler = () => setDevice(mq.matches ? 'mobile' : 'desktop');
@@ -78,23 +84,23 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
 }) => {
   const def = getSlot(slot);
   const device = useDevice();
-  const [state, setState] = useState<'probing' | 'ready' | 'missing'>('probing');
+  /**
+   * 以前は new Image() で存在確認してから <img> を出していた。
+   * その方式には決定的な欠点が3つあった:
+   *   1. HTMLに <img> が現れないので、ブラウザのプリロードスキャナが
+   *      画像を先読みできない。ヒーロー画像＝LCP要素がJS実行後まで開始しない
+   *   2. 同じ理由で、クローラーは画像の存在も alt も認識できない
+   *   3. 全スロットで「確認用」と「表示用」の2回リクエストが飛ぶ
+   *
+   * いまは content/generatedImages.ts（ビルド時に public/img を走査した一覧）を
+   * 見て、最初から正しい方を描く。実行時の探り当ては一切しない。
+   * onError は保険（配信事故でファイルが欠けた場合の受け皿）として残す。
+   */
+  const [failed, setFailed] = useState(false);
   const [openPrompt, setOpenPrompt] = useState(false);
 
   const active = def ? variantFor(def, device) : undefined;
-
-  useEffect(() => {
-    if (!active) return;
-    let cancelled = false;
-    setState('probing');
-    const probe = new Image();
-    probe.onload = () => !cancelled && setState('ready');
-    probe.onerror = () => !cancelled && setState('missing');
-    probe.src = active.src;
-    return () => {
-      cancelled = true;
-    };
-  }, [active?.src]);
+  const missing = failed || (!!def && !hasImage(def.desktop.src));
 
   if (!def || !active) {
     // スロット定義漏れ。本番で黙って消えるより気づける方がよい
@@ -112,10 +118,10 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
 
   return (
     <div className={`${wrapperBase} ${className}`} style={wrapperStyle}>
-      {/* --- 生成済み: 実画像 --- */}
-      {state === 'ready' && (
+      {/* --- 実画像。まず描いて、404 のときだけ下のプレースホルダーへ落ちる --- */}
+      {!missing && (
         <picture>
-          {def.mobile && <source media="(max-width: 767px)" srcSet={def.mobile.src} />}
+          {def.mobile && <source media="(max-width: 767px)" srcSet={def.mobile.src} type="image/webp" />}
           <img
             src={def.desktop.src}
             alt={def.decorative ? '' : def.alt}
@@ -124,19 +130,21 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
             height={active.height}
             loading={priority ? 'eager' : 'lazy'}
             decoding={priority ? 'sync' : 'async'}
-            // @ts-expect-error fetchPriority は React 19 で有効だが型定義が追いついていない場合がある
-            fetchpriority={priority ? 'high' : undefined}
+            fetchPriority={priority ? 'high' : undefined}
+            onError={() => setFailed(true)}
+            ref={(el) => {
+              // キャッシュ済みの404はマウント時点で確定している。
+              // onError を待たずに切り替えて、壊れた画像アイコンの一瞬を消す
+              if (el?.complete && el.naturalWidth === 0) setFailed(true);
+            }}
             className={`absolute inset-0 w-full h-full object-cover ${imgClassName}`}
             style={imgStyle}
           />
         </picture>
       )}
 
-      {/* --- 判定中: 無音のスケルトン（チラつき防止） --- */}
-      {state === 'probing' && <div className="absolute inset-0 bg-[#07080c]" />}
-
       {/* --- 未生成: プロンプト入りプレースホルダー --- */}
-      {state === 'missing' &&
+      {missing &&
         (fill ? (
           <>
             <div

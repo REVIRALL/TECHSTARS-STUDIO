@@ -3,6 +3,7 @@ import { SectionId } from '../types';
 import { CheckCircle, Terminal } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
 import { Icon } from './Icon';
+import { COURSE, ORG } from '../content/site';
 
 /**
  * AI診断フォームは react-markdown と @google/genai を引き連れてくる。
@@ -169,24 +170,33 @@ export const Contact: React.FC = () => {
               </p>
             </div>
 
-            {/* Contact Info - Terminal Style */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 font-mono text-sm">
-                <span className="text-brand-500">$</span>
-                <span className="text-slate-500">mission</span>
-                <span className="text-white">BECOME_A_STAR</span>
-              </div>
-              <div className="flex items-center gap-3 font-mono text-sm">
-                <span className="text-brand-500">$</span>
-                <span className="text-slate-500">contact</span>
-                <span className="text-white">support@techstars.studio</span>
-              </div>
-              <div className="flex items-center gap-3 font-mono text-sm">
-                <span className="text-brand-500">$</span>
+            {/* 連絡先。ターミナル風の見た目は残したまま、実際に発信できるリンクにする */}
+            <address className="not-italic space-y-3">
+              <p className="flex items-center gap-3 font-mono text-sm">
+                <span className="text-brand-500" aria-hidden="true">$</span>
+                <span className="text-slate-500">mail</span>
+                <a href={`mailto:${ORG.email}`} className="text-white hover:text-brand-400 underline underline-offset-4 decoration-slate-700">
+                  {ORG.email}
+                </a>
+              </p>
+              <p className="flex items-center gap-3 font-mono text-sm">
+                <span className="text-brand-500" aria-hidden="true">$</span>
+                <span className="text-slate-500">tel</span>
+                <a href={ORG.telUri} className="text-white hover:text-brand-400 underline underline-offset-4 decoration-slate-700">
+                  {ORG.tel}
+                </a>
+              </p>
+              <p className="flex items-center gap-3 font-mono text-sm">
+                <span className="text-brand-500" aria-hidden="true">$</span>
+                <span className="text-slate-500">org</span>
+                <span className="text-white">{ORG.legalName}</span>
+              </p>
+              <p className="flex items-center gap-3 font-mono text-sm">
+                <span className="text-brand-500" aria-hidden="true">$</span>
                 <span className="text-slate-500">status</span>
-                <span className="text-green-400 animate-pulse">LAUNCHING_NOW</span>
-              </div>
-            </div>
+                <span className="text-green-400">受付中 / {COURSE.mode}</span>
+              </p>
+            </address>
           </div>
 
           <div className={`anim-hidden anim-right ${isVisible ? 'anim-visible delay-6' : ''}`}>

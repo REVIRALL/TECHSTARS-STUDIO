@@ -31,7 +31,12 @@ export default defineConfig(({ mode }) => {
       plugins: [react()],
       define: {
         'process.env.API_KEY': JSON.stringify(inlineKey),
-        'process.env.GEMINI_API_KEY': JSON.stringify(inlineKey)
+        'process.env.GEMINI_API_KEY': JSON.stringify(inlineKey),
+        // 更新日はビルド時に確定させる。閲覧時刻を使うと「最終更新＝今日」に
+        // なってしまい、更新日として無意味になる（かつハイドレーションが割れる）
+        __BUILD_DATE__: JSON.stringify(
+          process.env.BUILD_DATE ?? new Date().toISOString()
+        ),
       },
       resolve: {
         alias: {

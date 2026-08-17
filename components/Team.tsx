@@ -1,25 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SectionId, TeamMember } from '../types';
+import { SectionId } from '../types';
 import { Code, Briefcase, Rocket, Users } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
 import { Icon } from './Icon';
+import { INSTRUCTORS } from '../content/site';
 
-const members: TeamMember[] = [
-  {
-    id: 1,
-    name: '坂本 純一',
-    role: '代表 / メイン講師',
-    bio: '2社経営の代表取締役。創業80期を迎える老舗企業を率いながら、AI駆動開発の最前線で実践中。',
-    image: '/sakamoto.jpg',
-  },
-  {
-    id: 2,
-    name: '沼倉 隆平',
-    role: 'AIスペシャリスト',
-    bio: 'AI×開発のスペシャリスト。1000万円クラスの案件を1ヶ月で20本受注した超実践派。',
-    image: '/numakura.jpg',
-  },
-];
+/**
+ * 講師の情報は content/site.ts が正本。
+ * 画面表示と JSON-LD の Person ノードが同じ値を見るので、
+ * 「構造化データにだけ古い肩書きが残る」という事故が起きない。
+ */
+const members = INSTRUCTORS.map((m, i) => ({
+  ...m,
+  id: i + 1,
+  // npm run assets が media/ の原寸から起こした 800px 幅の配信用ファイル
+  webp: m.image.replace(/\.jpg$/, '.webp'),
+}));
 
 const outcomes = [
   {
@@ -167,7 +163,7 @@ export const Team: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
               {members.map((member, index) => (
-                <div
+                <article
                   key={member.id}
                   className={`group relative glass-card min-h-[360px] sm:min-h-[400px] md:min-h-[480px] lg:min-h-[520px] p-6 flex flex-col justify-end overflow-hidden holographic anim-hidden anim-scale ${
                     isVisible ? `anim-visible delay-${index + 2}` : ''
@@ -175,12 +171,18 @@ export const Team: React.FC = () => {
                 >
                   <div className="absolute inset-4">
                     <div className="hex-profile w-full h-full overflow-hidden">
-                      <img
-                        src={member.image}
-                        alt={`${member.name}の写真`}
-                        loading="lazy"
-                        className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-                      />
+                      <picture>
+                        <source srcSet={member.webp} type="image/webp" />
+                        <img
+                          src={member.image}
+                          alt={`${member.name}（${member.role}）`}
+                          width={800}
+                          height={1000}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                        />
+                      </picture>
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                   </div>
@@ -197,7 +199,7 @@ export const Team: React.FC = () => {
                       {member.bio}
                     </p>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>

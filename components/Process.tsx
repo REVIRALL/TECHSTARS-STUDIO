@@ -94,12 +94,14 @@ export const Process: React.FC = () => {
                 {/* Content — 状態はドットと文字の明度だけで示す。囲みも縦線も置かない */}
                 <div className="flex-1 pb-7 md:pb-8">
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2">
-                    <h4 className={`font-mono text-[11px] tracking-[0.2em] ${item.active ? 'text-brand-500' : 'text-slate-600 group-hover:text-brand-400'} transition-colors`}>
+                    {/* 見出しは「DAY 01」ではなく内容側（IGNITE等）に付ける。
+                        h2 → h3 と階層が繋がり、日付ラベルは補助情報のまま残る */}
+                    <p className={`font-mono text-[11px] tracking-[0.2em] ${item.active ? 'text-brand-500' : 'text-slate-600 group-hover:text-brand-400'} transition-colors`}>
                       {item.step}
-                    </h4>
-                    <p className={`text-2xl md:text-3xl lg:text-[2.5rem] font-black tracking-[-0.03em] ${item.active ? 'text-white' : 'text-slate-500 group-hover:text-white'} transition-colors duration-300`}>
-                      {item.title}
                     </p>
+                    <h3 className={`text-2xl md:text-3xl lg:text-[2.5rem] font-black tracking-[-0.03em] ${item.active ? 'text-white' : 'text-slate-500 group-hover:text-white'} transition-colors duration-300`}>
+                      {item.title}
+                    </h3>
                     <span className={`text-[11px] ${item.active ? 'text-slate-400' : 'text-slate-600'}`}>
                       {item.time}
                     </span>

@@ -1,6 +1,42 @@
-# TechStars AI - Robots.txt
+# TECHSTARS STUDIO — https://techstars.studio
+# 生成: scripts/prerender.mjs（手で編集しない）
+
 User-agent: *
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
-# Sitemap (sitemap.xml は未作成。生成したらこの行を有効化する)
-# Sitemap: https://techstars.studio/sitemap.xml
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://techstars.studio/sitemap.xml

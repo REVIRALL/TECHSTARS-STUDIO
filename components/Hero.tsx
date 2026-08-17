@@ -2,6 +2,7 @@ import React from 'react';
 import { SectionId } from '../types';
 import { ArrowRight } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { COURSE, ORG } from '../content/site';
 
 /**
  * ヒーロー。
@@ -47,16 +48,19 @@ export const Hero: React.FC = () => {
 
       {/* ===== 本文 ===== */}
       <div className="relative z-20 w-full max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 pt-32 pb-10 sm:pb-14">
-        {/* 見出し上のひと言。罫線1本だけで区切る */}
-        <div className="flex items-center gap-4 mb-7 sm:mb-9 opacity-0 animate-hero-badge">
-          <span className="h-px w-8 sm:w-14 bg-brand-500" />
-          <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.32em] text-brand-400">
-            AI ENGINEER BOOTCAMP
-          </span>
-        </div>
-
-        {/* 主役 */}
+        {/*
+          h1 は「7日間で / プロへ。」の絵として成立させたまま、
+          サービスの正体（AI開発スクール / ブランド名）を同じ見出しの中に入れている。
+          目立たない小さな一行だが、検索エンジンにも生成AIにも
+          「これは何のページか」がこの1タグだけで伝わる状態にするため。
+        */}
         <h1 className="opacity-0 animate-hero-title mb-8 sm:mb-10">
+          <span className="flex items-center gap-4 mb-7 sm:mb-9">
+            <span className="h-px w-8 sm:w-14 bg-brand-500 shrink-0" aria-hidden="true" />
+            <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.28em] text-brand-400">
+              AI開発スクール TECHSTARS STUDIO
+            </span>
+          </span>
           <span className="block text-[15vw] sm:text-[12.5vw] lg:text-[10.5vw] xl:text-[9.5vw] leading-[0.82] font-black tracking-[-0.045em] text-white/95">
             7日間で
           </span>
@@ -72,6 +76,14 @@ export const Hero: React.FC = () => {
             <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
             7日後、動くシステムが3つ、手元に残る。
+          </p>
+          {/*
+            要約の一行。検索結果のスニペットにも、生成AIの引用にもここが使われる。
+            事実（期間・形式・価格・運営）を1文に畳んで平文で置いておく。
+          */}
+          <p className="mt-4 text-[13px] sm:text-sm leading-relaxed text-slate-400">
+            {COURSE.mode}・マンツーマン指導の{COURSE.durationLabel}プログラム。受講料は
+            {COURSE.price.toLocaleString('ja-JP')}円（{COURSE.priceNote}）、運営は{ORG.legalName}です。
           </p>
         </div>
 
@@ -98,7 +110,9 @@ export const Hero: React.FC = () => {
             <div
               key={s.label}
               className={[
-                'group py-5 sm:py-7 lg:py-8 border-white/10',
+                // dt→dd の順で書き、表示だけ反転させる。
+                // 「数字が先、ラベルが後」の見た目は保ちつつ、マークアップとしては正しくする
+                'group flex flex-col-reverse py-5 sm:py-7 lg:py-8 border-white/10',
                 // 左端のセルだけ左パディングを外して見出しと縦を揃える
                 i % 2 === 0 ? 'pr-4 lg:pr-8' : 'pl-4 pr-4 lg:pl-8 lg:pr-8',
                 i === 0 ? '' : 'lg:pl-8',
@@ -109,13 +123,13 @@ export const Hero: React.FC = () => {
                 i === 3 ? 'lg:border-r-0' : '',
               ].join(' ')}
             >
+              <dt className="text-[13px] sm:text-sm text-slate-300">{s.label}</dt>
               <dd className="flex items-baseline gap-1.5 mb-1.5">
                 <span className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.04em] text-white tabular-nums transition-colors duration-300 group-hover:text-brand-400">
                   {s.value}
                 </span>
                 {s.unit && <span className="text-base sm:text-lg font-bold text-slate-400">{s.unit}</span>}
               </dd>
-              <dt className="text-[13px] sm:text-sm text-slate-300">{s.label}</dt>
             </div>
           ))}
         </dl>

@@ -21,3 +21,6 @@ node_modules
 *.sw?
 
 # dist は意図的にコミットしている（下記 README 参照）。ignore しない
+
+# プリレンダリング用のSSRバンドル。中間生成物なので配信もコミットもしない
+dist-ssr

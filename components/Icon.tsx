@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { getSlot } from '../content/imageSlots';
+import { hasImage } from '../content/generatedImages';
 
 /**
  * Icon — 線アイコンを、実際にレンダリングされた立体オブジェクトの画像に差し替える。
@@ -24,38 +25,18 @@ interface IconProps {
   className?: string;
 }
 
-/** 同じ画像を複数箇所で使うので、存在判定はモジュール単位で共有する */
-const probeCache = new Map<string, Promise<boolean>>();
-
-function probe(src: string): Promise<boolean> {
-  let p = probeCache.get(src);
-  if (!p) {
-    p = new Promise<boolean>((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(true);
-      img.onerror = () => resolve(false);
-      img.src = src;
-    });
-    probeCache.set(src, p);
-  }
-  return p;
-}
-
+/**
+ * 存在判定はビルド時の一覧（content/generatedImages.ts）で行う。
+ *
+ * 以前は new Image() で毎回読みに行っていたため、未生成の
+ * icon.legacy / icon.ai / icon.client / icon.community について
+ * ページを開くたびに 404 が4本飛んでいた。しかも判定が非同期なので、
+ * 生成済みのアイコンも一度 lucide で描いてから差し替わる二度手間だった。
+ */
 export const Icon: React.FC<IconProps> = ({ slot, fallback: Fallback, size = 48, className = '' }) => {
   const def = getSlot(slot);
   const src = def?.desktop.src;
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    if (!src) return;
-    let cancelled = false;
-    probe(src).then((ok) => {
-      if (!cancelled) setReady(ok);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [src]);
+  const ready = !!src && hasImage(src);
 
   if (ready && src) {
     return (
