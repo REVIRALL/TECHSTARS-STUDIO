@@ -14,6 +14,7 @@ import {
   BUILD_DATE,
   COURSE,
   FAQS,
+  HOME_FAQ_COUNT,
   INSTRUCTORS,
   OGP,
   ORG,
@@ -143,12 +144,21 @@ function courseNode() {
   };
 }
 
-function faqNode() {
+/**
+ * FAQPage。
+ *
+ * `count` は「そのページに実際に表示されている問数」でなければならない。
+ * 構造化データに書いてあるのに本文に無いQ&Aは、Googleの構造化データ
+ * ガイドライン違反（ページに表示されていないコンテンツのマークアップ）であり、
+ * 手動対策の対象になりうる。トップは HOME_FAQ_COUNT 件しか出していないので、
+ * トップのグラフもその件数に揃える。
+ */
+function faqNode(pageUrl: string, count: number) {
   return {
     '@type': 'FAQPage',
-    '@id': `${ORIGIN}/faq/#faq`,
+    '@id': `${ORIGIN}${pageUrl}#faq`,
     inLanguage: 'ja',
-    mainEntity: FAQS.map((f) => ({
+    mainEntity: FAQS.slice(0, count).map((f) => ({
       '@type': 'Question',
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a },
@@ -191,7 +201,9 @@ export function graphFor(route: RouteMeta) {
   const nodes: object[] = [organizationNode(), websiteNode(), webPageNode(route), ...personNodes()];
 
   if (route.key === 'home' || route.key === 'pricing') nodes.push(courseNode());
-  if (route.key === 'home' || route.key === 'faq') nodes.push(faqNode());
+  // トップは抜粋（HOME_FAQ_COUNT件）、/faq/ は全問を表示している
+  if (route.key === 'home') nodes.push(faqNode('/', HOME_FAQ_COUNT));
+  if (route.key === 'faq') nodes.push(faqNode('/faq/', FAQS.length));
   if (route.key !== 'home' && route.key !== 'notfound') nodes.push(breadcrumbNode(route));
 
   return { '@context': 'https://schema.org', '@graph': nodes };
@@ -222,7 +234,6 @@ export function headFor(route: RouteMeta, assetTags = ''): string {
       ? `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">`
       : `<meta name="robots" content="noindex, follow">`,
     `<meta name="author" content="${esc(ORG.legalName)}">`,
-    `<meta name="publisher" content="${esc(ORG.legalName)}">`,
     `<meta name="theme-color" content="#000000">`,
     `<meta name="color-scheme" content="dark">`,
     `<meta name="format-detection" content="telephone=no">`,

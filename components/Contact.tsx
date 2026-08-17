@@ -229,6 +229,34 @@ export const Contact: React.FC = () => {
                   ) : (
                     <ValidatorSkeleton />
                   )}
+
+                  {/*
+                    AI診断は GEMINI_API_KEY があるビルドでしか応答しない。
+                    本番にはこの環境変数が設定されていないため、ここまで来た
+                    見込み客の導線がこのフォーム1本だと行き止まりになる。
+                    常に成立する連絡手段を必ず1つ並べておく。
+                  */}
+                  <div className="mt-6 pt-6 border-t border-slate-800">
+                    <p className="text-xs text-slate-500 mb-3">直接相談したい方はこちら</p>
+                    <div className="flex flex-wrap gap-3">
+                      <a
+                        href={`mailto:${ORG.email}?subject=${encodeURIComponent(
+                          `【${COURSE.shortName}】受講について問い合わせ`
+                        )}&body=${encodeURIComponent(
+                          'ご記入ください：\n\n・お名前：\n・ご希望の受講開始時期：\n・現在のご経験（未経験 / 独学中 / 実務あり）：\n・ご質問：\n'
+                        )}`}
+                        className="inline-flex items-center gap-2 px-5 py-3 bg-brand-500 text-black font-bold text-sm hover:bg-white transition-colors"
+                      >
+                        メールで問い合わせる
+                      </a>
+                      <a
+                        href={ORG.telUri}
+                        className="inline-flex items-center gap-2 px-5 py-3 border border-slate-700 text-slate-300 font-mono text-sm hover:border-brand-500 hover:text-brand-500 transition-colors"
+                      >
+                        {ORG.tel}
+                      </a>
+                    </div>
+                  </div>
                 </div>
              </div>
           </div>

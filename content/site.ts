@@ -159,6 +159,14 @@ export const FAQS: Faq[] = [
   },
 ];
 
+/**
+ * トップページに抜粋表示するFAQの件数。
+ * 表示側（components/Faq.tsx）と FAQPage 構造化データ（content/seo.ts）が
+ * 同じ定数を見る。ここがずれると「本文に無いQ&Aをマークアップしている」
+ * という構造化データガイドライン違反になる。
+ */
+export const HOME_FAQ_COUNT = 6;
+
 /* ────────────────────────────── ページ定義 ────────────────────────────── */
 
 export type RouteKey = 'home' | 'pricing' | 'faq' | 'privacy' | 'terms' | 'tokushoho' | 'notfound';

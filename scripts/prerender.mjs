@@ -100,14 +100,17 @@ const AI_BOTS = [
   'CCBot',
 ];
 
+/**
+ * robots.txt のグループは継承しない。User-agent ごとに独立したルール集合なので、
+ * `User-agent: *` に書いた Disallow は GPTBot には一切効かない。
+ * 全グループに同じ本文を出す。
+ */
+const RULES = `Allow: /\n# 画像生成プロンプトの作業台。ユーザー向けの情報ではない\nDisallow: /*?prompts=\n`;
+
 const robots =
   `# ${ORG.brand} — ${ORIGIN}\n` +
   `# 生成: scripts/prerender.mjs（手で編集しない）\n\n` +
-  `User-agent: *\n` +
-  `Allow: /\n` +
-  `# 画像生成プロンプトの作業台。ユーザー向けの情報ではない\n` +
-  `Disallow: /*?prompts=\n\n` +
-  AI_BOTS.map((b) => `User-agent: ${b}\nAllow: /\n`).join('\n') +
+  ['*', ...AI_BOTS].map((b) => `User-agent: ${b}\n${RULES}`).join('\n') +
   `\nSitemap: ${ORIGIN}/sitemap.xml\n`;
 fs.writeFileSync(path.join(DIST, 'robots.txt'), robots);
 console.log(`  ✓ robots.txt             AIクローラー ${AI_BOTS.length} 種を明示`);

@@ -84,15 +84,17 @@ export const Portfolio: React.FC = () => {
             <div className="space-y-4 lg:space-y-5">
               {items.map((item, index) => {
                 const isActive = item.id === activeId;
+                // 右のプレビューを切り替えるだけの装飾的な連動。
+                // 以前は div に tabIndex={0} を付けていたため、操作できない要素が
+                // キーボードのタブ順に4つ挟まっていた。ホバー時のみの補助に留める。
+                // 情報は各カード内に全部書いてあるのでキーボード利用者も困らない
                 return (
-                  <div
+                  <article
                     key={item.id}
-                    className={`group relative bg-black border transition-all duration-300 cursor-pointer overflow-hidden anim-hidden anim-left ${
+                    className={`group relative bg-black border transition-all duration-300 overflow-hidden anim-hidden anim-left ${
                       isActive ? 'border-brand-500/60' : 'border-slate-800 hover:border-brand-500/40'
                     } ${isVisible ? `anim-visible delay-${index + 1}` : ''}`}
                     onMouseEnter={() => setActiveId(item.id)}
-                    onFocus={() => setActiveId(item.id)}
-                    tabIndex={0}
                   >
                     {/* ターミナルヘッダー */}
                     <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800">
@@ -162,7 +164,7 @@ export const Portfolio: React.FC = () => {
                     </div>
 
                     <div className="absolute inset-0 bg-gradient-to-r from-brand-500/0 via-brand-500/5 to-brand-500/0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                  </div>
+                  </article>
                 );
               })}
             </div>

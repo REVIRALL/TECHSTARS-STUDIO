@@ -8,35 +8,57 @@ Disallow: /*?prompts=
 
 User-agent: GPTBot
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: OAI-SearchBot
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: ChatGPT-User
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: ClaudeBot
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: Claude-Web
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: anthropic-ai
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: PerplexityBot
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: Google-Extended
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: Applebot-Extended
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: Bingbot
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 User-agent: CCBot
 Allow: /
+# 画像生成プロンプトの作業台。ユーザー向けの情報ではない
+Disallow: /*?prompts=
 
 Sitemap: https://techstars.studio/sitemap.xml

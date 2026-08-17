@@ -2,8 +2,8 @@
 
 **https://techstars.studio** で配信しているサービスLPの正本リポジトリ。
 
-React 19 + Vite 6 + Tailwind (CDN) の SPA。プライバシーポリシー・利用規約・特定商取引法に基づく表記は
-別ページではなく `components/FixedPageOverlay.tsx` 1ファイル内のオーバーレイとして実装されている。
+React 19 + Vite 6 + Tailwind（ビルド時生成）。
+ビルド時に全ページを静的HTML化（プリレンダリング）し、ブラウザではハイドレーションする。
 
 出自は **Google AI Studio** で生成したアプリ:
 https://ai.studio/apps/drive/1Hi4U8HCcWireqNVPK5cuKO347wdVhpl5
@@ -14,29 +14,94 @@ https://ai.studio/apps/drive/1Hi4U8HCcWireqNVPK5cuKO347wdVhpl5
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm run build    # dist/ を生成
+npm run build    # dist/ を生成（アセット生成 → SPAビルド → SSRビルド → プリレンダリング）
+npm run seo      # dist/ を採点する。100点でないなら何かを壊している
 ```
+
+`npm run build` は4段構えになっている。
+
+| 段 | 実体 | 役割 |
+|---|---|---|
+| 1 | `npm run assets` | ファビコン・OGP・講師写真・`content/generatedImages.ts` を生成 |
+| 2 | `vite build` | ブラウザ向けバンドルと `dist/index.html`（雛形） |
+| 3 | `vite build --ssr entry-server.tsx` | プリレンダリング用のSSRバンドル（`dist-ssr/`、配信しない） |
+| 4 | `node scripts/prerender.mjs` | 各ページの静的HTML + `sitemap.xml` / `robots.txt` / `llms.txt` |
+
+## ★ページ構成：オーバーレイと実URLの二本立て
+
+料金・FAQ・法務ページは **実URLを持つ単独ページ**として配信しつつ、
+トップからはこれまでどおりオーバーレイで開く。
+
+| URL | 内容 | トップからの挙動 |
+|---|---|---|
+| `/` | LP本体 | — |
+| `/pricing/` | 料金プラン | オーバーレイで開く |
+| `/faq/` | よくある質問（全9問） | オーバーレイで開く |
+| `/privacy/` | プライバシーポリシー | オーバーレイで開く |
+| `/terms/` | 利用規約 | オーバーレイで開く |
+| `/tokushoho/` | 特定商取引法に基づく表記 | オーバーレイで開く |
+
+- 本文は **`components/pages/PageContents.tsx`** で共有している（1箇所直せば両方に反映される）
+- リンクは常に本物の `<a href="/faq/">`（**`components/PageLink.tsx`**）。
+  トップ上でのみ `onClick` を横取りしてオーバーレイを開く。Cmd/Ctrl+クリックや中クリックは横取りしない
+- オーバーレイを開くと `history.pushState` でURLも切り替わる。共有・再読み込み・戻るが期待どおり動く
+
+**SPAのcatch-allリダイレクトは撤去した。** 以前は `/*  →  /index.html  200` により、
+存在しないURLがすべて「200でトップページの中身」を返していた（＝ソフト404 + 大量の重複コンテンツ）。
+いまは未知のURLは `404.html` が 404 ステータスで返る。
+
+## ★事実は `content/site.ts` が正本
+
+価格・期間・会社情報・講師・FAQ は **`content/site.ts` にしか書かれていない**。
+
+```
+content/site.ts  ──┬─→ 画面表示（PageContents / Hero / Footer / Faq …）
+                   ├─→ <head>（title / description / OGP）
+                   ├─→ JSON-LD 構造化データ
+                   └─→ sitemap.xml / llms.txt
+```
+
+**価格を変えるときは `content/site.ts` だけを直す。** 表示と構造化データが同じ値を見ているので、
+「本文は新価格なのに JSON-LD は旧価格」という状態が原理的に起きない。
+なお構造化データに書いてあって本文に無いものは Google のガイドライン違反になる。
+トップに抜粋表示するFAQの件数（`HOME_FAQ_COUNT`）と FAQPage の問数を同じ定数で縛っているのはそのため。
+
+`<head>` と JSON-LD の組み立ては **`content/seo.ts`**。`index.html` に直接メタタグを書かないこと
+（雛形の `<!--SEO_HEAD-->` に差し込まれるので、手書きすると title が2つになる）。
 
 ## ★画像は「フレーム先行」方式で運用している
 
 サイト内のビジュアルは、**画像が無くても成立するフレーム**として先に実装してある。
 画像を作って `public/img/` に置いた分だけ、順に本物の画像へ切り替わる。**コードの変更は不要**。
 
-- 枠の定義（サイズ・PC/SP・生成プロンプト・alt）の正本は **`content/imageSlots.ts`**（20スロット / 23カット）
+- 枠の定義（サイズ・PC/SP・生成プロンプト・alt）の正本は **`content/imageSlots.ts`**
 - 描画は **`components/ImageFrame.tsx`**
-  - `public/img/` にファイルがあれば `<picture>` で表示（PC / モバイルで別カットを出し分ける）
-  - 無ければ、**生成プロンプトを内蔵したプレースホルダー枠**を表示する
+  - 生成済みなら `<picture>` で表示（PC / モバイルで別カットを出し分ける）
+  - 未生成なら、**生成プロンプトを内蔵したプレースホルダー枠**を表示する
 - 画面上の枠の `PROMPT` ボタン、または **`?prompts=1`**（`Ctrl/Cmd + Shift + I`）の一覧コンソールから
   プロンプトをコピーできる。未生成カットの残数もそこで分かる
+
+### 生成済みかどうかの判定はビルド時に決まる
+
+`npm run assets` が `public/img/` を走査して **`content/generatedImages.ts`** を書き出す。
+表示側はこの一覧を見るので、実行時に画像を探りに行かない。
+
+以前は `new Image()` で毎回読みに行って404を受けてから切り替えていたため、
+(1) 画像がHTMLに現れずプリロードスキャナが効かない（ヒーロー＝LCP要素の取得がJS実行後まで遅れる）、
+(2) クローラーが画像とaltを認識できない、(3) 未生成スロットぶんの404が毎回飛ぶ、という3つの損があった。
+
+**画像を追加したら `npm run build`（先頭で `npm run assets` が走る）を必ず流すこと。**
+ファイルを置いただけでは一覧が更新されない。
 
 手順の詳細・書き出し設定・優先順位は **`docs/IMAGE_GENERATION.md`**。
 
 注意点:
 
-- **画像に文字を焼き込まない。** 見出し・本文はすべて HTML のまま（SEO・レスポンシブのため）。
-  プロンプト側にも「文字を入れるな」と明示してある
-- **講師2名の顔写真は実写のまま**（`public/sakamoto.jpg` / `public/numakura.jpg`）。実在の人物なので生成画像に差し替えない
-- `meta.ogp` を作ったときだけ、`index.html` の `og:image` / `twitter:image` を手で差し替える必要がある
+- **画像に文字を焼き込まない。** 見出し・本文はすべて HTML のまま（SEO・レスポンシブのため）
+- **講師2名の顔写真は実写のまま。** 原寸は配信対象外の **`media/`** に置いてあり、
+  `npm run assets` が800px幅の webp / jpg に落として `public/img/` へ出す。生成画像に差し替えない
+- `og:image` は `public/img/meta-ogp-desktop.webp` から `public/img/ogp.jpg`（1200x630）を自動生成している。
+  WebPを読めない配信先がまだあるので、配信の正はJPEG
 
 ## デプロイ
 
@@ -45,6 +110,8 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 `dist/` を**あえてコミットしている**。ビルド環境を用意せずそのまま配信物を差し替えられるようにするため
 （このリポジトリを Netlify に接続していない期間でも、`dist/` をアップロードすれば反映できる）。
 ソースを変えたら **`npm run build` を流して `dist/` も一緒にコミットする**こと。片方だけ更新すると乖離する。
+
+`dist-ssr/` は中間生成物なので `.gitignore` 済み。配信もコミットもしない。
 
 ## ★ビルド時の注意：GEMINI_API_KEY の有無でバンドルが変わる
 
@@ -58,6 +125,9 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 - 手元に `.env.local` を置いたままビルドすると本番とバンドルの中身が変わる（バグではない）
 
 このリポジトリの `dist/` は **`.env.local` 無し（＝本番と同条件）でビルドしたもの**。
+
+**つまり本番のAI診断フォームは応答しない。** 見込み客の導線がそこで途切れないよう、
+`components/Contact.tsx` のフォーム直下にメールと電話の導線を必ず出している。
 
 ### ★鍵をバンドルに焼き込ませないガード
 
@@ -84,30 +154,47 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 動かすなら鍵をサーバ側に置く必要がある（Netlify Functions で Gemini を叩くプロキシを作り、
 フロントはそのエンドポイントを呼ぶ）。`ALLOW_INLINE_API_KEY=1` は検証用の逃げ道であって解決策ではない。
 
+## SEO / AIO
+
+`npm run seo` が `dist/` を実際に読んで100点満点で採点する（`scripts/seo-audit.mjs`）。
+ソースではなく**配信されるHTML**を見るので、JSでしか出ないコンテンツは容赦なく0点になる。
+
+観点は インデックス基盤22 / メタデータ14 / 構造化データ22 / セマンティクス・A11y14 /
+パフォーマンス18 / AIO10。`SEO_STRICT=1 npm run seo` で満点未満なら異常終了する（CIに使える）。
+
+構造化データは `Organization` `WebSite` `WebPage` `Course`+`Offer` `FAQPage` `Person`
+`BreadcrumbList` を `@id` で相互参照した1つのグラフとして出力している。
+
+`llms.txt` は生成AI向けの平文サマリ。価格や連絡先を誤って要約されるのが一番まずいので、
+数字と固有名詞を明記している。`robots.txt` は AIクローラー11種を名指しで許可。
+
 ## 会社表記
 
 販売業者は **株式会社リバイラル**（法人番号 7013301056505 / 代表取締役 沼倉隆平）。
 2026-08-13 に 合同会社リバイラル から差し替えた。合同会社リバイラルとは**別法人**なので、
 社名だけでなく責任者・所在地も株式会社のものを記載している。
 
-該当箇所はすべて `components/FixedPageOverlay.tsx`:
+値の正本は **`content/site.ts` の `ORG`**（以前は `components/FixedPageOverlay.tsx` に直書きだった）。
 
 | 表示箇所 | 値 |
 |---|---|
-| プライバシー 問い合わせ窓口 | 株式会社リバイラル |
-| 利用規約 冒頭 | 「株式会社リバイラル」 |
 | 特商法 販売業者 | 株式会社リバイラル |
 | 特商法 運営統括責任者 | 沼倉 隆平 |
 | 特商法 所在地 | 〒171-0022 東京都豊島区南池袋一丁目3番9号2F |
 | 特商法 電話番号 | 03-6821-4341 |
 | 特商法 メールアドレス | support@techstars.studio |
-| コピーライト（3ページ） | © 2026 Revirall Co., Ltd. |
+| 特商法 販売価格 | 398,000円（税別） |
+| コピーライト | © 2026 Revirall Co., Ltd. |
 
 ## 未処理
 
-- **画像が1枚も入っていない。** `docs/IMAGE_GENERATION.md` の優先順位に沿って
-  `hero.backdrop` → `contact.cta` → `curriculum.*` の順に作れば、少ない枚数で見栄えが変わる
-- 特商法に **販売価格の記載が無い**。商材の価格が確定したら追加する
+- **未生成の画像が5枠ある**（`curriculum.04` / `icon.legacy` / `icon.ai` / `icon.client` / `icon.community`）。
+  `curriculum.04` はカリキュラム一覧の中で**プレースホルダー枠のまま本番に出ている**ので優先度が高い
+- **第三者の証跡がゼロ。** 受講生の声・実績・卒業生の成果物が一つも無い。
+  E-E-A-T でも成約率でも最大の欠落。`aggregateRating` を捏造するのは論外なので、実データを集めるしかない
+- **SNSアカウントが無い**（フッターのリンクは死んでいたので削除した）。
+  開設したら `content/site.ts` の `ORG.sameAs` に足す。エンティティの外部証明になる
+- `components/Process.tsx` が Day 5〜7 を「未達」表示にし、進捗を「4/7 DAYS」と出している。
+  カリキュラム紹介としては「まだ作りかけの講座」に読める。演出の意図を再確認したい
 - `components/Team.tsx` の坂本純一さんが「代表 / メイン講師」表記。特商法の運営統括責任者は沼倉隆平なので、
   読み手には食い違って見える（bio は「2社経営の代表取締役」＝ご本人の会社を指す）。表記の要否は要判断
-- `public/robots.txt` の Sitemap 行はコメントのまま。`sitemap.xml` は未作成

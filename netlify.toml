@@ -57,11 +57,10 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# HTMLは常に取り直す。プリレンダリング済みなので中身が変われば即反映したい
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+# HTML には Cache-Control を書かない。
+# Netlify の既定が `public, max-age=0, must-revalidate` で、これが正しい。
+# ここで `for = "/*.html"` と書いても、リクエストパスは /faq/ であって
+# /faq/index.html ではないため、下層ページには当たらない（書くと勘違いを生む）。
 
 # クローラー向けファイル。更新を待たせない
 [[headers]]

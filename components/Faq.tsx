@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { PageType } from '../types';
 import { PageLink } from './PageLink';
-import { FAQS } from '../content/site';
+import { FAQS, HOME_FAQ_COUNT } from '../content/site';
 
 /**
  * トップページのFAQ。
@@ -15,8 +15,6 @@ import { FAQS } from '../content/site';
  * <details> を使うので、JSが無くても開閉できる。
  * 初期状態で閉じていてもDOMには全文があり、クローラーは読める。
  */
-
-const HOME_FAQ_COUNT = 6;
 
 export const Faq: React.FC<{ onOpenPage?: (page: PageType) => void }> = ({ onOpenPage }) => {
   const sectionRef = useRef<HTMLElement>(null);
