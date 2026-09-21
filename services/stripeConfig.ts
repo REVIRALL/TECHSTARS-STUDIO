@@ -1,20 +1,24 @@
 /**
  * 決済プランの設定。
  *
- * ★このファイルに秘密鍵（sk_）を書かないこと。
- *   このリポジトリは public で、さらに dist/ をコミットしている。
- *   ここに置いてよいのは「公開されても問題ないもの」＝ Payment Link の URL と表示用の文言だけ。
+ * ★秘密鍵（sk_）を書かないこと。このリポジトリは public で dist/ もコミットしている。
  *
- * なぜ Payment Link なのか:
- *   Checkout Session をサーバで作る方式は sk_ が要るが、techstars.studio の Netlify に
- *   デプロイ権限が手元に無く Functions を足せない。Payment Link は URL だけで完結する。
+ * ★決済リンクをソースに直書きしない。
+ *   以前はここに `buy.stripe.com/test_...` を直書きしていたが、それでは
+ *   「本番ホストではボタンを塞ぐ」ゲートが意味をなさない。配信バンドルを grep すれば
+ *   URL が素で取り出せ、アドレスバーに貼れば決済画面に到達できるため（実測で確認済み）。
+ *   ボタンを隠すことと、経路を塞ぐことは別物だった。
  *
- * ★本番化の手順（テストのままでは決済が通らない）:
- *   1. Stripe の本審査を通す（現在 charges_enabled=false）
- *   2. live キーで `revirall-corp/05_銀行口座/stripe/register_techstars_plans.py` を流し直す
- *      （テストモードの商品は本番モードへ引き継がれない）
- *   3. live の Payment Link を作り、下の paymentLink を `buy.stripe.com/xxxx`（test_ なし）へ差し替える
- *   4. `npm run build` して dist/ も一緒にコミットする
+ *   そこでリンクはビルド時の環境変数から注入する。値を渡さなければ空文字になり、
+ *   空なら申し込み導線そのものを描画しない（fail-closed）。
+ *   ローカルで動作確認したいときだけ、gitignore 済みの `.env.local` に置く:
+ *
+ *     VITE_PAY_LINK_LMS_ONLY=https://buy.stripe.com/test_xxxx
+ *     VITE_PAY_LINK_TECHSTARS_7DAYS=https://buy.stripe.com/test_yyyy
+ *     VITE_PAY_LINK_TECHSTARS_BUSINESS=https://buy.stripe.com/test_zzzz
+ *
+ *   本番化するときは live の URL を Netlify の環境変数に設定してビルドする。
+ *   `npm run build` は dist に `test_` リンクが混ざっていたら失敗する（scripts/verify-dist.mjs）。
  */
 
 export interface Plan {
@@ -26,11 +30,14 @@ export interface Plan {
   /** 税の内訳表示用 */
   taxNote: string;
   features: string[];
-  /** Stripe Payment Link。test_ を含む間は本番ホストでボタンを塞ぐ。 */
+  /** Stripe Payment Link。ビルド時に注入され、未設定なら空文字。 */
   paymentLink: string;
   highlight?: boolean;
   note?: string;
 }
+
+const env = import.meta.env as Record<string, string | undefined>;
+const link = (key: string): string => (env[key] ?? '').trim();
 
 export const PLANS: Plan[] = [
   {
@@ -45,7 +52,7 @@ export const PLANS: Plan[] = [
       '講義動画の視聴',
       'マンツーマン講義は付きません',
     ],
-    paymentLink: 'https://buy.stripe.com/test_3cIcN446O4hN1cTbNh5os03',
+    paymentLink: link('VITE_PAY_LINK_LMS_ONLY'),
   },
   {
     code: 'techstars_7days',
@@ -62,7 +69,7 @@ export const PLANS: Plan[] = [
       'LMS の利用',
       '公式LINEでの質問サポート',
     ],
-    paymentLink: 'https://buy.stripe.com/test_eVq4gy0UCcOjf3JaJd5os01',
+    paymentLink: link('VITE_PAY_LINK_TECHSTARS_7DAYS'),
     highlight: true,
   },
   {
@@ -78,25 +85,36 @@ export const PLANS: Plan[] = [
       'プロジェクトマネジメントの代行',
       '当社案件のご紹介',
     ],
-    paymentLink: 'https://buy.stripe.com/test_aFa3cudHodSn1cT6sX5os02',
-    note: '報酬の配分など個別の条件があります。お申し込み前にご相談ください。',
+    paymentLink: link('VITE_PAY_LINK_TECHSTARS_BUSINESS'),
+    note: '報酬の配分など個別の条件を個別契約で定めます。お申し込み前に条件をご確認ください。',
   },
 ];
 
-/** Payment Link がテストモードのものか。1本でも test_ が混ざれば true。 */
-export const IS_TEST_MODE = PLANS.some((p) => p.paymentLink.includes('/test_'));
+/** リンクが Stripe のテストモードのものか。 */
+const isTestLink = (url: string): boolean => url.includes('/test_');
 
-const PRODUCTION_HOSTS = ['techstars.studio', 'www.techstars.studio'];
-
-export const isProductionHost = (): boolean =>
-  typeof window !== 'undefined' && PRODUCTION_HOSTS.includes(window.location.hostname);
-
-/**
- * ★ゲート。本番ホストにテストリンクが載った状態では決済ボタンを塞ぐ。
- * コメントで「本番前に差し替えること」と書くだけでは、差し替え忘れを防げないため。
- * テスト用リンクのまま公開すると、テストカードで「購入できた」ことになり入金がない。
+/** 申し込み導線を出してよいか。★判定は「安全側に倒す」。
+ *  - リンクが1本でも空なら出さない（未設定のまま公開する事故を防ぐ）
+ *  - テストリンクが混ざっていたら、開発ビルド以外では出さない
+ *    （以前はホスト名の allowlist で判定していたが、本番以外の全ホストで開いてしまう
+ *      fail-open な作りだった。ホスト名に安全を委ねない）
  */
-export const isCheckoutEnabled = (): boolean => !(IS_TEST_MODE && isProductionHost());
+export const isCheckoutEnabled = (): boolean => {
+  const links = PLANS.map((p) => p.paymentLink);
+  if (links.some((l) => l === '')) return false;
+  if (links.some(isTestLink)) return Boolean(import.meta.env.DEV);
+  return true;
+};
+
+/** 画面に「テスト環境です」と出すべきか。 */
+export const isTestMode = (): boolean => PLANS.some((p) => isTestLink(p.paymentLink));
+
+/** 決済導線が止まっている理由。画面に出して黙らせない。 */
+export const checkoutDisabledReason = (): string => {
+  if (PLANS.some((p) => p.paymentLink === '')) return 'unconfigured';
+  if (PLANS.some((p) => isTestLink(p.paymentLink))) return 'test-link-on-production';
+  return '';
+};
 
 export const formatYen = (amount: number): string => `¥${amount.toLocaleString('ja-JP')}`;
 

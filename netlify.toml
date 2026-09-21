@@ -5,38 +5,95 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# ─────────────────────────────────────────────────────────────
+# リダイレクト（上から評価される。順番に意味がある）
+# ─────────────────────────────────────────────────────────────
+
+# ★/assets/* は SPA フォールバックより先に 404 へ落とす。
+#   これを入れないと、存在しないハッシュ付きJS（古いindex.htmlを掴んだタブ、
+#   ロールバック直後など）に対して 200 + index.html が返り、
+#   しかも下の immutable が効いて **HTMLを1年間キャッシュ** する。
+#   nosniff によりそのHTMLはモジュールとして実行されず、画面は白。
+#   immutable なので再読み込みしても直らない。実測で再現を確認している。
+[[redirects]]
+  from = "/assets/*"
+  to = "/404.html"
+  status = 404
+
 # SPA Routing - fallback to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Security Headers
+# ─────────────────────────────────────────────────────────────
+# セキュリティヘッダ
+# ─────────────────────────────────────────────────────────────
+
 [[headers]]
   for = "/*"
   [headers.values]
+    # クリックジャッキング。CSP の frame-ancestors と二重にしている
+    # （frame-ancestors がある環境では XFO は無視されるが、古い環境向けに残す）
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
+
+    # ★X-XSS-Protection は 1 ではなく 0 にする。
+    #   Chrome/Edge の XSS Auditor は削除済みで、旧実装は「攻撃者が任意のインライン
+    #   スクリプトを選択的に無効化できる」副作用が知られている。
+    #   「セキュリティヘッダが4本ある」という見かけの安心を作るだけで効果がない。
+    X-XSS-Protection = "0"
+
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# Cache static assets
+    # Netlify の Force HTTPS でも付くが、リポジトリを読んで有効性が分かるよう明示する。
+    # preload は付けない（サブドメインを全部HTTPS化できる確証が取れるまでは解除が困難になる）。
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), midi=(), magnetometer=(), gyroscope=(), accelerometer=(), fullscreen=(self)"
+
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+
+    # ★CSP。cdn.tailwindcss.com と importmap(esm.sh) を撤去したので script-src は 'self' だけで足りる。
+    #   撤去前は第三者CDNが決済リンクを描くページでDOM全権を持っていた（href を書き換えられた）。
+    #   style に 'unsafe-inline' が残るのは、React の style={{...}} を4箇所使っているため
+    #   （components/Portfolio.tsx・components/Team.tsx）。script 側には一切付けていない。
+    #   connect-src の Google は services/geminiService.ts 用。本番は鍵未設定で現在は発火しない。
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; connect-src 'self' https://generativelanguage.googleapis.com; manifest-src 'self'; base-uri 'none'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+
+# ─────────────────────────────────────────────────────────────
+# キャッシュ
+# ─────────────────────────────────────────────────────────────
+
+# ハッシュ付きの生成物だけ長期キャッシュしてよい
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# SPA のシェル。Netlify の既定と同じだが、誰かが /* に Cache-Control を足したときに
+# 静かに反転しないよう明示しておく
 [[headers]]
-  for = "*.jpg"
+  for = "/index.html"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
-[[headers]]
-  for = "*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+# ★ハッシュの付かない公開資産（/logo.png /numakura.jpg /showcase.css など）に
+#   immutable を付けてはいけない。差し替えても既訪問者に1年間届かなくなる。
+#   以前あった "*.jpg" "*.png" "*.css" のブロックは、Netlify のパス指定が
+#   "/" 始まりでないとマッチしないため一度も発火していなかった（実測で確認）。
+#   綴りを「直す」と事故になるので、ブロックごと削除した。Netlify の既定
+#   （max-age=86400 + stale-while-revalidate）で十分。
 
+# ─────────────────────────────────────────────────────────────
+# 決済の戻り先はインデックスさせない
+# ─────────────────────────────────────────────────────────────
+
+# ★robots.txt で Disallow しないこと。クロールを止めると下の noindex が読まれず、
+#   URLだけがインデックスに残る（noindex と Disallow の併用は自爆）。
 [[headers]]
-  for = "*.css"
+  for = "/checkout/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"

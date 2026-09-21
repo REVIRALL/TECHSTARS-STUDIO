@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SectionId, PageType } from '../types';
 import { Check, ArrowUpRight, AlertTriangle, Lock } from 'lucide-react';
-import { PLANS, IS_TEST_MODE, isCheckoutEnabled, formatYen } from '../services/stripeConfig';
+import { PLANS, isCheckoutEnabled, isTestMode, formatYen } from '../services/stripeConfig';
 
 interface PricingProps {
   onOpenPage: (page: PageType) => void;
@@ -11,11 +11,14 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [checkoutEnabled, setCheckoutEnabled] = useState(true);
+  // ★既定は「塞いだ状態」。判定の既定を「通す」側に置くと、評価が走る前の一瞬や
+  //   評価が失敗したときにボタンが出てしまう。安全側に倒す。
+  const [checkoutEnabled, setCheckoutEnabled] = useState(false);
+  const [testMode, setTestMode] = useState(false);
 
   useEffect(() => {
-    // window を見るので mount 後に評価する（SSR/ビルド時に触らない）
     setCheckoutEnabled(isCheckoutEnabled());
+    setTestMode(isTestMode());
   }, []);
 
   useEffect(() => {
@@ -71,7 +74,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
             </div>
           </div>
         )}
-        {checkoutEnabled && IS_TEST_MODE && (
+        {checkoutEnabled && testMode && (
           <div className="mb-12 flex items-start gap-4 border border-brand-500/40 bg-brand-500/5 p-6">
             <AlertTriangle className="w-6 h-6 text-brand-400 shrink-0 mt-0.5" aria-hidden="true" />
             <div>

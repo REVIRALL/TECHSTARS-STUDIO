@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowUpRight, CheckCircle2, RotateCcw, Mail, CalendarClock, Laptop } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, RotateCcw, Mail, CalendarClock, Laptop, ShieldCheck } from 'lucide-react';
 import { PageType } from '../types';
-import { findPlan, formatYen, IS_TEST_MODE } from '../services/stripeConfig';
+import { findPlan, isTestMode } from '../services/stripeConfig';
 
 export type CheckoutOutcome = 'thanks' | 'cancel';
 
@@ -40,16 +40,39 @@ const Shell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
+/**
+ * ★この画面は決済を検証していない。検証できない。
+ *   セッションの照会には Stripe の秘密鍵が要り、それをブラウザに置くことはできないため、
+ *   サーバが無い構成では原理的に不可能。したがってこの画面は
+ *   「決済が成立した証明」ではなく「Stripe から戻ってきた案内」として書く。
+ *   URL は誰でも直接開けるので、金額を断定表示しない（偽の支払証明に使われる）。
+ *   決済の証明は Stripe が送る領収書メール1本に寄せる。
+ */
 export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenPage }) => {
   const [planCode, setPlanCode] = useState<string | null>(null);
+  const [reference, setReference] = useState<string | null>(null);
+  const [testMode, setTestMode] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setPlanCode(params.get('plan'));
+    const sid = params.get('session_id');
+    // 照合の手がかりとしてのみ表示する。存在確認はしていない（できない）。
+    setReference(sid && /^cs_[A-Za-z0-9_]{10,80}$/.test(sid) ? sid : null);
+    setTestMode(isTestMode());
     document.title =
       outcome === 'thanks'
-        ? 'お申し込みありがとうございます | TECHSTARS'
+        ? 'お手続きありがとうございます | TECHSTARS'
         : 'お申し込みを中断しました | TECHSTARS';
+    // SPA なのでパスごとの meta を静的に置けない。ここで noindex を差し込む。
+    // （配信側でも netlify.toml の X-Robots-Tag で二重に止めている）
+    const meta = document.createElement('meta');
+    meta.name = 'robots';
+    meta.content = 'noindex, nofollow';
+    document.head.appendChild(meta);
+    return () => {
+      document.head.removeChild(meta);
+    };
   }, [outcome]);
 
   const plan = findPlan(planCode);
@@ -134,37 +157,42 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
             aria-hidden="true"
           />
           <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter leading-[0.9]">
-            お申し込み
+            お手続き
             <br />
             ありがとうございます
           </h1>
         </div>
 
-        {IS_TEST_MODE && (
+        {testMode && (
           <p className="font-mono text-xs text-yellow-300 border border-yellow-500/40 bg-yellow-500/5 p-4 mb-10">
-            これはテスト環境での決済です。実際の請求は発生していません。
+            これはテスト環境です。実際の請求は発生していません。
           </p>
         )}
 
-        {plan && (
-          <div className="border border-brand-500/40 bg-gradient-to-b from-brand-500/10 to-transparent p-8 mb-12">
-            <span className="font-mono text-[10px] text-brand-500 tracking-widest block mb-3">
-              // ご購入内容
-            </span>
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-              <div>
-                <p className="text-2xl md:text-3xl font-black italic tracking-tighter">{plan.name}</p>
-                <p className="text-sm text-slate-400 mt-1">{plan.tagline}</p>
-              </div>
-              <div className="text-left sm:text-right">
-                <p className="text-3xl md:text-4xl font-black italic tracking-tighter text-brand-400">
-                  {formatYen(plan.amount)}
+        {/* ★決済の成否をこの画面で断定しない。証明は領収書メールに一本化する。 */}
+        <div className="border border-white/10 bg-white/[0.02] p-6 md:p-8 mb-12">
+          <div className="flex items-start gap-4">
+            <ShieldCheck className="w-6 h-6 text-brand-400 shrink-0 mt-0.5" aria-hidden="true" />
+            <div className="text-sm text-slate-300 leading-relaxed">
+              <p className="font-bold text-white mb-2">決済の証明は、Stripe から届く領収書メールです。</p>
+              <p className="text-slate-400">
+                この画面は決済後にご案内を表示しているもので、決済が成立したことを証明するものではありません。
+                領収書メールが届かない場合、決済は完了していない可能性があります。お手数ですが
+                support@techstars.studio までご連絡ください。
+              </p>
+              {plan && (
+                <p className="font-mono text-xs text-slate-500 mt-4">
+                  お手続きいただいたプラン（お客様が選択された表示）: {plan.name}
                 </p>
-                <p className="font-mono text-[10px] text-slate-500 mt-1">{plan.taxNote}</p>
-              </div>
+              )}
+              {reference && (
+                <p className="font-mono text-xs text-slate-500 mt-1 break-all">
+                  お問い合わせ番号: {reference}
+                </p>
+              )}
             </div>
           </div>
-        )}
+        </div>
 
         <span className="font-mono text-xs text-brand-500 tracking-widest block mb-6">// このあとの流れ</span>
         <div className="space-y-4 mb-12">

@@ -2,7 +2,7 @@
 
 **https://techstars.studio** で配信しているサービスLPの正本リポジトリ。
 
-React 19 + Vite 6 + Tailwind (CDN) の SPA。プライバシーポリシー・利用規約・特定商取引法に基づく表記は
+React 19 + Vite 6 + Tailwind（**ビルド時生成**。2026-09-21 に Play CDN から移行）の SPA。プライバシーポリシー・利用規約・特定商取引法に基づく表記は
 別ページではなく `components/FixedPageOverlay.tsx` 1ファイル内のオーバーレイとして実装されている。
 
 出自は **Google AI Studio** で生成したアプリ:
@@ -82,6 +82,34 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 | 特商法 メールアドレス | support@techstars.studio |
 | コピーライト（3ページ） | © 2026 Revirall Co., Ltd. |
 
+## セキュリティ方針（2026-09-21 の見直しで決めたこと）
+
+決済導線を付けたあと、4観点で監査して直した。**「警告を出す」で止めず、落ちる仕組みにしてある。**
+
+| 直したこと | なぜ |
+|---|---|
+| `cdn.tailwindcss.com` を撤去しビルド時 Tailwind へ | バージョン無指定・SRI 無しの第三者スクリプトが、決済リンクを描くページで DOM 全権を持っていた。CDN 側が侵害されれば `href` を書き換えて売上の宛先を変えられる。**CSP では止まらない**（`<a>` の遷移先を縛るディレクティブが無い）ので、撤去以外に手が無い |
+| importmap(esm.sh) を削除 | 本番では未発火だったが、`^19.2.3` を実行時解決する装填された罠。lockfile が効かず SRI も付けられない |
+| CSP を追加（`script-src 'self'`） | 上の撤去で `'unsafe-inline'` を script から外せた。style だけ残るのは React の `style={{}}` が4箇所あるため |
+| `/assets/*` を SPA フォールバックより前に 404 へ | 存在しないハッシュ付きJSに **200+HTML が immutable で1年間キャッシュ**され、白画面が再読み込みでも直らなくなる。実測で再現した |
+| `*.jpg` `*.png` `*.css` のヘッダブロックを削除 | Netlify は `/` 始まりでないとマッチせず、一度も発火していなかった。**綴りを「直す」と**ハッシュ無しの資産に immutable が付いて事故になる |
+| `X-XSS-Protection` を `0` に | 現行ブラウザで無効。「ヘッダが4本ある」という見かけの安心を作るだけだった |
+| 決済リンクをソースから外し環境変数へ | ★**ゲートがボタンを隠すだけだった。** 配信バンドルを grep すれば URL が素で取り出せ、貼れば決済画面に行けた（実測）。空なら導線ごと描画しない fail-closed に変更 |
+| ホスト名 allowlist を廃止 | `techstars.studio` 以外の**全ホストで開く** fail-open だった。`.netlify.app` やプレビューで素通りする |
+| `/checkout/thanks` から金額の断定を削除 | 誰でも URL を直打ちでき、自社ドメインの「偽の支払証明」を作れた。決済の証明は Stripe の領収書メールに一本化した |
+
+### 検査（どちらも自己検査つき）
+
+```bash
+npm run build            # vite build + verify-dist。違反があればビルドが落ちる
+npm run verify:dist -- --self-test    # 検査が本当に発火するか
+STRIPE_SECRET_KEY=sk_... npm run verify:stripe   # LPのPLANSとStripeの現物を突合
+npm run verify:stripe -- --self-test  # 対応を壊して赤くなるか
+```
+
+`verify-dist` は dist に `sk_`/`whsec_`/`AIza`/`buy.stripe.com/test_`/`cdn.tailwindcss.com`/`esm.sh`
+が1件でもあれば **exit 1**。テストリンクを入れてビルドして実際に落ちることを確認済み。
+
 ## 決済導線（2026-09-21 追加）
 
 料金プランのセクション（`components/Pricing.tsx`）から Stripe の **Payment Link** へ直接飛ばしている。
@@ -89,27 +117,38 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 
 | | |
 |---|---|
-| 方式 | Stripe Payment Link（URL だけで完結） |
+| 方式 | Stripe Payment Link。URLは **ソースに直書きせず** ビルド時に `VITE_PAY_LINK_*` から注入する |
 | なぜ Checkout Session でないか | サーバに `sk_` を置く必要があるが、techstars.studio の Netlify にデプロイ権限が手元に無く Functions を足せない |
 | 戻り先 | `/checkout/thanks`（`components/CheckoutResult.tsx`）。SPA フォールバックで index.html が返る |
 | プラン | LMSのみ ¥217,800 ／ 7日間コース ¥298,000 ／ ビジネスプラン ¥880,000（すべて税込の請求額） |
 
-### ★今は本番で決済できない
+### ★今は本番で決済できない（意図的に塞いである）
 
-`stripeConfig.ts` の `paymentLink` は**すべてテストモードの URL**（`buy.stripe.com/test_...`）。
-Stripe アカウント自体も `charges_enabled=false` でまだ本審査を通っていない。
+`VITE_PAY_LINK_*` を設定せずにビルドしているので、**配信物に決済URLが1本も入っていない**。
+`isCheckoutEnabled()` がリンクの空を見て false を返し、申し込みボタンは「準備中」で理由を表示する。
+DOM 上に Stripe へのリンクが存在しないので、隠したボタンを迂回するという経路自体が無い。
 
-そのため **`isCheckoutEnabled()` が本番ホスト（techstars.studio）でのみボタンを塞ぐ**ようにしてある。
-「本番前に差し替えること」とコメントに書くだけでは差し替え忘れを防げないため、実際に動くゲートにした。
-テストリンクのまま公開してしまうと、テストカードで「購入できた」ことになり入金が無い、という事故になる。
+Stripe アカウントも `charges_enabled=false` でまだ本審査を通っていない。
+テスト用の Payment Link は Stripe 側で `active=false` にしてある。
+
+ローカルで動作確認するときだけ、gitignore 済みの `.env.local` に置いて `npm run dev`:
+
+```
+VITE_PAY_LINK_LMS_ONLY=https://buy.stripe.com/test_xxxx
+VITE_PAY_LINK_TECHSTARS_7DAYS=https://buy.stripe.com/test_yyyy
+VITE_PAY_LINK_TECHSTARS_BUSINESS=https://buy.stripe.com/test_zzzz
+```
+
+`.env.local` を置いたまま `npm run build` すると **verify-dist がビルドを落とす**（テストリンクの検出）。
 
 本番化の手順:
 
 1. Stripe の本審査を通す
 2. live キーで `revirall-corp/05_銀行口座/stripe/register_techstars_plans.py` を流し直す
    （**テストモードの商品は本番モードへ引き継がれない**）
-3. live の Payment Link を作り、`stripeConfig.ts` の `paymentLink` を `test_` 無しの URL へ差し替える
+3. live の Payment Link を作り、Netlify の環境変数に `VITE_PAY_LINK_*` を設定
 4. `npm run build` して `dist/` も一緒にコミットする
+5. `STRIPE_SECRET_KEY=sk_live_... npm run verify:stripe` で金額と戻り先の対応を突合する
 
 ### `/checkout/cancel` は Stripe からは呼ばれない
 

@@ -26,7 +26,10 @@ export default defineConfig(({ mode }) => {
     return {
       server: {
         port: 3000,
-        host: '0.0.0.0',
+        // ★0.0.0.0 にしない。同一LANの第三者が開発サーバに到達でき、
+        //   .env.local を読んだ未minifyのバンドル（鍵を含みうる）が配られる。
+        //   実機確認が要るときだけ `npm run dev -- --host` を明示する。
+        host: '127.0.0.1',
       },
       plugins: [react()],
       define: {

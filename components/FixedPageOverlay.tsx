@@ -59,9 +59,16 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                         7日間で、次世代エンジニアへ。<br/>
                         <span className="bg-brand-200 px-1">AIを相棒にした開発スキル</span>を習得します。
                      </p>
+                     {/* ★「確実に」は効果の断定で、景表法5条1号（優良誤認）と特商法12条の
+                         典型的な引っかかり方をする。不実証広告規制で根拠資料を15日以内に
+                         出せなければ違反とみなされるため、断定を外して打消し表示を添える。 */}
                      <p className="text-slate-600 leading-relaxed mb-8 font-medium">
-                        完全オンライン完結のプログラム。経験豊富な講師陣によるマンツーマンサポートで、
-                        未経験からでも確実にスキルを身につけることができます。
+                        完全オンライン完結のプログラムです。講師のマンツーマンサポートのもと、
+                        未経験の方もDAY1の環境構築から段階的に進められる構成にしています。
+                     </p>
+                     <p className="text-xs text-slate-500 leading-relaxed mb-8">
+                        ※ 習得の度合いには個人差があります。スキルの習得、案件の受注、収入の獲得その他の
+                        成果を保証するものではありません。
                      </p>
 
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
@@ -194,7 +201,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                  <section>
                     <h3 className="text-white font-bold mb-4 text-lg">2. 個人情報の収集方法</h3>
                     <p className="opacity-80">
-                       当社は、ユーザーが利用登録をする際に氏名、生年月日、住所、電話番号、メールアドレス、銀行口座番号、クレジットカード番号などの個人情報をお尋ねすることがあります。また、ユーザーと提携先などとの間でなされたユーザーの個人情報を含む取引記録や決済に関する情報を、当社の提携先（情報提供元、広告主、広告配信先などを含みます。以下、「提携先」といいます。）などから収集することがあります。
+                       当社は、お申し込み、お問い合わせ、講座の提供に際して、氏名（カナを含む）、住所、電話番号、メールアドレスなどの個人情報をお尋ねすることがあります。クレジットカード番号は決済代行会社（Stripe）が直接取得し、当社は取得も保有もいたしません。銀行振込をご利用の場合、振込名義および振込元口座に関する情報を金融機関を通じて受領します。また、ユーザーと提携先などとの間でなされたユーザーの個人情報を含む取引記録や決済に関する情報を、当社の提携先（情報提供元、広告主、広告配信先などを含みます。以下、「提携先」といいます。）などから収集することがあります。
                     </p>
                  </section>
 
@@ -231,12 +238,58 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                     </ul>
                  </section>
 
+                 {/* ★2026-09-21 追加。決済導線（Stripe）を付けたのに、委託・越境移転・
+                     安全管理措置・開示等の請求手続の記載が一つも無かった。
+                     旧文面は「第三者に提供することはありません」と断言しており、
+                     Stripe へ氏名・住所・電話番号が渡る実態と矛盾していた。 */}
                  <section>
-                    <h3 className="text-white font-bold mb-4 text-lg">6. お問い合わせ窓口</h3>
+                    <h3 className="text-white font-bold mb-4 text-lg">6. 個人情報の取扱いの委託</h3>
+                    <p className="opacity-80 mb-4">
+                       当社は、利用目的の達成に必要な範囲内で、個人情報の取扱いを外部に委託することがあります。委託先に対しては、必要かつ適切な監督を行います。主な委託先と委託する業務は次のとおりです。
+                    </p>
+                    <ul className="opacity-80 list-disc list-inside space-y-2">
+                       <li>Stripe, Inc. および Stripe Payments Europe, Ltd.：決済処理および決済に関する記録の保管。提供する情報は、氏名（カナを含む）、メールアドレス、住所、電話番号、購入プラン、決済金額です。</li>
+                    </ul>
+                    <p className="opacity-80 mt-4">
+                       クレジットカード番号は、決済代行会社が直接取得・保管します。当社がカード番号を取得または保有することはありません。
+                    </p>
+                 </section>
+
+                 <section>
+                    <h3 className="text-white font-bold mb-4 text-lg">7. 外国にある第三者への提供</h3>
+                    <p className="opacity-80 mb-4">
+                       当社は、決済処理のため、外国にある第三者に個人データを提供します。
+                    </p>
+                    <ul className="opacity-80 list-disc list-inside space-y-2">
+                       <li>提供先：Stripe, Inc.（アメリカ合衆国）、Stripe Payments Europe, Ltd.（アイルランド）</li>
+                       <li>提供する個人データ：前条に記載のとおり</li>
+                       <li>当該外国の個人情報保護制度：アメリカ合衆国には日本の個人情報保護法に相当する包括的な法律はなく、分野別および州別の法律により規律されています。アイルランドはEU一般データ保護規則（GDPR）の適用を受けます。</li>
+                       <li>提供先が講じる措置：提供先はGDPRおよびPCI DSSに準拠した安全管理措置を講じています。</li>
+                    </ul>
+                 </section>
+
+                 <section>
+                    <h3 className="text-white font-bold mb-4 text-lg">8. 安全管理措置</h3>
                     <p className="opacity-80">
-                       本ポリシーに関するお問い合わせは、下記の窓口までお願いいたします。<br/><br/>
+                       当社は、個人データの安全管理のため、取扱規程の整備、従業者への教育、アクセス権限の限定、端末およびシステムへのアクセス制御、外部からの不正アクセス防止措置を講じています。講じた措置の詳細は、下記窓口へのお問い合わせにより回答いたします。
+                    </p>
+                 </section>
+
+                 <section>
+                    <h3 className="text-white font-bold mb-4 text-lg">9. 開示等のご請求</h3>
+                    <p className="opacity-80">
+                       ユーザーは、保有個人データの利用目的の通知、開示、内容の訂正・追加・削除、利用の停止・消去、第三者への提供の停止、第三者提供記録の開示を請求することができます。下記窓口までメールでご連絡ください。ご本人であることを確認のうえ、原則として受領日から2週間以内に回答いたします。手数料はいただきません。
+                    </p>
+                 </section>
+
+                 <section>
+                    <h3 className="text-white font-bold mb-4 text-lg">10. 事業者の名称等・お問い合わせ窓口</h3>
+                    <p className="opacity-80">
+                       本ポリシーに関するお問い合わせ、および前条の請求は、下記の窓口までお願いいたします。<br/><br/>
                        <span className="text-white">株式会社リバイラル</span><br/>
-                       Eメールアドレス：<span className="text-brand-500">support@techstars.studio</span>
+                       代表者：代表取締役 沼倉 隆平<br/>
+                       所在地：〒171-0022 東京都豊島区南池袋一丁目3番9号2F<br/>
+                       Eメールアドレス：<a href="mailto:support@techstars.studio" className="text-brand-500 underline underline-offset-4 hover:text-brand-400">support@techstars.studio</a>
                     </p>
                  </section>
 
@@ -296,9 +349,21 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                  </section>
 
                  <section>
+                    {/* ★2026-09-21 修正。「以下のいずれかの事由」と書きながら列挙が無く、
+                        条文が途中で切れていた。事由を示さず「当社が判断した場合は停止できる」と
+                        読める条項は、消費者契約法10条で無効と判断され得る。 */}
                     <h3 className="text-white font-bold mb-4 text-lg">第5条（サービス提供の停止）</h3>
+                    <p className="opacity-80 mb-4">
+                       当社は、次の各号のいずれかに該当する場合、ユーザーへの事前の通知なく本サービスの全部または一部の提供を停止または中断することができるものとします。
+                    </p>
+                    <ul className="list-disc list-inside space-y-2 opacity-80 mb-4">
+                       <li>本サービスに係るシステムの保守点検または更新を行う場合</li>
+                       <li>地震、落雷、火災、停電、天災等の不可抗力により提供が困難となった場合</li>
+                       <li>コンピュータまたは通信回線が事故により停止した場合</li>
+                       <li>その他、当社が停止または中断を必要と合理的に判断した場合</li>
+                    </ul>
                     <p className="opacity-80">
-                       当社は、以下のいずれかの事由があると判断した場合、ユーザーに事前に通知することなくサービスの全部または一部の提供を停止または中断することができるものとします。
+                       当社は、前項に基づく停止または中断によりユーザーに生じた損害について、当社の責めに帰すべき事由がある場合を除き、責任を負いません。停止または中断により本役務の提供が相当期間にわたり不能となった場合、ユーザーは契約を解除し、未提供部分に相当する代金の返還を請求することができます。
                     </p>
                  </section>
 
@@ -354,7 +419,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">メールアドレス</dt>
-                    <dd className="md:col-span-2 text-white">support@techstars.studio</dd>
+                    <dd className="md:col-span-2 text-white"><a href="mailto:support@techstars.studio" className="text-brand-500 underline underline-offset-4 hover:text-brand-400">support@techstars.studio</a></dd>
                  </div>
 
                  {/*
@@ -413,9 +478,10 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">クーリングオフ</dt>
                     <dd className="md:col-span-2 opacity-80">
-                       電話またはオンライン面談でのご説明を経てお申し込みいただいた場合、
-                       特定商取引法上の電話勧誘販売に該当し、法定書面を受領された日から起算して8日間は、
-                       書面または電磁的記録によりお申し込みの撤回または契約の解除ができます。
+                       <span className="text-white">本ウェブサイト上でお客様ご自身がお申し込み・決済された場合（通信販売）</span><br/>
+                       特定商取引法上のクーリングオフ制度の適用はありません。解除の取扱いは下記「返品・キャンセルについて」に定めるとおりです。<br/><br/>
+                       <span className="text-white">当社からの電話またはオンライン面談でのご説明を経てお申し込みいただいた場合（電話勧誘販売）</span><br/>
+                       法定書面を受領された日から起算して8日間は、書面または電磁的記録によりお申し込みの撤回または契約の解除ができます。
                        この場合、当社は損害賠償または違約金を請求せず、受領済みの代金を速やかに返還します。
                     </dd>
                  </div>
@@ -425,7 +491,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                     <dd className="md:col-span-2 opacity-80">
                        本ウェブサイトから直接お申し込みいただいた場合（通信販売）は、
                        役務およびデジタルコンテンツの性質上、提供開始後の返品・返金はお受けしておりません。
-                       提供開始前のキャンセルは support@techstars.studio までご連絡ください。
+                       提供開始前のキャンセルは <a href="mailto:support@techstars.studio?subject=%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB%E3%81%AE%E3%81%94%E9%80%A3%E7%B5%A1" className="text-brand-500 underline underline-offset-4 hover:text-brand-400">support@techstars.studio</a> までご連絡ください。
                        上記クーリングオフの対象となる場合は、そちらの取り扱いを優先します。
                        当社の提供内容に欠陥がある場合はこの限りではありません。
                     </dd>
