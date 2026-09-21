@@ -1,3 +1,13 @@
 # Netlify SPA Redirects
+#
+# ★_redirects は netlify.toml のリダイレクトより先に処理される。
+#   そのため /assets/* の 404 ルールを netlify.toml 側だけに書いても効かなかった
+#   （本番で実測: 存在しないJSが 200 + index.html で返り続けた）。ここに書く。
+#
+# 存在しないハッシュ付きアセットに index.html を 200 で返すと、
+# /assets/* の immutable が効いて HTML が1年キャッシュされ、
+# nosniff によりモジュールとして実行されず白画面のまま復旧できなくなる。
+/assets/*    /404.html   404
+
 # Handle client-side routing - all paths serve index.html
 /*    /index.html   200
