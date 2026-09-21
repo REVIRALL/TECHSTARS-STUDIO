@@ -10,11 +10,11 @@
 # ─────────────────────────────────────────────────────────────
 
 # ★/assets/* は SPA フォールバックより先に 404 へ落とす。
-#   これを入れないと、存在しないハッシュ付きJS（古いindex.htmlを掴んだタブ、
+#   これを入れないと、存在しないハッシュ付きJS（古い index.html を掴んだタブ、
 #   ロールバック直後など）に対して 200 + index.html が返り、
 #   しかも下の immutable が効いて **HTMLを1年間キャッシュ** する。
 #   nosniff によりそのHTMLはモジュールとして実行されず、画面は白。
-#   immutable なので再読み込みしても直らない。実測で再現を確認している。
+#   immutable なので再読み込みしても直らない。本番で再現を確認している。
 [[redirects]]
   from = "/assets/*"
   to = "/404.html"
@@ -57,20 +57,41 @@
 
     # ★CSP。cdn.tailwindcss.com と importmap(esm.sh) を撤去したので script-src は 'self' だけで足りる。
     #   撤去前は第三者CDNが決済リンクを描くページでDOM全権を持っていた（href を書き換えられた）。
-    #   style に 'unsafe-inline' が残るのは、React の style={{...}} を4箇所使っているため
-    #   （components/Portfolio.tsx・components/Team.tsx）。script 側には一切付けていない。
+    #   style に 'unsafe-inline' が残るのは React の style={{...}} を数箇所使っているため。
+    #   script 側には一切付けていない。
     #   connect-src の Google は services/geminiService.ts 用。本番は鍵未設定で現在は発火しない。
     Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; connect-src 'self' https://generativelanguage.googleapis.com; manifest-src 'self'; base-uri 'none'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
 
-# ─────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────
 # キャッシュ
-# ─────────────────────────────────────────────────────────────
+#
+# immutable（1年間、再検証なし）を使ってよいのは、
+# ファイル名にハッシュが入っていて「中身が変わればURLも変わる」ものだけ。
+# Vite が吐く /assets/* がそれに当たる。
+#
+# 逆に /showcase.css や /img/* はパスが固定なので、immutable にすると
+# 中身を差し替えても既訪問者には1年間古いファイルが配られ続ける。
+# 実際にこの設定のまま showcase.css を更新してしまっていた。
+# ─────────────────────────────────────────────────────────────────────
 
-# ハッシュ付きの生成物だけ長期キャッシュしてよい
+# ハッシュ付き。URLが変わるので永久キャッシュしてよい
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# パス固定のCSS。差し替えたら即座に反映させたいので毎回再検証する
+# （変わっていなければ 304 が返るだけなので、実質ほぼ無料）
+[[headers]]
+  for = "/showcase.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# パス固定の画像。1日は使い回し、その後は裏で取り直しつつ表示は止めない
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
 
 # SPA のシェル。Netlify の既定と同じだが、誰かが /* に Cache-Control を足したときに
 # 静かに反転しないよう明示しておく
@@ -79,12 +100,10 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# ★ハッシュの付かない公開資産（/logo.png /numakura.jpg /showcase.css など）に
-#   immutable を付けてはいけない。差し替えても既訪問者に1年間届かなくなる。
-#   以前あった "*.jpg" "*.png" "*.css" のブロックは、Netlify のパス指定が
-#   "/" 始まりでないとマッチしないため一度も発火していなかった（実測で確認）。
-#   綴りを「直す」と事故になるので、ブロックごと削除した。Netlify の既定
-#   （max-age=86400 + stale-while-revalidate）で十分。
+# ★"*.jpg" "*.png" のようなパターンは Netlify では "/" 始まりでないとマッチせず、
+#   一度も発火していなかった（本番のレスポンスヘッダで確認済み）。
+#   綴りを「直す」とハッシュの付かない資産に長期キャッシュが効いてしまうので、
+#   ブロックごと置かない。必要なものは上の /img/* と /showcase.css で明示している。
 
 # ─────────────────────────────────────────────────────────────
 # 決済の戻り先はインデックスさせない

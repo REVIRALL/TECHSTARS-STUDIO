@@ -3,7 +3,8 @@ export interface PortfolioItem {
   name: string;
   category: string;
   description: string;
-  image: string;
+  /** content/imageSlots.ts の ImageSlot.id */
+  slot: string;
 }
 
 export interface TeamMember {

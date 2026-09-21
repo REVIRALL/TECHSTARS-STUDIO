@@ -23,7 +23,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                <span className="font-mono text-[10px] font-bold">ID</span>
             </div>
             <div>
-               <span className="block font-black italic text-lg tracking-tighter uppercase leading-none">{page.replace('_', ' ')}</span>
+               <span className="block font-black text-lg tracking-tighter leading-none">{page.replace('_', ' ')}</span>
                <span className="block font-mono text-[10px] text-brand-500 tracking-widest">:: 詳細情報 ::</span>
             </div>
          </div>
@@ -41,7 +41,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
         {page === PageType.Company && (
           <div className="animate-slide-up">
             <div className="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-black pb-8 mb-12 gap-4">
-               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.8] font-black italic tracking-tighter">
+               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.8] font-black jp-display">
                   料金<br/>プラン
                </h1>
                <div className="text-left md:text-right font-mono text-xs">
@@ -74,12 +74,12 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
                         <div className="bg-white p-6 border border-slate-200 shadow-sm hover:border-brand-500 transition-colors">
                            <BarChart3 className="w-8 h-8 text-brand-500 mb-4" />
-                           <h4 className="font-black italic text-lg mb-2">7日間集中</h4>
+                           <h4 className="font-black text-lg mb-2">7日間集中</h4>
                            <p className="text-sm text-slate-500">短期集中でスキル習得</p>
                         </div>
                         <div className="bg-white p-6 border border-slate-200 shadow-sm hover:border-brand-500 transition-colors">
                            <Database className="w-8 h-8 text-brand-500 mb-4" />
-                           <h4 className="font-black italic text-lg mb-2">実践スキル</h4>
+                           <h4 className="font-black text-lg mb-2">実践スキル</h4>
                            <p className="text-sm text-slate-500">実務で即使えるスキル</p>
                         </div>
                      </div>
@@ -152,7 +152,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                <div className="inline-block bg-black text-white px-3 py-1 font-mono text-xs font-bold mb-4">
                   FAQ
                </div>
-               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1] font-black italic tracking-tighter mb-8">
+               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1] font-black jp-display mb-8">
                 よくある<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-blue-600 pb-1 inline-block">質問</span>
               </h1>
               <p className="text-xl font-bold max-w-2xl text-slate-700">
@@ -174,7 +174,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                   { q: "申し込み後の流れを教えてください", a: "決済が完了するとStripeから領収書メールが届きます。その後2営業日以内に、当社より契約書面のお渡しと初日の日程調整についてご連絡いたします。" }
                ].map((item, i) => (
                   <div key={i} className="group relative bg-white border border-slate-200 p-4 md:p-8 hover:border-black transition-all">
-                     <h3 className="text-base md:text-xl font-black italic mb-4 group-hover:text-brand-600 transition-colors">{item.q}</h3>
+                     <h3 className="text-base md:text-xl font-black mb-4 group-hover:text-brand-600 transition-colors">{item.q}</h3>
                      <p className="text-sm md:text-base text-slate-600 leading-relaxed">{item.a}</p>
                   </div>
                ))}
@@ -187,7 +187,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
            <div className="animate-slide-up max-w-3xl">
               <div className="mb-12 flex items-center gap-4 text-brand-500">
                  <Shield className="w-8 h-8 md:w-12 md:h-12" />
-                 <h1 className="text-2xl md:text-4xl font-black italic tracking-tighter text-white uppercase">プライバシーポリシー</h1>
+                 <h1 className="text-2xl md:text-4xl font-black jp-display text-white">プライバシーポリシー</h1>
               </div>
 
               <div className="space-y-10 text-sm leading-relaxed">
@@ -305,7 +305,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
            <div className="animate-slide-up max-w-3xl">
               <div className="mb-12 flex items-center gap-4 text-brand-500">
                  <FileText className="w-8 h-8 md:w-12 md:h-12" />
-                 <h1 className="text-2xl md:text-4xl font-black italic tracking-tighter text-white uppercase">利用規約</h1>
+                 <h1 className="text-2xl md:text-4xl font-black jp-display text-white">利用規約</h1>
               </div>
 
               <div className="space-y-10 text-sm leading-relaxed">
@@ -393,7 +393,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
            <div className="animate-slide-up max-w-3xl">
               <div className="mb-12 flex items-center gap-4 text-brand-500">
                  <FileText className="w-8 h-8 md:w-12 md:h-12" />
-                 <h1 className="text-2xl md:text-4xl font-black italic tracking-tighter text-white uppercase">特定商取引法に基づく表記</h1>
+                 <h1 className="text-2xl md:text-4xl font-black jp-display text-white">特定商取引法に基づく表記</h1>
               </div>
 
               <div className="space-y-6 text-sm leading-relaxed">

@@ -78,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
 
             <a
               href={`#${SectionId.Pricing}`}
-              className="px-5 py-2 bg-white text-black font-sans font-black italic tracking-tighter text-sm hover:bg-brand-500 transition-colors duration-300 whitespace-nowrap"
+              className="px-5 py-2 bg-white text-black font-sans font-black jp-display text-sm hover:bg-brand-500 transition-colors duration-300 whitespace-nowrap"
             >
               お申し込み
             </a>
@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             <a
               key={link.label}
               href={link.href}
-              className="text-2xl sm:text-3xl md:text-4xl font-black italic tracking-tighter text-white py-3 sm:py-4 border-b border-slate-800 hover:text-brand-500 transition-colors flex items-center gap-3 sm:gap-4"
+              className="text-2xl sm:text-3xl md:text-4xl font-black jp-display text-white py-3 sm:py-4 border-b border-slate-800 hover:text-brand-500 transition-colors flex items-center gap-3 sm:gap-4"
               onClick={() => setIsMenuOpen(false)}
             >
               <span className="text-xs font-mono text-brand-500">0{idx + 1}</span>
@@ -120,19 +120,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           ))}
           <button
             onClick={() => { setIsMenuOpen(false); onOpenPage(PageType.Company); }}
-            className="text-left text-xl sm:text-2xl md:text-3xl font-black italic tracking-tighter text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
+            className="text-left text-xl sm:text-2xl md:text-3xl font-black jp-display text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
           >
              プログラム詳細
           </button>
            <button
             onClick={() => { setIsMenuOpen(false); onOpenPage(PageType.FAQ); }}
-            className="text-left text-xl sm:text-2xl md:text-3xl font-black italic tracking-tighter text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
+            className="text-left text-xl sm:text-2xl md:text-3xl font-black jp-display text-slate-400 py-3 sm:py-4 border-b border-slate-800 hover:text-white"
           >
              よくある質問
           </button>
           <a
             href={`#${SectionId.Pricing}`}
-            className="mt-8 inline-flex items-center justify-center gap-2 px-6 py-4 bg-white text-black font-sans font-black italic tracking-tighter text-base hover:bg-brand-500 transition-colors"
+            className="mt-8 inline-flex items-center justify-center gap-2 px-6 py-4 bg-white text-black font-sans font-black jp-display text-base hover:bg-brand-500 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
             お申し込み <ArrowUpRight className="w-4 h-4" />

@@ -5,3 +5,5 @@ dist/** -text
 *.jpg binary
 *.jpeg binary
 *.mp4 binary
+*.webp binary
+*.avif binary

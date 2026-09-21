@@ -1,7 +1,10 @@
-import './styles.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+// Vite にバンドルさせてハッシュ付きURLで配信する。
+// /showcase.css のような固定パスだと、キャッシュを壊す手段が無くなる
+import './styles.css';
+import './showcase.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
+import { ImageFrame } from './ImageFrame';
 
 export const Process: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,28 +21,59 @@ export const Process: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} id={SectionId.Process} className="relative bg-black text-white pt-28 lg:pt-44 pb-28 lg:pb-44 overflow-x-hidden">
+    <section ref={sectionRef} id={SectionId.Process} className="relative bg-black text-white pt-28 lg:pt-44 pb-28 lg:pb-44 overflow-hidden">
       {/* 上部の水平ネオンライン（セクション区切り） */}
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-brand-500/60 via-brand-500/20 to-transparent"></div>
+      <div className="absolute top-0 left-0 w-full section-rule"></div>
 
       {/* Cyber Grid Background - 視認性向上 */}
-      <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none"></div>
+      <div className="absolute inset-0 cyber-grid opacity-[0.18] pointer-events-none"></div>
+      <div className="aurora opacity-40"></div>
 
       <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
-        <div className={`flex flex-col md:flex-row justify-between items-end mb-12 lg:mb-24 border-b border-slate-800 pb-8 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
-           <h2 className="text-3xl md:text-5xl lg:text-6xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">
-             学習スケジュール
-           </h2>
+        <div className={`flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12 lg:mb-16 border-b border-slate-800 pb-8 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
+           <div>
+             <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// SCHEDULE</p>
+             <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">
+               学習スケジュール
+             </h2>
+           </div>
            <span className="font-mono text-xs text-brand-500 mb-2">
              // 7日間の流れ
            </span>
         </div>
 
+        {/* 7日間の光の帯。日を追うごとに光が強くなる＝進捗そのものを絵にする。
+            高さを固定して fill で敷く。生成した画像の縦横比が多少ぶれても、
+            柱の根元と床の反射（一番効く部分）が残るように object-position を下寄りにしている */}
+        <div className={`relative h-[220px] sm:h-[300px] lg:h-[380px] mb-8 lg:mb-12 overflow-hidden border border-white/10 anim-hidden anim-scale ${isVisible ? 'anim-visible delay-1' : ''}`}>
+          <ImageFrame
+            slot="process.banner"
+            fill
+            density="compact"
+            imgClassName="object-[50%_65%] edge-fade-bottom"
+            chipPosition="top-3 right-3"
+          >
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/25 to-black/60" />
+            <div className="absolute inset-0 pointer-events-none scanlines opacity-25" />
+            <div className="absolute inset-x-0 bottom-0 z-10 flex justify-between px-4 sm:px-8 pb-3 pointer-events-none">
+              {['DAY 01', 'DAY 02', 'DAY 03', 'DAY 04', 'DAY 05', 'DAY 06', 'DAY 07'].map((d, i) => (
+                <span
+                  key={d}
+                  className="font-mono text-[8px] sm:text-[10px] tracking-widest"
+                  style={{ color: `rgba(0, 229, 255, ${0.35 + i * 0.1})` }}
+                >
+                  {d}
+                </span>
+              ))}
+            </div>
+          </ImageFrame>
+        </div>
+
         {/* Vertical Neon Line Pattern */}
-        <div className="relative p-8 bg-black border border-white/10 rounded-xl overflow-hidden">
+        <div className="relative p-6 sm:p-8 bg-black/60 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
           {/* Vertical timeline line */}
-          <div className="absolute left-12 md:left-16 top-0 bottom-0 w-[2px] bg-slate-800"></div>
-          <div className="absolute left-12 md:left-16 top-0 h-[calc(100%*4/7)] w-[2px] bg-gradient-to-b from-brand-500 to-brand-500/30 shadow-[0_0_10px_var(--brand)]"></div>
+          <div className="absolute left-10 sm:left-12 md:left-16 top-0 bottom-0 w-[2px] bg-slate-800"></div>
+          <div className="absolute left-10 sm:left-12 md:left-16 top-0 h-[calc(100%*4/7)] w-[2px] bg-gradient-to-b from-brand-500 to-brand-500/30 shadow-[0_0_10px_var(--brand)]"></div>
 
           <div className="space-y-8 relative z-10">
             {[
@@ -59,18 +91,20 @@ export const Process: React.FC = () => {
                   <div className={`w-4 h-4 rounded-full ${item.active ? 'bg-brand-500 shadow-[0_0_15px_var(--brand)]' : 'bg-slate-600 group-hover:bg-brand-500'} transition-all duration-300 ${item.active ? 'timeline-dot' : ''}`}></div>
                 </div>
 
-                {/* Content */}
-                <div className={`flex-1 ${item.active ? 'bg-gradient-to-r from-brand-500/10 to-transparent border-l-2 border-brand-500 pl-6 py-4' : 'py-2'}`}>
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
-                    <h4 className={`font-mono text-xs ${item.active ? 'text-brand-500' : 'text-slate-500 group-hover:text-brand-400'} transition-colors`}>{item.step}</h4>
-                    <p className={`text-2xl md:text-3xl lg:text-4xl font-black ${item.active ? 'text-white' : 'text-slate-400 group-hover:text-white'} transition-colors group-hover:translate-x-1 duration-300`}>
+                {/* Content — 状態はドットと文字の明度だけで示す。囲みも縦線も置かない */}
+                <div className="flex-1 pb-7 md:pb-8">
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2">
+                    <h4 className={`font-mono text-[11px] tracking-[0.2em] ${item.active ? 'text-brand-500' : 'text-slate-600 group-hover:text-brand-400'} transition-colors`}>
+                      {item.step}
+                    </h4>
+                    <p className={`text-2xl md:text-3xl lg:text-[2.5rem] font-black tracking-[-0.03em] ${item.active ? 'text-white' : 'text-slate-500 group-hover:text-white'} transition-colors duration-300`}>
                       {item.title}
                     </p>
-                    <span className={`font-mono text-[10px] px-2 py-1 w-fit ${item.type === 'practice' ? 'bg-slate-800 text-slate-400' : 'bg-brand-500/20 text-brand-400 border border-brand-500/30'}`}>
+                    <span className={`text-[11px] ${item.active ? 'text-slate-400' : 'text-slate-600'}`}>
                       {item.time}
                     </span>
                   </div>
-                  <p className={`text-sm ${item.active ? 'text-slate-300' : 'text-slate-600'} max-w-xl leading-relaxed`}>{item.desc}</p>
+                  <p className={`text-sm ${item.active ? 'text-slate-400' : 'text-slate-600'} max-w-xl leading-relaxed`}>{item.desc}</p>
                 </div>
               </div>
             ))}
