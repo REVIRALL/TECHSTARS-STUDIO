@@ -82,9 +82,50 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 | 特商法 メールアドレス | support@techstars.studio |
 | コピーライト（3ページ） | © 2026 Revirall Co., Ltd. |
 
+## 決済導線（2026-09-21 追加）
+
+料金プランのセクション（`components/Pricing.tsx`）から Stripe の **Payment Link** へ直接飛ばしている。
+設定は `services/stripeConfig.ts` の 1 ファイルに集約。**秘密鍵は置いていないし、置いてはいけない。**
+
+| | |
+|---|---|
+| 方式 | Stripe Payment Link（URL だけで完結） |
+| なぜ Checkout Session でないか | サーバに `sk_` を置く必要があるが、techstars.studio の Netlify にデプロイ権限が手元に無く Functions を足せない |
+| 戻り先 | `/checkout/thanks`（`components/CheckoutResult.tsx`）。SPA フォールバックで index.html が返る |
+| プラン | LMSのみ ¥217,800 ／ 7日間コース ¥298,000 ／ ビジネスプラン ¥880,000（すべて税込の請求額） |
+
+### ★今は本番で決済できない
+
+`stripeConfig.ts` の `paymentLink` は**すべてテストモードの URL**（`buy.stripe.com/test_...`）。
+Stripe アカウント自体も `charges_enabled=false` でまだ本審査を通っていない。
+
+そのため **`isCheckoutEnabled()` が本番ホスト（techstars.studio）でのみボタンを塞ぐ**ようにしてある。
+「本番前に差し替えること」とコメントに書くだけでは差し替え忘れを防げないため、実際に動くゲートにした。
+テストリンクのまま公開してしまうと、テストカードで「購入できた」ことになり入金が無い、という事故になる。
+
+本番化の手順:
+
+1. Stripe の本審査を通す
+2. live キーで `revirall-corp/05_銀行口座/stripe/register_techstars_plans.py` を流し直す
+   （**テストモードの商品は本番モードへ引き継がれない**）
+3. live の Payment Link を作り、`stripeConfig.ts` の `paymentLink` を `test_` 無しの URL へ差し替える
+4. `npm run build` して `dist/` も一緒にコミットする
+
+### `/checkout/cancel` は Stripe からは呼ばれない
+
+Payment Link に `cancel_url` は存在しない（API 実測：`Received unknown parameter: cancel_url`。
+対照として `active=true` は通るので、拒否はこの項目固有）。
+中断した利用者は Stripe 側の戻るでブラウザ履歴を遡るだけになる。
+ページを残してあるのは、将来 Checkout Session 方式（`cancel_url` あり）へ移すときにそのまま使えるため。
+
 ## 未処理
 
-- 特商法に **販売価格の記載が無い**。商材の価格が確定したら追加する
+- ★**特商法のクーリングオフの記載は顧問の確認を取ること。** 2025-12-05 の打ち合わせ
+  （山内顧問・齊藤弁護士）の整理では、Zoom 面談を挟む申込は電話勧誘販売＝クーリングオフ 8 日間。
+  一方で**LP から直接カード決済する経路は当時存在しなかった**ので、その経路の扱いは未確認のまま
+  「通信販売」として書いてある。同じ商品で経路により適用が変わる点を含めて確認が要る
+- ★ナローな画面幅での実機確認ができていない（ブラウザのウィンドウ幅を変える手段が無かった）。
+  クラス指定は既存セクションと同じ `grid-cols-1 lg:grid-cols-3` なので崩れないはずだが未検証
 - `components/Team.tsx` の坂本純一さんが「代表 / メイン講師」表記。特商法の運営統括責任者は沼倉隆平なので、
   読み手には食い違って見える（bio は「2社経営の代表取締役」＝ご本人の会社を指す）。表記の要否は要判断
 - `public/robots.txt` の Sitemap 行はコメントのまま。`sitemap.xml` は未作成

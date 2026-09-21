@@ -26,6 +26,7 @@ export enum SectionId {
   Model = 'model',
   Portfolio = 'portfolio',
   Process = 'process',
+  Pricing = 'pricing',
   Team = 'team',
   Contact = 'contact'
 }

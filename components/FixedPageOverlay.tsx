@@ -1,6 +1,7 @@
 import React from 'react';
 import { PageType } from '../types';
 import { X, ArrowRight, Shield, FileText, BarChart3, Database, Globe, Users } from 'lucide-react';
+import { PLANS, formatYen } from '../services/stripeConfig';
 
 interface FixedPageOverlayProps {
   page: PageType;
@@ -100,15 +101,20 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                            </div>
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
                               <dt className="text-slate-500">受講料</dt>
-                              <dd className="sm:col-span-2">
-                                 <span className="font-bold text-brand-600 text-lg">398,000円</span>
-                                 <span className="text-xs text-slate-500 ml-1">+税</span>
+                              <dd className="sm:col-span-2 space-y-1">
+                                 {PLANS.map((p) => (
+                                    <div key={p.code} className="flex items-baseline justify-between gap-3">
+                                       <span className="text-xs text-slate-600">{p.name}</span>
+                                       <span className="font-bold text-brand-600">{formatYen(p.amount)}</span>
+                                    </div>
+                                 ))}
+                                 <p className="text-[10px] text-slate-400 pt-1">表示はすべて税込の請求額です</p>
                               </dd>
                            </div>
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
                               <dt className="text-slate-500">別途</dt>
                               <dd className="sm:col-span-2 text-xs text-slate-600">
-                                 Claude Pro ($20〜/月) が必要です
+                                 Claude の有料プラン（月額 約3,000円〜）が必要です
                               </dd>
                            </div>
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
@@ -152,11 +158,13 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                {[
                   { q: "プログラミング未経験でも参加できますか？", a: "はい、未経験者も歓迎です。AIを活用することで、未経験からでも短期間でスキルを習得できます。基礎から丁寧に指導しますのでご安心ください。" },
                   { q: "7日間でどこまでのスキルが身につきますか？", a: "AIと協働してWebアプリケーションを開発できるレベルを目指します。Claude×Cursorを使った開発フロー、データベース設計、デプロイまでを実践的に学びます。" },
-                  { q: "Claude Proの契約は必要ですか？", a: "はい、受講にはClaude Proのサブスクリプション（$20〜/月）が別途必要です。契約方法は受講前にご案内します。" },
+                  { q: "Claude Proの契約は必要ですか？", a: "はい、受講にはClaudeの有料プラン（月額 約3,000円〜）のご契約が別途必要です。受講料には含まれません。契約方法は受講前にご案内します。" },
                   { q: "オンライン完結とのことですが、サポート体制は？", a: "経験豊富な講師陣がマンツーマンでサポートします。チャットやビデオ通話でいつでも質問可能です。" },
                   { q: "受講に必要なものは何ですか？", a: "PC（Mac/Windows）とインターネット環境があれば受講可能です。Claudeアカウントとコマンドライン（ターミナル）を使用します。カリキュラムにより使用ツールは異なります。" },
                   { q: "卒業後はどうなりますか？", a: "卒業生限定のSlackコミュニティに永久参加できます。案件情報の共有、仕事の紹介・受け渡し、技術相談など、卒業生同士で繋がり続けられます。学習サポートツールは2ヶ月間無料で利用可能です。" },
-                  { q: "支払い方法を教えてください", a: "クレジットカード、銀行振込に対応しています。分割払いについてはお問い合わせください。" }
+                  { q: "支払い方法を教えてください", a: "クレジットカード決済（Stripe）に対応しており、料金プランのページからそのままお申し込みいただけます。銀行振込、提携信販会社による分割払いもご利用いただけますので、ご希望の場合はお問い合わせください。" },
+                  { q: "プランはどれを選べばいいですか？", a: "講師とのマンツーマン講義を受けたい方は「7日間コース」、教材だけを自分のペースで進めたい方は「LMSのみ」をお選びください。「ビジネスプラン」は7日間コースに加えて、案件獲得の商談同行や要件定義・提案書作成まで当社が伴走するプランです。" },
+                  { q: "申し込み後の流れを教えてください", a: "決済が完了するとStripeから領収書メールが届きます。その後2営業日以内に、当社より契約書面のお渡しと初日の日程調整についてご連絡いたします。" }
                ].map((item, i) => (
                   <div key={i} className="group relative bg-white border border-slate-200 p-4 md:p-8 hover:border-black transition-all">
                      <h3 className="text-base md:text-xl font-black italic mb-4 group-hover:text-brand-600 transition-colors">{item.q}</h3>
@@ -349,33 +357,77 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                     <dd className="md:col-span-2 text-white">support@techstars.studio</dd>
                  </div>
 
+                 {/*
+                   ★2026-09-21 追記。販売価格が未記載だったので決済導線の追加にあわせて入れた。
+                   ★クーリングオフの記載は「経路で適用が変わる」ため2本立てにしてある。
+                     本サイトから直接カード決済＝通信販売、Zoom面談を挟む申込＝電話勧誘販売。
+                     この整理は 2025-12-05 の顧問打ち合わせ（山内顧問・齊藤弁護士）に基づくが、
+                     LPからの直接決済は当時なかった経路なので、公開前に顧問の確認を取ること。
+                 */}
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
+                    <dt className="text-slate-500">販売価格</dt>
+                    <dd className="md:col-span-2 text-white space-y-2">
+                       {PLANS.map((p) => (
+                          <div key={p.code} className="flex items-baseline justify-between gap-4 max-w-sm">
+                             <span className="opacity-80">{p.name}</span>
+                             <span className="font-bold">{formatYen(p.amount)}</span>
+                          </div>
+                       ))}
+                       <p className="text-xs text-slate-500 pt-1">表示価格はすべて消費税を含んだ請求額です。</p>
+                    </dd>
+                 </div>
+
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">商品代金以外の必要料金</dt>
-                    <dd className="md:col-span-2 opacity-80">消費税、銀行振込手数料（銀行振込の場合）</dd>
+                    <dd className="md:col-span-2 opacity-80">
+                       銀行振込手数料（銀行振込の場合）<br/>
+                       受講には Claude の有料プラン（月額 約3,000円〜）のご契約が別途必要です。受講料には含まれません。
+                    </dd>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">お支払方法</dt>
-                    <dd className="md:col-span-2 opacity-80">クレジットカード決済、銀行振込</dd>
+                    <dd className="md:col-span-2 opacity-80">
+                       クレジットカード決済（Stripe）、銀行振込、提携信販会社による分割払い
+                    </dd>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">お支払時期</dt>
                     <dd className="md:col-span-2 opacity-80">
-                       クレジットカード：各カード会社の引き落とし日<br/>
-                       銀行振込：お申し込みから7日以内
+                       クレジットカード：お申し込み時に決済。引き落とし日は各カード会社の規定によります<br/>
+                       銀行振込：お申し込みから7日以内<br/>
+                       分割払い：提携信販会社の定める日
                     </dd>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
-                    <dt className="text-slate-500">商品の引渡時期</dt>
-                    <dd className="md:col-span-2 opacity-80">決済完了後、直ちにご利用いただけます</dd>
+                    <dt className="text-slate-500">役務の提供時期</dt>
+                    <dd className="md:col-span-2 opacity-80">
+                       決済完了後2営業日以内に、当社より契約書面のお渡しと日程調整のご連絡をいたします。
+                       講義の開始日はお客様とのご相談のうえ決定します。<br/>
+                       LMSのみプランは、アカウント発行後ただちにご利用いただけます。
+                    </dd>
+                 </div>
+
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
+                    <dt className="text-slate-500">クーリングオフ</dt>
+                    <dd className="md:col-span-2 opacity-80">
+                       電話またはオンライン面談でのご説明を経てお申し込みいただいた場合、
+                       特定商取引法上の電話勧誘販売に該当し、法定書面を受領された日から起算して8日間は、
+                       書面または電磁的記録によりお申し込みの撤回または契約の解除ができます。
+                       この場合、当社は損害賠償または違約金を請求せず、受領済みの代金を速やかに返還します。
+                    </dd>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">返品・キャンセルについて</dt>
                     <dd className="md:col-span-2 opacity-80">
-                       デジタルコンテンツの性質上、決済完了後の返品・キャンセルはお受けしておりません。ただし、商品に欠陥がある場合はこの限りではありません。
+                       本ウェブサイトから直接お申し込みいただいた場合（通信販売）は、
+                       役務およびデジタルコンテンツの性質上、提供開始後の返品・返金はお受けしておりません。
+                       提供開始前のキャンセルは support@techstars.studio までご連絡ください。
+                       上記クーリングオフの対象となる場合は、そちらの取り扱いを優先します。
+                       当社の提供内容に欠陥がある場合はこの限りではありません。
                     </dd>
                  </div>
 
