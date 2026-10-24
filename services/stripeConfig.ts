@@ -58,7 +58,7 @@ export const PLANS: Plan[] = [
     code: 'techstars_7days',
     name: '7日間コース',
     tagline: '講師とマンツーマンで、7日間',
-    amount: 298000,
+    amount: 398000,
     taxNote: '税込',
     features: [
       'マンツーマン講義 4回（DAY1・3・5・7）',
