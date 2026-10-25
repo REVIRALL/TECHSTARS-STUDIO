@@ -122,7 +122,7 @@ npm run verify:stripe -- --self-test              # 対応を壊して赤くな�
 |---|---|
 | 方式 | Stripe Payment Link。URLは **ビルド時に `VITE_PAY_LINK_*` から注入** |
 | なぜ Checkout Session でないか | サーバに `sk_` を置く必要があるが、techstars.studio の Netlify にデプロイ権限が手元に無く Functions を足せない |
-| プラン | LMSのみ ¥217,800 ／ 7日間コース ¥398,000 ／ ビジネスプラン ¥880,000（すべて税込の請求額） |
+| プラン | LMSのみ ¥217,800 ／ 7日間コース ¥437,800 ／ ビジネスプラン ¥880,000（すべて税込の請求額） |
 
 ### ★今は決済できない（意図的に塞いである）
 
