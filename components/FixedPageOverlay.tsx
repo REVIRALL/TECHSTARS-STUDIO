@@ -74,8 +74,8 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
                         <div className="bg-white p-6 border border-slate-200 shadow-sm hover:border-brand-500 transition-colors">
                            <BarChart3 className="w-8 h-8 text-brand-500 mb-4" />
-                           <h4 className="font-black text-lg mb-2">7日間集中</h4>
-                           <p className="text-sm text-slate-500">短期集中でスキル習得</p>
+                           <h4 className="font-black text-lg mb-2">最短7日</h4>
+                           <p className="text-sm text-slate-500">講義4回を最短7日で。LMSは3か月使えます</p>
                         </div>
                         <div className="bg-white p-6 border border-slate-200 shadow-sm hover:border-brand-500 transition-colors">
                            <Database className="w-8 h-8 text-brand-500 mb-4" />
@@ -96,7 +96,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                         <dl className="space-y-6 font-mono text-sm">
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
                               <dt className="text-slate-500">期間</dt>
-                              <dd className="sm:col-span-2 font-bold">7日間（講座+自習）</dd>
+                              <dd className="sm:col-span-2 font-bold">3か月（LMSの利用期間。7日間コースの講義4回もこの期間内に受講します）</dd>
                            </div>
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
                               <dt className="text-slate-500">形式</dt>
@@ -119,9 +119,15 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                               </dd>
                            </div>
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
+                              <dt className="text-slate-500">延長</dt>
+                              <dd className="sm:col-span-2 text-xs text-slate-600">
+                                 LMSの利用は1か月33,000円（税込）で1か月ずつ延長できます（任意・自動更新なし）
+                              </dd>
+                           </div>
+                           <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
                               <dt className="text-slate-500">別途</dt>
                               <dd className="sm:col-span-2 text-xs text-slate-600">
-                                 Claude の有料プラン（月額 約3,000円〜）が必要です
+                                 ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）のご契約が必要です
                               </dd>
                            </div>
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
@@ -165,13 +171,15 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                {[
                   { q: "プログラミング未経験でも参加できますか？", a: "はい、未経験者も歓迎です。AIを活用することで、未経験からでも短期間でスキルを習得できます。基礎から丁寧に指導しますのでご安心ください。" },
                   { q: "7日間でどこまでのスキルが身につきますか？", a: "AIと協働してWebアプリケーションを開発できるレベルを目指します。Claude×Cursorを使った開発フロー、データベース設計、デプロイまでを実践的に学びます。" },
-                  { q: "Claude Proの契約は必要ですか？", a: "はい、受講にはClaudeの有料プラン（月額 約3,000円〜）のご契約が別途必要です。受講料には含まれません。契約方法は受講前にご案内します。" },
+                  { q: "AIの有料プランの契約は必要ですか？", a: "はい。ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）を、ご自身で各社とご契約いただきます。両方を契約していただいても構いません。受講料には含まれません。Claude Code で長い作業を多く行う方には、上限の大きい Claude「Max」（月額100米ドルから）をおすすめしますが、任意です。契約方法は受講前にご案内します。" },
                   { q: "オンライン完結とのことですが、サポート体制は？", a: "経験豊富な講師陣がマンツーマンでサポートします。チャットやビデオ通話でいつでも質問可能です。" },
-                  { q: "受講に必要なものは何ですか？", a: "PC（Mac/Windows）とインターネット環境があれば受講可能です。Claudeアカウントとコマンドライン（ターミナル）を使用します。カリキュラムにより使用ツールは異なります。" },
-                  { q: "卒業後はどうなりますか？", a: "卒業生限定のSlackコミュニティに永久参加できます。案件情報の共有、仕事の紹介・受け渡し、技術相談など、卒業生同士で繋がり続けられます。学習サポートツールは2ヶ月間無料で利用可能です。" },
-                  { q: "支払い方法を教えてください", a: "クレジットカード決済（Stripe）に対応しており、料金プランのページからそのままお申し込みいただけます。銀行振込、提携信販会社による分割払いもご利用いただけますので、ご希望の場合はお問い合わせください。" },
+                  { q: "受講に必要なものは何ですか？", a: "PC（Mac/Windows）とインターネット環境があれば受講可能です。ChatGPT か Claude のアカウントと、コマンドライン（ターミナル）を使用します。カリキュラムにより使用ツールは異なります。" },
+                  { q: "卒業後はどうなりますか？", a: "卒業生限定のSlackコミュニティに永久参加できます。技術相談や情報交換など、卒業生同士で繋がり続けられます。学習サポートツールは2ヶ月間無料で利用可能です。なお、ビジネスプランを除き、当社が仕事や案件をご紹介するものではありません。" },
+                  { q: "3か月で終わらなかった場合はどうなりますか？", a: "LMSの利用を1か月33,000円（税込）で1か月ずつ延長できます。提供期間の末日までにお申し込みください。自動更新はなく、お申し込みいただいた分だけ料金がかかります。7日間コースの講義の期限は延長されません。" },
+                  { q: "途中で解約できますか？", a: "はい。お電話やオンライン面談でのご説明を経てお申し込みいただいた場合は、契約書面を受け取った日から8日間はクーリング・オフができます。その後も、提供期間の末日までいつでも解約でき、解約手数料・違約金はかかりません。利用開始前の解約は全額を、利用開始後の解約は日割りで提供済みの分を差し引いて返金します。詳しくは特定商取引法に基づく表記をご覧ください。" },
+                  { q: "支払い方法を教えてください", a: "クレジットカード、銀行振込、提携信販会社による分割払いをご利用いただけます。ご希望の方法はお問い合わせの際にお知らせください。" },
                   { q: "プランはどれを選べばいいですか？", a: "講師とのマンツーマン講義を受けたい方は「7日間コース」、教材だけを自分のペースで進めたい方は「LMSのみ」をお選びください。「ビジネスプラン」は7日間コースに加えて、案件獲得の商談同行や要件定義・提案書作成まで当社が伴走するプランです。" },
-                  { q: "申し込み後の流れを教えてください", a: "決済が完了するとStripeから領収書メールが届きます。その後2営業日以内に、当社より契約書面のお渡しと初日の日程調整についてご連絡いたします。" }
+                  { q: "申し込み後の流れを教えてください", a: "契約の締結後、契約書面を簡易書留で郵送します。お支払いの確認から7日以内にLMSのアカウントをお知らせし、その日から3か月間が提供期間です。7日間コースは、講義の日程もご相談のうえで決めます。" }
                ].map((item, i) => (
                   <div key={i} className="group relative bg-white border border-slate-200 p-4 md:p-8 hover:border-black transition-all">
                      <h3 className="text-base md:text-xl font-black mb-4 group-hover:text-brand-600 transition-colors">{item.q}</h3>
@@ -438,6 +446,10 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                              <span className="font-bold">{formatYen(p.amount)}</span>
                           </div>
                        ))}
+                       <div className="flex items-baseline justify-between gap-4 max-w-sm">
+                          <span className="opacity-80">LMSの利用期間の延長（任意・1か月）</span>
+                          <span className="font-bold">{formatYen(33000)}</span>
+                       </div>
                        <p className="text-xs text-slate-500 pt-1">表示価格はすべて消費税を含んだ請求額です。</p>
                     </dd>
                  </div>
@@ -445,8 +457,8 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">商品代金以外の必要料金</dt>
                     <dd className="md:col-span-2 opacity-80">
-                       銀行振込手数料（銀行振込の場合）<br/>
-                       受講には Claude の有料プラン（月額 約3,000円〜）のご契約が別途必要です。受講料には含まれません。
+                       銀行振込手数料（銀行振込の場合）、インターネット接続料・通信費<br/>
+                       受講には ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）のご契約が別途必要です。お客様が各社へ直接お支払いいただくもので、受講料には含まれません。
                     </dd>
                  </div>
 
@@ -469,9 +481,9 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
                     <dt className="text-slate-500">役務の提供時期</dt>
                     <dd className="md:col-span-2 opacity-80">
-                       決済完了後2営業日以内に、当社より契約書面のお渡しと日程調整のご連絡をいたします。
-                       講義の開始日はお客様とのご相談のうえ決定します。<br/>
-                       LMSのみプランは、アカウント発行後ただちにご利用いただけます。
+                       契約の締結後、契約書面を簡易書留で郵送します。お支払いの確認から7日以内にLMSのアカウントを発行してお知らせし、その日から3か月間が提供期間です。
+                       7日間コースの講義4回もこの期間内に受講していただき、日程はお客様とのご相談のうえ決定します。<br/>
+                       LMSは、アカウントのお知らせ後ただちにご利用いただけます。
                     </dd>
                  </div>
 
@@ -479,21 +491,24 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                     <dt className="text-slate-500">クーリングオフ</dt>
                     <dd className="md:col-span-2 opacity-80">
                        <span className="text-white">本ウェブサイト上でお客様ご自身がお申し込み・決済された場合（通信販売）</span><br/>
-                       特定商取引法上のクーリングオフ制度の適用はありません。解除の取扱いは下記「返品・キャンセルについて」に定めるとおりです。<br/><br/>
+                       特定商取引法上のクーリングオフ制度の適用はありません。解約と返金は下記「中途解約・返金について」のとおりです。<br/><br/>
                        <span className="text-white">当社からの電話またはオンライン面談でのご説明を経てお申し込みいただいた場合（電話勧誘販売）</span><br/>
-                       法定書面を受領された日から起算して8日間は、書面または電磁的記録によりお申し込みの撤回または契約の解除ができます。
-                       この場合、当社は損害賠償または違約金を請求せず、受領済みの代金を速やかに返還します。
+                       契約書面を受け取った日から起算して8日間は、書面または電磁的記録（電子メール、公式LINEへのメッセージ等）によりお申し込みの撤回または契約の解除ができます。
+                       この場合、当社は損害賠償または違約金を請求せず、すでにLMSの利用や講義を始めていても受講料を請求しないで、受領済みの代金を速やかに全額返還します。
                     </dd>
                  </div>
 
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
-                    <dt className="text-slate-500">返品・キャンセルについて</dt>
+                    <dt className="text-slate-500">中途解約・返金について</dt>
                     <dd className="md:col-span-2 opacity-80">
-                       本ウェブサイトから直接お申し込みいただいた場合（通信販売）は、
-                       役務およびデジタルコンテンツの性質上、提供開始後の返品・返金はお受けしておりません。
-                       提供開始前のキャンセルは <a href="mailto:support@techstars.studio?subject=%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB%E3%81%AE%E3%81%94%E9%80%A3%E7%B5%A1" className="text-brand-500 underline underline-offset-4 hover:text-brand-400">support@techstars.studio</a> までご連絡ください。
+                       お申し込みの経路にかかわらず、クーリングオフの期間が過ぎた後も、提供期間の末日までいつでも解約できます。
+                       解約手数料・違約金はかかりません。ご連絡は <a href="mailto:support@techstars.studio?subject=%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB%E3%81%AE%E3%81%94%E9%80%A3%E7%B5%A1" className="text-brand-500 underline underline-offset-4 hover:text-brand-400">support@techstars.studio</a>、公式LINE、書面またはお電話で受け付け、ご連絡を発した日を解約日とします。<br/><br/>
+                       ・利用開始前（LMSのアカウントのお知らせ前）の解約：受領済みの代金を全額返金します。<br/>
+                       ・利用開始後の解約：LMSのみは、受講料217,800円のうち解約日までの日数分（日割り・1円未満切捨て）を差し引いて返金します。
+                       7日間コースは、LMS分217,800円の日割りと、実施済みの講義1回につき55,000円を差し引いて返金します（欠席・キャンセルで実施しなかった回は数えません）。<br/>
+                       ・LMSの利用期間の延長：延長が始まる前の取消しは全額、始まった後の解約は日割りで差し引いて返金します。<br/>
+                       ・ビジネスプランの解約・返金の条件は、個別契約で定めます。<br/>
                        上記クーリングオフの対象となる場合は、そちらの取り扱いを優先します。
-                       当社の提供内容に欠陥がある場合はこの限りではありません。
                     </dd>
                  </div>
 

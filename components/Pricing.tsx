@@ -238,7 +238,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
           </p>
           <p className="leading-relaxed">
             <span className="text-slate-300 block mb-1">// 別途必要なもの</span>
-            Claude の有料プラン（月額 約3,000円〜）をご自身でご契約いただきます。受講料には含まれません。
+            ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）をご自身でご契約いただきます。受講料には含まれません。
           </p>
           <p className="leading-relaxed">
             <span className="text-slate-300 block mb-1">// 分割払い</span>

@@ -136,12 +136,12 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
     {
       icon: CalendarClock,
       title: '当社からご連絡します',
-      body: '2営業日以内に support@techstars.studio または公式LINEより、契約書面のお渡しとDAY1の日程調整のご連絡をいたします。',
+      body: '2営業日以内に support@techstars.studio または公式LINEよりご連絡します。契約書面は簡易書留で郵送し、お支払いの確認から7日以内にLMSのアカウントをお知らせします（7日間コースは講義の日程調整もあわせて行います）。',
     },
     {
       icon: Laptop,
       title: '受講前にご準備いただくもの',
-      body: 'PC（Windows / Mac）とインターネット環境、Claude の有料プラン（月額 約3,000円〜）。受講料には含まれません。',
+      body: 'PC（Windows / Mac）とインターネット環境、ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）。受講料には含まれません。',
     },
   ];
 
