@@ -49,7 +49,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
             <div className="flex flex-col gap-2">
               <span className="text-slate-500 font-bold pb-2">受講生</span>
               <a
-                href="https://techstars-lms.netlify.app/"
+                href="https://lms.techstars.studio/login"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-2 text-brand-500 hover:text-brand-400 transition-colors"
