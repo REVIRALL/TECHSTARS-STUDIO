@@ -9,15 +9,23 @@ import { ImageFrame } from './ImageFrame';
  * 方針:
  *  - 主役は「7日間で / プロへ。」の一行だけ。他は全部それを支える脇役に落とす
  *  - 枠線で構造を作らない。余白・階層・光で作る
- *  - 数字は4つの別々のカードではなく、1本のスペックバーとして扱う
+ *  - ★2026-11-16 実績の4つは「王冠のエンブレム」に置き換えた。
+ *    前は大きな数字を縦線で区切った帯で、「AIっぽい。もっと王冠の画像作って配置とかにしたい」「LPっぽく」と言われた。
+ *    GPT に描かせた5案からユーザーが5（王冠のエンブレム）を選び、「エンブレムだけはこの派手さでいいけど背景とかは透過して」。
+ *    エンブレムは字の無い透明の画像（public/img/emblem-*.webp）で、字はサイトの文字として盾の内側に載せる
+ *    （読み上げと検索のため。画像に焼き込まない）。案の絵は designs/lp-stats（LMS 側の作業場）にある。
  *  - LPなのでファーストビュー内にCTAを置く
  */
 
+/**
+ * label は盾の内側で折り返す位置を決めて行に分けてある（自然な折り返しだと「作/る」のように切れる）。
+ * img の幅と高さは画像の実寸（読み込み中に高さがずれないように）。
+ */
 const STATS = [
-  { value: '7', unit: '日間', label: '最短で完走' },
-  { value: '3', unit: '種', label: '動くシステムを作る' },
-  { value: '1:1', unit: '', label: 'マンツーマン指導' },
-  { value: '∞', unit: '', label: '卒業後もつながる' },
+  { value: '7', unit: '日間', label: ['最短で完走'], img: '/img/emblem-1.webp', w: 394, h: 420 },
+  { value: '3', unit: '種', label: ['動くシステム', 'を作る'], img: '/img/emblem-2.webp', w: 370, h: 420 },
+  { value: '1:1', unit: '', label: ['マンツーマン', '指導'], img: '/img/emblem-3.webp', w: 354, h: 420 },
+  { value: '∞', unit: '', label: ['卒業後も', 'つながる'], img: '/img/emblem-4.webp', w: 368, h: 420 },
 ];
 
 export const Hero: React.FC = () => {
@@ -47,9 +55,8 @@ export const Hero: React.FC = () => {
 
       {/* ===== 本文 ===== */}
       <div className="relative z-20 w-full max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 pt-32 pb-10 sm:pb-14">
-        {/* 見出し上のひと言。罫線1本だけで区切る */}
+        {/* 見出し上のひと言。★2026-11-16 前に置いていた短い横線は外した（見出しのまわりに飾りの線を引かない） */}
         <div className="flex items-center gap-4 mb-7 sm:mb-9 opacity-0 animate-hero-badge">
-          <span className="h-px w-8 sm:w-14 bg-brand-500" />
           <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.32em] text-brand-400">
             AI ENGINEER BOOTCAMP
           </span>
@@ -92,30 +99,44 @@ export const Hero: React.FC = () => {
           </a>
         </div>
 
-        {/* 数字。4枚の別デザインをやめて1本の帯にする */}
-        <dl className="opacity-0 animate-hero-cards grid grid-cols-2 lg:grid-cols-4 border-t border-white/10">
-          {STATS.map((s, i) => (
+        {/* 実績の4つ。王冠のエンブレム（字の無い透明の画像）の盾の内側に、字を重ねる。
+            盾の内側は画像の横 22〜78%・縦 31〜72%（4枚を測った値）。区切りの線は引かない。
+            PC は左に寄せてまとめる（横いっぱいに散らすと、4つ目が背景の人物の上に乗った） */}
+        <dl className="opacity-0 animate-hero-cards grid grid-cols-2 gap-x-2 gap-y-5 sm:gap-y-6 justify-items-center lg:flex lg:flex-wrap lg:gap-x-10">
+          {STATS.map((s) => (
             <div
-              key={s.label}
-              className={[
-                'group py-5 sm:py-7 lg:py-8 border-white/10',
-                // 左端のセルだけ左パディングを外して見出しと縦を揃える
-                i % 2 === 0 ? 'pr-4 lg:pr-8' : 'pl-4 pr-4 lg:pl-8 lg:pr-8',
-                i === 0 ? '' : 'lg:pl-8',
-                // モバイルは2列: 全セルに下線、左列に縦線
-                'border-b lg:border-b-0',
-                i % 2 === 0 ? 'border-r lg:border-r' : 'lg:border-r',
-                // PCは4列: 最後のセルだけ縦線を消す
-                i === 3 ? 'lg:border-r-0' : '',
-              ].join(' ')}
+              key={s.value}
+              className="group relative h-[150px] sm:h-[176px] lg:h-[196px] transition-transform duration-300 hover:-translate-y-1"
+              style={{ aspectRatio: `${s.w} / ${s.h}` }}
             >
-              <dd className="flex items-baseline gap-1.5 mb-1.5">
-                <span className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.04em] text-white tabular-nums transition-colors duration-300 group-hover:text-brand-400">
-                  {s.value}
-                </span>
-                {s.unit && <span className="text-base sm:text-lg font-bold text-slate-400">{s.unit}</span>}
-              </dd>
-              <dt className="text-[13px] sm:text-sm text-slate-300">{s.label}</dt>
+              <img
+                src={s.img}
+                width={s.w}
+                height={s.h}
+                alt=""
+                aria-hidden="true"
+                decoding="async"
+                className="absolute inset-0 h-full w-full select-none [filter:drop-shadow(0_10px_24px_rgba(0,0,0,0.55))]"
+              />
+              <div className="absolute inset-x-[21%] top-[33%] bottom-[27%] flex flex-col items-center justify-center text-center">
+                <dd className="flex items-baseline justify-center gap-0.5 leading-none">
+                  <span className="text-[30px] sm:text-[36px] lg:text-[40px] font-black tracking-[-0.04em] tabular-nums text-brand-400 [text-shadow:0_0_16px_rgba(0,229,255,0.55)]">
+                    {s.value}
+                  </span>
+                  {s.unit && (
+                    <span className="text-[13px] sm:text-[15px] lg:text-base font-black text-brand-400 [text-shadow:0_0_12px_rgba(0,229,255,0.45)]">
+                      {s.unit}
+                    </span>
+                  )}
+                </dd>
+                <dt className="mt-1.5 sm:mt-2 text-[11px] sm:text-[12px] lg:text-[13px] font-bold leading-[1.35] tracking-[0.02em] text-white">
+                  {s.label.map((line) => (
+                    <span key={line} className="block whitespace-nowrap">
+                      {line}
+                    </span>
+                  ))}
+                </dt>
+              </div>
             </div>
           ))}
         </dl>
