@@ -1,7 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { SectionId, PortfolioItem } from '../types';
 import { ArrowUpRight } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+
+/**
+ * カリキュラム。
+ * ★2026-11-16 明るい版。正本の絵は designs/lp-bright/sections/03-portfolio.png
+ *  （左に4つの段のカード・右に選んでいる段の写真の窓。白い地・角丸のカード・水色の差し色）。
+ *  1回目の絵は右の写真が「黒髪の男性が画面に向かう横顔」（ユーザーが嫌う定番）になったので描き直させた。
+ */
 
 const items: PortfolioItem[] = [
   {
@@ -36,189 +43,140 @@ const items: PortfolioItem[] = [
 
 export const Portfolio: React.FC = () => {
   const [activeId, setActiveId] = useState<number>(items[0].id);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
   const active = items.find((i) => i.id === activeId) ?? items[0];
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      id={SectionId.Portfolio}
-      className="relative bg-black pt-28 lg:pt-44 pb-24 lg:pb-36 overflow-hidden"
-    >
-      <div className="absolute top-0 left-0 w-full section-rule" />
-      <div className="absolute inset-0 cyber-grid opacity-[0.18] pointer-events-none" />
-      <div className="aurora opacity-40" />
+    <section id={SectionId.Portfolio} className="lp-sec relative bg-white overflow-hidden">
+      <div className="lp-glow opacity-60 [background-position:right_center] [mask-image:linear-gradient(90deg,transparent_35%,#000_100%)]" aria-hidden="true" />
 
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
-        <div className={`flex flex-wrap items-end justify-between gap-4 mb-12 lg:mb-16 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
+      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
+        <div className="anim-hidden anim-up flex flex-wrap items-end justify-between gap-4 mb-8 lg:mb-12">
           <div>
-            <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// CURRICULUM</p>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-white">
-              カリキュラム
-            </h2>
+            <p className="font-mono font-bold text-xs sm:text-sm text-brand-700 mb-4 tracking-[0.3em]">// CURRICULUM</p>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-ink">カリキュラム</h2>
           </div>
-          <span className="font-mono text-xs glass-card px-3 py-1.5 text-brand-500 border border-brand-500/30">
+          <span className="font-mono font-bold text-xs sm:text-sm px-4 py-2 rounded-lg border border-brand-200 bg-white/80 text-brand-700">
             // 7日間プログラム
           </span>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
           {/* ===== リスト ===== */}
-          <div className="lg:col-span-7">
-            <div className="space-y-4 lg:space-y-5">
-              {items.map((item, index) => {
-                const isActive = item.id === activeId;
-                return (
-                  <div
-                    key={item.id}
-                    className={`group relative bg-black border transition-all duration-300 cursor-pointer overflow-hidden anim-hidden anim-left ${
-                      isActive ? 'border-brand-500/60' : 'border-slate-800 hover:border-brand-500/40'
-                    } ${isVisible ? `anim-visible delay-${index + 1}` : ''}`}
-                    onMouseEnter={() => setActiveId(item.id)}
-                    onFocus={() => setActiveId(item.id)}
-                    tabIndex={0}
-                  >
-                    {/* ターミナルヘッダー */}
-                    <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-slate-600" />
-                        <div className="w-2 h-2 rounded-full bg-slate-600" />
-                        <div
-                          className={`w-2 h-2 rounded-full ${
-                            index === items.length - 1 ? 'bg-brand-500 animate-pulse' : 'bg-green-500'
-                          }`}
-                        />
+          <div className="lg:col-span-7 space-y-4 lg:space-y-5">
+            {items.map((item, index) => {
+              const isActive = item.id === activeId;
+              const pct = Math.round((item.id / items.length) * 100);
+              return (
+                <div
+                  key={item.id}
+                  className={`anim-hidden anim-left group relative overflow-hidden rounded-xl bg-white transition-[box-shadow] duration-300 cursor-pointer ${
+                    isActive ? 'shadow-lift ring-2 ring-brand-400' : 'shadow-card hover:shadow-lift'
+                  }`}
+                  onMouseEnter={() => setActiveId(item.id)}
+                  onFocus={() => setActiveId(item.id)}
+                  tabIndex={0}
+                >
+                  {/* 窓の上の帯 */}
+                  <div className="flex items-center justify-between px-5 py-2.5 bg-[#F4F8FB]">
+                    <div className="flex items-center gap-2" aria-hidden="true">
+                      <span className="w-2.5 h-2.5 rounded-full bg-brand-400" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                      <span className={`w-2.5 h-2.5 rounded-full ${index === items.length - 1 ? 'bg-brand-500' : 'bg-slate-300'}`} />
+                    </div>
+                    <span className="font-mono text-[12px] sm:text-[13px] text-ink-mute">{item.category}</span>
+                  </div>
+
+                  {/* モバイル・タブレットでは画像をカード内に直接出す（右のプレビューが無いため） */}
+                  <div className="lg:hidden relative aspect-[16/10]">
+                    <ImageFrame slot={item.slot} fill density="compact" imgClassName="object-[50%_35%]" />
+                  </div>
+
+                  {/* 本文 */}
+                  <div className="p-5 md:p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="shrink-0 w-12 h-12 rounded-lg bg-brand-500 flex items-center justify-center">
+                        <span className="font-mono text-xl font-black text-ink">0{item.id}</span>
                       </div>
-                      <span className="font-mono text-[10px] text-slate-500">{item.category}</span>
-                    </div>
 
-                    {/* モバイル・タブレットでは画像をカード内に直接出す（右のプレビューが無いため） */}
-                    <div className="lg:hidden relative border-b border-slate-800">
-                      <ImageFrame slot={item.slot} density="compact">
-                        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/20 to-transparent" />
-                        <div className="absolute inset-0 pointer-events-none scanlines opacity-25" />
-                      </ImageFrame>
-                    </div>
-
-                    {/* 本文 */}
-                    <div className="p-4 md:p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="relative shrink-0">
-                          <div className="w-12 h-12 bg-brand-500 flex items-center justify-center">
-                            <span className="font-mono text-xl font-black text-black">0{item.id}</span>
-                          </div>
-                          {index < items.length - 1 && (
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 w-[2px] h-8 bg-gradient-to-b from-brand-500/50 to-transparent" />
-                          )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-3 mb-1.5">
+                          <h3 className={`text-xl md:text-2xl font-black transition-colors ${isActive ? 'text-brand-700' : 'text-ink group-hover:text-brand-700'}`}>
+                            {item.name}
+                          </h3>
+                          <ArrowUpRight
+                            className={`w-5 h-5 text-brand-700 transition-all ${
+                              isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                            } group-hover:translate-x-1 group-hover:-translate-y-1`}
+                            aria-hidden="true"
+                          />
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <h3
-                              className={`text-xl md:text-2xl font-bold transition-colors ${
-                                isActive ? 'text-brand-400' : 'text-white group-hover:text-brand-400'
-                              }`}
-                            >
-                              {item.name}
-                            </h3>
-                            <ArrowUpRight
-                              className={`w-5 h-5 text-brand-500 transition-all ${
-                                isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                              } group-hover:translate-x-1 group-hover:-translate-y-1`}
+                        {/* 「→」でつないだ段の語（デプロイ・ポートフォリオ実装など）を途中で折らない。空白でだけ折り、入り切らない時だけ途中で折る */}
+                        <p className="text-[14px] md:text-[15px] text-ink-soft leading-relaxed [word-break:keep-all] [overflow-wrap:anywhere]">{item.description}</p>
+
+                        <div className="mt-4 flex items-center gap-4">
+                          <div className="flex-1 h-2 rounded-full bg-slate-200 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-500"
+                              style={{ width: `${pct}%` }}
                             />
                           </div>
-
-                          <p className="text-[13px] text-slate-400 leading-relaxed">{item.description}</p>
-
-                          <div className="mt-3 flex items-center gap-3">
-                            <div className="flex-1 h-1 bg-slate-800 overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-brand-500 to-brand-400 transition-all duration-500"
-                                style={{ width: `${(item.id / items.length) * 100}%` }}
-                              />
-                            </div>
-                            <span className="font-mono text-[10px] text-slate-500">
-                              {Math.round((item.id / items.length) * 100)}%
-                            </span>
-                          </div>
+                          <span className="font-mono text-[12px] text-ink-mute w-10 text-right">{pct}%</span>
                         </div>
                       </div>
                     </div>
-
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-500/0 via-brand-500/5 to-brand-500/0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
 
           {/* ===== 追従プレビュー（PCのみ） ===== */}
-          <div className={`hidden lg:block lg:col-span-5 relative anim-hidden anim-scale ${isVisible ? 'anim-visible delay-2' : ''}`}>
-            <div className="sticky top-32">
-              <div className="border border-slate-800 bg-black overflow-hidden">
-                {/* ターミナルヘッダー */}
-                <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                  </div>
-                  <span className="font-mono text-xs text-slate-500">curriculum_preview.exe</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-brand-500 rounded-full animate-pulse" />
-                    <span className="font-mono text-[10px] text-brand-400">LIVE</span>
-                  </div>
+          <div className="anim-hidden anim-scale hidden lg:block lg:col-span-5 relative">
+            <div className="sticky top-32 overflow-hidden rounded-xl bg-white shadow-lift">
+              {/* 窓の上の帯 */}
+              <div className="flex items-center justify-between px-5 py-3.5 bg-[#F4F8FB]">
+                <div className="flex items-center gap-2" aria-hidden="true">
+                  <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+                  <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
+                  <span className="w-3 h-3 rounded-full bg-[#28C840]" />
                 </div>
-
-                {/* 画像エリア */}
-                <div className="relative">
-                  <ImageFrame slot={active.slot} density="compact">
-                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-transparent" />
-                    <div className="absolute inset-0 pointer-events-none scanlines opacity-30" />
-
-                    {/* ラベル */}
-                    <div className="absolute bottom-4 left-4 right-4 z-10 pointer-events-none">
-                      <p className="font-mono text-[10px] text-brand-400 tracking-widest">{active.category}</p>
-                      <p className="text-2xl font-black jp-display text-white">{active.name}</p>
-                    </div>
-                  </ImageFrame>
+                <span className="font-mono text-[13px] text-ink-mute">curriculum_preview.exe</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-brand-500 rounded-full" aria-hidden="true" />
+                  <span className="font-mono text-[12px] font-bold text-brand-700">LIVE</span>
                 </div>
+              </div>
 
-                {/* ステータスバー */}
-                <div className="px-4 py-3 bg-slate-900/80 border-t border-slate-800">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono text-[10px] text-slate-500">STATUS</span>
-                    <span className="font-mono text-[10px] text-green-400">RENDERING</span>
+              {/* 画像エリア */}
+              <div className="relative aspect-[8/7]">
+                <ImageFrame slot={active.slot} fill density="compact" imgClassName="object-[50%_30%]">
+                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-ink/70 via-ink/0 to-transparent" />
+                  <div className="absolute bottom-5 left-6 right-6 z-10 pointer-events-none">
+                    <p className="font-mono text-[13px] font-bold text-brand-200 tracking-widest">{active.category}</p>
+                    <p className="text-3xl font-black jp-display text-white">{active.name}</p>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <div className="font-mono text-lg font-bold text-white">7</div>
-                      <div className="font-mono text-[9px] text-slate-500">DAYS</div>
-                    </div>
-                    <div>
-                      <div className="font-mono text-lg font-bold text-brand-400">4</div>
-                      <div className="font-mono text-[9px] text-slate-500">MODULES</div>
-                    </div>
-                    <div>
-                      <div className="font-mono text-lg font-bold text-white">3</div>
-                      <div className="font-mono text-[9px] text-slate-500">OUTPUTS</div>
-                    </div>
+                </ImageFrame>
+              </div>
+
+              {/* ステータスバー */}
+              <div className="px-6 pt-4 pb-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-mono text-[12px] text-ink-mute tracking-widest">STATUS</span>
+                  <span className="font-mono text-[12px] font-bold text-brand-700 tracking-widest">RENDERING</span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <div className="font-mono text-2xl font-black text-ink">7</div>
+                    <div className="font-mono text-[12px] text-ink-mute tracking-widest">DAYS</div>
+                  </div>
+                  <div>
+                    <div className="font-mono text-2xl font-black text-brand-700">4</div>
+                    <div className="font-mono text-[12px] text-ink-mute tracking-widest">MODULES</div>
+                  </div>
+                  <div>
+                    <div className="font-mono text-2xl font-black text-ink">3</div>
+                    <div className="font-mono text-[12px] text-ink-mute tracking-widest">OUTPUTS</div>
                   </div>
                 </div>
               </div>

@@ -22,21 +22,13 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000000;
+  /* ★2026-11-16 明るい版（ユーザー「２で。他の全セクションも明るい系に。」）。地は白、字は濃紺 */
+  background-color: #ffffff;
+  color: #0b1b2e;
 }
 ::selection {
-  background-color: #00E5FF;
-  color: #000;
-}
-.tech-grid {
-  background-size: 60px 60px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-}
-.tech-grid-lg {
-  background-size: 120px 120px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-color: #bfe6f6;
+  color: #0b1b2e;
 }
 /* Hide scrollbar for overlays */
 .no-scrollbar::-webkit-scrollbar {
@@ -47,30 +39,61 @@ body {
   scrollbar-width: none;
 }
 
-/* Scroll-triggered animations - Initial hidden state */
-.anim-hidden {
-  opacity: 0;
+/* ==========================================================================
+   区画の上下の余白（PC 88px・641〜1199px は 64px・640px 以下は 52px）
+   hp-design-fidelity の「今の数字」。前は 176px／144px で間延びしていた
+   ========================================================================== */
+.lp-sec {
+  padding-top: 52px;
+  padding-bottom: 52px;
 }
-.anim-up { transform: translateY(60px); }
-.anim-left { transform: translateX(-60px) skewX(2deg); }
-.anim-right { transform: translateX(60px) skewX(-2deg); }
-.anim-scale { transform: scale(0.85); }
-
-/* SURGE Animated state - ゆっくり、バチバチ感 */
-.anim-visible {
-  opacity: 1 !important;
-  transform: translateY(0) translateX(0) scale(1) skewX(0) !important;
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+@media (min-width: 641px) {
+  .lp-sec { padding-top: 64px; padding-bottom: 64px; }
+}
+@media (min-width: 1200px) {
+  .lp-sec { padding-top: 88px; padding-bottom: 88px; }
 }
 
-/* Stagger delays - ゆっくり間隔 */
-.delay-1 { transition-delay: 0.15s !important; }
-.delay-2 { transition-delay: 0.3s !important; }
-.delay-3 { transition-delay: 0.45s !important; }
-.delay-4 { transition-delay: 0.6s !important; }
-.delay-5 { transition-delay: 0.75s !important; }
-.delay-6 { transition-delay: 0.9s !important; }
+/* 区画の地に敷く、最初の画面の写真をぼかした淡い光（描かせた区画の絵の地の写し）。
+   画像は /img/section-glow-desktop.webp（最初の画面の写真を強くぼかして白に寄せた物） */
+.lp-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('/img/section-glow-desktop.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* ==========================================================================
+   動き：中身を隠さない（2026-11-16）
+   前は .anim-hidden で opacity:0 にしてから IntersectionObserver で出していた。
+   見出し撮影の画面で料金の区画が丸ごと出ないまま残ったことがある（1440 幅）。
+   いまはスクロール連動の CSS だけで動かし、対応しない環境・動きを減らす設定・印刷では最初から全部見える。
+   ========================================================================== */
+@keyframes lpRise { from { opacity: 0.3; translate: 0 16px; } to { opacity: 1; translate: 0 0; } }
+@keyframes lpFromLeft { from { opacity: 0.3; translate: -16px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes lpFromRight { from { opacity: 0.3; translate: 16px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes lpScale { from { opacity: 0.3; scale: 0.97; } to { opacity: 1; scale: 1; } }
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .anim-hidden {
+      animation: lpRise linear both;
+      animation-timeline: view();
+      /* 物の高さに比べず、入ってから 160px で出切る（背の高い一覧の箱が、読んでいる間ずっと薄いままにならない） */
+      animation-range: entry 0px entry 160px;
+    }
+    .anim-hidden.anim-left { animation-name: lpFromLeft; }
+    .anim-hidden.anim-right { animation-name: lpFromRight; }
+    .anim-hidden.anim-scale { animation-name: lpScale; }
+    /* フォーカスの入った物は最終形で操作させる */
+    .anim-hidden:focus-within { animation: none; }
+  }
+  /* 最初の画面：読み込み時に一度だけ（h1 と写真は動かさない） */
+  .fv-in { animation: lpRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .fv-in-2 { animation-delay: 0.12s; }
+  .fv-in-3 { animation-delay: 0.24s; }
+}
 
 /* SURGE hover effects - バチッとした動き */
 .hover-lift {

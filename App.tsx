@@ -52,7 +52,7 @@ const App: React.FC = () => {
 
   if (checkoutOutcome) {
     return (
-      <div className="font-sans text-white bg-black selection:bg-brand-500 selection:text-black">
+      <div className="font-sans text-ink bg-white selection:bg-brand-200 selection:text-ink">
         <CheckoutResult outcome={checkoutOutcome} onOpenPage={handleOpenPage} />
         <FixedPageOverlay page={currentPage} onClose={handleClosePage} />
       </div>
@@ -60,7 +60,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="font-sans text-white bg-black selection:bg-brand-500 selection:text-black">
+    <div className="font-sans text-ink bg-white selection:bg-brand-200 selection:text-ink">
       <Navbar onOpenPage={handleOpenPage} />
 
       <main>
@@ -77,8 +77,7 @@ const App: React.FC = () => {
 
       <FixedPageOverlay page={currentPage} onClose={handleClosePage} />
 
-      {/* 画面全体のフィルムグレイン。画像とCSSの質感を一枚の膜で揃える */}
-      <div className="grain-overlay" aria-hidden="true" />
+      {/* ★2026-11-16 明るい版にしたので、暗い画面に掛けていたフィルムの粒の膜（grain-overlay）は外した */}
 
       {/* 画像生成プロンプトの作業台。?prompts=1 または Ctrl/Cmd + Shift + I で開く */}
       <PromptConsole />

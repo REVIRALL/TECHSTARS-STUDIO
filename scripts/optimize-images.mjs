@@ -13,7 +13,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as esbuild from 'esbuild';
 import sharp from 'sharp';
 
@@ -32,7 +32,8 @@ async function loadSlots() {
     outfile: tmp,
     logLevel: 'error',
   });
-  return import(tmp + '?t=' + Date.now());
+  // ★Windows では絶対パスをそのまま import できない（c: を URL の頭と取り違える）。file:// の URL にして読む
+  return import(pathToFileURL(tmp).href + '?t=' + Date.now());
 }
 
 const { IMAGE_SLOTS } = await loadSlots();

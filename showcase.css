@@ -6,10 +6,7 @@
     --glass-bg: rgba(255, 255, 255, 0.02);
 }
 
-body {
-    background-color: var(--bg-dark);
-    color: white;
-}
+/* ★2026-11-16 明るい版。地と字の色は styles.css の body が持つ（ここで黒に戻さない） */
 
 /* Utilities */
 .text-brand {
@@ -299,7 +296,7 @@ body {
 
 /* 斜めハッチ。「ここは画像が入る場所」だと一目で分かり、かつ崩れて見えない */
 .frame-hatch {
-    background-color: #07080c;
+    background-color: #f1f8fc;
     background-image:
         repeating-linear-gradient(135deg,
             rgba(0, 229, 255, 0.055) 0px,

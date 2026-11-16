@@ -133,7 +133,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
       )}
 
       {/* --- 判定中: 無音のスケルトン（チラつき防止） --- */}
-      {state === 'probing' && <div className="absolute inset-0 bg-[#07080c]" />}
+      {state === 'probing' && <div className="absolute inset-0 bg-slate-100" />}
 
       {/* --- 未生成: プロンプト入りプレースホルダー --- */}
       {state === 'missing' &&
@@ -143,13 +143,13 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
               className={`absolute inset-0 frame-hatch pointer-events-none ${placeholderClassName}`}
               aria-hidden="true"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white/70" />
             </div>
             {!hideChip && (
             <button
               type="button"
               onClick={() => setOpenPrompt(true)}
-              className={`absolute ${chipPosition} z-20 group pointer-events-auto flex items-center gap-2 px-3 py-2 bg-black/85 backdrop-blur border border-brand-500/50 hover:border-brand-500 hover:bg-brand-500 transition-colors`}
+              className={`absolute ${chipPosition} z-20 group pointer-events-auto flex items-center gap-2 px-3 py-2 bg-white/90 backdrop-blur border border-brand-500/50 hover:border-brand-500 hover:bg-brand-500 transition-colors`}
             >
               <Sparkles className="w-3.5 h-3.5 text-brand-500 group-hover:text-black transition-colors" />
               <span className="font-mono text-[10px] tracking-widest text-brand-400 group-hover:text-black transition-colors">
@@ -162,7 +162,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
           <button
             type="button"
             onClick={() => setOpenPrompt(true)}
-            className={`absolute inset-0 w-full h-full text-left group frame-hatch border border-slate-800 hover:border-brand-500/60 transition-colors ${placeholderClassName}`}
+            className={`absolute inset-0 w-full h-full text-left group frame-hatch border border-slate-200 hover:border-brand-500/60 transition-colors ${placeholderClassName}`}
           >
             {/* コーナーブラケット */}
             <span className="absolute top-2 left-2 w-5 h-5 border-l border-t border-brand-500/60 group-hover:border-brand-500 transition-colors" />
@@ -181,7 +181,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
               </p>
 
               {density === 'full' && (
-                <p className="text-xs sm:text-sm font-bold text-white leading-snug">{def.label}</p>
+                <p className="text-xs sm:text-sm font-bold text-ink leading-snug">{def.label}</p>
               )}
 
               <p className="font-mono text-[9px] text-slate-500">

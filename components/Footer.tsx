@@ -1,98 +1,76 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { PageType } from '../types';
 
 interface FooterProps {
   onOpenPage: (page: PageType) => void;
 }
 
+/**
+ * フッター。
+ * ★2026-11-16 明るい版。正本の絵は designs/lp-bright/sections/08-footer.png
+ *  （淡い光の地・今の正規のロゴ（/logo.png）と「TECHSTARS AI」・3列のリンク・下の行に著作権と「受付中」）。
+ *  上の端に引いていた水色の線と方眼の地は外した。
+ */
 export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
-  const footerRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (footerRef.current) observer.observe(footerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
+  const linkClass = 'inline-flex items-center min-h-[44px] text-left text-ink hover:text-brand-700 transition-colors';
   return (
-    <footer ref={footerRef} className="bg-black text-white pt-28 lg:pt-44 pb-12 relative overflow-x-hidden">
-      {/* 上部の水平ネオンライン（セクション区切り） */}
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-brand-500/60 via-brand-500/20 to-transparent"></div>
+    <footer className="relative bg-mist text-ink overflow-x-clip pt-16 lg:pt-24 pb-8">
+      <div className="lp-glow opacity-80 [background-position:center_bottom]" aria-hidden="true" />
 
-      {/* Cyber Grid Background - 視認性向上 */}
-      <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none"></div>
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12 mb-16">
-          <div className={`anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt="TechStars" className="h-10 w-auto" />
-              <div className="flex items-baseline gap-1">
-                <span className="font-black text-white text-base tracking-tight">TECHSTARS</span>
-                <span className="font-mono text-brand-500 text-xs tracking-widest">AI</span>
+      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-12 mb-12 lg:mb-14">
+          <div className="anim-hidden anim-up">
+            <div className="flex items-center gap-3 sm:gap-4 mb-4">
+              <img src="/logo.png" alt="TechStars" width={698} height={626} loading="lazy" className="h-14 sm:h-16 w-auto" />
+              <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+                <span className="font-black text-ink text-xl sm:text-2xl tracking-tight">TECHSTARS</span>
+                <span className="font-black text-brand-700 text-xl sm:text-2xl tracking-tight">AI</span>
               </div>
             </div>
-            <p className="font-mono text-xs text-slate-500 max-w-xs">
+            <p className="text-sm sm:text-base text-ink-soft max-w-xs sm:max-w-none">
               7日間でプロへ。AIと作る、動くシステム3つ。
             </p>
           </div>
-          
-          <div className={`flex flex-wrap gap-8 md:gap-12 font-mono text-xs anim-hidden anim-up ${isVisible ? 'anim-visible delay-2' : ''}`}>
-            <div className="flex flex-col gap-2">
-              <span className="text-slate-500 font-bold pb-2">受講生</span>
+
+          <div className="anim-hidden anim-up flex flex-wrap gap-x-12 gap-y-8 lg:gap-x-16 text-sm sm:text-[15px]">
+            <div className="flex flex-col">
+              <span className="text-ink-mute font-bold pb-1">受講生</span>
               <a
                 href="https://lms.techstars.studio/login"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-2 text-brand-500 hover:text-brand-400 transition-colors"
+                className="inline-flex items-center min-h-[44px] font-bold text-brand-700 hover:text-brand-800 transition-colors"
               >
                 受講生専用ページ
               </a>
             </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-slate-500 font-bold pb-2">法的情報</span>
-              <button
-                onClick={() => onOpenPage(PageType.Privacy)}
-                className="text-left py-2 hover:text-brand-500 transition-colors"
-              >
+            <div className="flex flex-col">
+              <span className="text-ink-mute font-bold pb-1">法的情報</span>
+              <button onClick={() => onOpenPage(PageType.Privacy)} className={linkClass}>
                 プライバシーポリシー
               </button>
-              <button
-                onClick={() => onOpenPage(PageType.Terms)}
-                className="text-left py-2 hover:text-brand-500 transition-colors"
-              >
+              <button onClick={() => onOpenPage(PageType.Terms)} className={linkClass}>
                 利用規約
               </button>
-              <button
-                onClick={() => onOpenPage(PageType.Tokushoho)}
-                className="text-left py-2 hover:text-brand-500 transition-colors"
-              >
+              <button onClick={() => onOpenPage(PageType.Tokushoho)} className={linkClass}>
                 特定商取引法に基づく表記
               </button>
             </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-slate-500 font-bold pb-2">SNS</span>
-              <a href="#" className="py-2 hover:text-brand-500 transition-colors">Twitter / X</a>
-              <a href="#" className="py-2 hover:text-brand-500 transition-colors">Instagram</a>
+            <div className="flex flex-col font-mono">
+              <span className="font-sans text-ink-mute font-bold pb-1">SNS</span>
+              <a href="#" className={linkClass}>Twitter / X</a>
+              <a href="#" className={linkClass}>Instagram</a>
             </div>
           </div>
         </div>
 
-        <div className={`border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 anim-hidden anim-up ${isVisible ? 'anim-visible delay-3' : ''}`}>
-          <p className="font-mono text-[10px] text-slate-600">
+        <div className="border-t border-slate-300/70 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-mono text-[12px] text-ink-mute tracking-wider text-center">
             COPYRIGHT &copy; {new Date().getFullYear()} TECHSTARS. ALL RIGHTS RESERVED.
           </p>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="font-mono text-[10px] text-slate-500">受付中</span>
+            <span className="w-2.5 h-2.5 bg-green-500 rounded-full" aria-hidden="true" />
+            <span className="text-[13px] font-bold text-ink">受付中</span>
           </div>
         </div>
       </div>

@@ -1,8 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { SectionId, TeamMember } from '../types';
-import { Code, Briefcase, Rocket, Users } from 'lucide-react';
+import { Layers, Settings, Briefcase, Users } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
-import { Icon } from './Icon';
+
+/**
+ * 7日後にできること と 講師陣。
+ * ★2026-11-16 明るい版。正本の絵は designs/lp-bright/sections/06-team.png。
+ *  - できることの4枚は、上に明るい人物・手元の写真（outcome.01〜04）と白い札（線のアイコン＋番号）、下に見出し・説明・札。
+ *    札のアイコンは絵と同じ形（重なった板・歯車・かばん・人）。
+ *    札の上に引いていた区切りの線は外した（絵にも無い）。
+ *  - 講師の写真は実物（/sakamoto.jpg・/numakura.jpg）。六角形の切り抜き・走査線・暗い光は外し、明るいカードに置く。
+ */
 
 const members: TeamMember[] = [
   {
@@ -28,8 +36,7 @@ const outcomes = [
   {
     slot: 'outcome.01',
     no: '01',
-    Icon: Code,
-    iconSlot: 'icon.web',
+    Icon: Layers,
     title: 'Webサイト制作',
     desc: 'LP、ポートフォリオを0から実装できる。レスポンシブ対応、SEO基礎も含む。',
     meta: 'HTML / CSS / JS',
@@ -37,8 +44,7 @@ const outcomes = [
   {
     slot: 'outcome.02',
     no: '02',
-    Icon: Rocket,
-    iconSlot: 'icon.automation',
+    Icon: Settings,
     title: '業務自動化',
     desc: 'GASでGmail自動返信、スプレッドシート集計、Slack通知を構築できる。',
     meta: 'GMAIL / GAS / SLACK',
@@ -47,7 +53,6 @@ const outcomes = [
     slot: 'outcome.03',
     no: '03',
     Icon: Briefcase,
-    iconSlot: 'icon.client',
     title: '案件獲得',
     desc: '見積もりの出し方、提案書テンプレートを提供。卒業翌週から営業開始可能。',
     meta: 'READY_TO_LAUNCH',
@@ -56,7 +61,6 @@ const outcomes = [
     slot: 'outcome.04',
     no: '04',
     Icon: Users,
-    iconSlot: 'icon.community',
     title: 'コミュニティ',
     desc: '卒業生Slackに招待。案件情報、技術相談、勉強会の案内を共有。',
     meta: 'ACTIVE_MEMBERS',
@@ -64,83 +68,50 @@ const outcomes = [
 ];
 
 export const Team: React.FC = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      id={SectionId.Team}
-      className="pt-28 lg:pt-44 pb-24 lg:pb-36 bg-black relative overflow-hidden"
-    >
-      <div className="absolute top-0 left-0 w-full section-rule" />
-      <div className="absolute inset-0 cyber-grid opacity-[0.18] pointer-events-none" />
-      <div className="aurora opacity-40" />
+    <section id={SectionId.Team} className="lp-sec bg-white relative overflow-hidden">
+      <div className="lp-glow opacity-70 [background-position:right_top] [mask-image:linear-gradient(180deg,#000_0%,transparent_28%,transparent_52%,#000_75%,transparent_100%)]" aria-hidden="true" />
 
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
+      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
         {/* ===== 受講後のあなた ===== */}
-        <div className="mb-24 lg:mb-36">
-          <div className={`mb-12 anim-hidden anim-up ${isVisible ? 'anim-visible' : ''}`}>
-            <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// OUTPUT</p>
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black jp-display text-white mb-4">
-              7日後に<span className="text-brand-500">できること</span>
+        <div className="mb-16 lg:mb-24">
+          <div className="anim-hidden anim-up mb-8 lg:mb-10">
+            <p className="font-mono font-bold text-xs sm:text-sm text-brand-700 mb-4 tracking-[0.3em]">// OUTPUT</p>
+            <h2 className="text-[28px] md:text-[36px] lg:text-[56px] leading-[1.15] font-black jp-display text-ink mb-4">
+              7日後に<span className="text-brand-700">できること</span>
             </h2>
-            <p className="text-slate-400 max-w-2xl">具体的に何ができるようになるか。曖昧な約束はしない。</p>
+            <p className="text-ink-soft max-w-2xl">具体的に何ができるようになるか。曖昧な約束はしない。</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
-            {outcomes.map((item, idx) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            {outcomes.map((item) => (
               <article
                 key={item.slot}
-                className={`group relative bg-[#07080c] border border-slate-800 hover:border-brand-500/60 frame-glow overflow-hidden flex flex-col anim-hidden anim-up ${
-                  isVisible ? `anim-visible delay-${idx + 1}` : ''
-                }`}
+                className="anim-hidden anim-up group relative rounded-2xl bg-white shadow-card hover:shadow-lift hover:-translate-y-1 transition-[box-shadow,translate] duration-300 p-2.5 flex flex-col"
               >
-                <div className="relative">
+                <div className="relative aspect-[20/21] overflow-hidden rounded-xl">
                   <ImageFrame
                     slot={item.slot}
+                    fill
                     density="compact"
-                    imgClassName="group-hover:scale-[1.06] transition-transform duration-[900ms] ease-out"
-                  >
-                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#07080c] via-transparent to-transparent" />
-                    <div className="absolute inset-0 pointer-events-none scanlines opacity-25" />
-                  </ImageFrame>
-
-                  {/* 立体アイコン。画像が無い間は lucide の線アイコンに戻る */}
-                  <span className="absolute top-3 left-3 z-10 flex items-center gap-2.5">
-                    <span className="flex items-center justify-center w-12 h-12 text-brand-500">
-                      <Icon slot={item.iconSlot} fallback={item.Icon} size={48} className="text-brand-500" />
-                    </span>
-                    <span className="font-mono text-[10px] text-brand-400 tracking-widest">{item.no}</span>
+                    imgClassName="group-hover:scale-[1.04] transition-transform duration-[400ms] ease-out"
+                  />
+                  <span className="absolute top-3 left-3 z-10 flex items-center gap-2.5 rounded-lg bg-white/95 px-3 py-2 shadow-card">
+                    <item.Icon className="w-5 h-5 text-brand-700" aria-hidden="true" />
+                    <span className="font-mono font-bold text-[13px] text-brand-700 tracking-widest">{item.no}</span>
                   </span>
                 </div>
 
-                <div className="p-5 lg:p-6 flex-1 flex flex-col">
-                  <h3 className="text-lg lg:text-xl font-bold text-white mb-2 group-hover:text-brand-400 transition-colors">
+                <div className="px-3 pt-5 pb-3 lg:px-4 flex-1 flex flex-col">
+                  <h3 className="text-lg lg:text-xl font-black text-ink mb-2 group-hover:text-brand-700 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-slate-400 leading-relaxed flex-1">{item.desc}</p>
-                  <div className="mt-4 pt-3 border-t border-slate-800 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-brand-500 rounded-full" />
-                    <span className="font-mono text-[10px] text-slate-500 tracking-widest">{item.meta}</span>
+                  <p className="text-sm text-ink-soft leading-relaxed flex-1 text-pretty">{item.desc}</p>
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-brand-500 rounded-full" aria-hidden="true" />
+                    <span className="font-mono text-[12px] text-ink-mute tracking-widest">{item.meta}</span>
                   </div>
                 </div>
-
-                <span className="absolute bottom-0 left-0 h-[2px] bg-brand-500 w-0 group-hover:w-full transition-all duration-500" />
               </article>
             ))}
           </div>
@@ -148,61 +119,34 @@ export const Team: React.FC = () => {
 
         {/* ===== 講師陣 ===== */}
         <div className="relative">
-          {/* 背景の光。講師カードを舞台の上に立たせる */}
-          <div className="absolute -inset-x-6 lg:-inset-x-12 -top-20 h-[520px] pointer-events-none">
-            <ImageFrame
-              slot="team.backdrop"
-              fill
-              density="compact"
-              imgClassName="opacity-40 edge-fade"
-              placeholderClassName="opacity-25"
-              chipPosition="top-2 right-6"
-            />
+          <div className="anim-hidden anim-left mb-8 lg:mb-10">
+            <p className="font-mono font-bold text-xs sm:text-sm text-brand-700 mb-4 tracking-[0.3em]">// INSTRUCTORS</p>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-ink">講師陣</h2>
           </div>
 
-          <div className="relative z-10">
-            <div className={`mb-12 md:mb-16 anim-hidden anim-left ${isVisible ? 'anim-visible delay-5' : ''}`}>
-              <p className="font-mono text-xs text-brand-500 mb-4 tracking-widest">// INSTRUCTORS</p>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-white">
-                講師陣
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
-              {members.map((member, index) => (
-                <div
-                  key={member.id}
-                  className={`group relative glass-card min-h-[360px] sm:min-h-[400px] md:min-h-[480px] lg:min-h-[520px] p-6 flex flex-col justify-end overflow-hidden holographic anim-hidden anim-scale ${
-                    isVisible ? `anim-visible delay-${index + 2}` : ''
-                  }`}
-                >
-                  <div className="absolute inset-4">
-                    <div className="hex-profile w-full h-full overflow-hidden">
-                      <img
-                        src={member.image}
-                        alt={`${member.name}の写真`}
-                        loading="lazy"
-                        className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                  </div>
-
-                  <div
-                    className="absolute inset-0 pointer-events-none opacity-30 group-hover:opacity-0 transition-opacity scanlines"
+          <div className="grid md:grid-cols-2 gap-5 lg:gap-6 max-w-[1160px] mx-auto">
+            {members.map((member) => (
+              <div
+                key={member.id}
+                className="anim-hidden anim-scale group relative rounded-2xl bg-white shadow-card p-2.5 flex flex-col"
+              >
+                <div className="relative aspect-[3/2] overflow-hidden rounded-xl bg-slate-100">
+                  <img
+                    src={member.image}
+                    alt={`${member.name}の写真`}
+                    loading="lazy"
+                    className="w-full h-full object-cover object-[50%_22%] group-hover:scale-[1.03] transition-transform duration-500"
                   />
-
-                  <div className="relative z-10">
-                    <p className="font-mono text-xs text-brand-500 mb-1">{member.role}</p>
-                    <h3 className="text-xl font-bold text-white mb-2">{member.name}</h3>
-                    {/* hover 依存だとタッチ端末で経歴が読めないので常時表示にする */}
-                    <p className="jp-body text-[13px] text-slate-300 mt-3 pt-3 border-t border-white/15">
-                      {member.bio}
-                    </p>
-                  </div>
                 </div>
-              ))}
-            </div>
+
+                <div className="px-4 pt-5 pb-4 lg:px-5">
+                  <p className="font-mono font-bold text-[13px] text-brand-700 tracking-wider mb-1">{member.role}</p>
+                  <h3 className="text-xl lg:text-2xl font-black text-ink mb-3">{member.name}</h3>
+                  {/* hover 依存だとタッチ端末で経歴が読めないので常時表示にする */}
+                  <p className="jp-body text-[14px] text-ink-soft text-pretty">{member.bio}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -11,9 +11,9 @@ interface CheckoutResultProps {
 }
 
 const Shell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="min-h-screen bg-black text-white font-sans relative overflow-x-hidden">
-    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-brand-500/60 via-brand-500/20 to-transparent"></div>
-    <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none"></div>
+  <div className="min-h-screen bg-mist text-ink font-sans relative overflow-x-hidden">
+    {/* ★2026-11-16 明るい版（LP の明るい版にそろえる。見た目だけ・文言と動きは前のまま）。上の端の線と方眼の地は外した */}
+    <div className="lp-glow opacity-70 [background-position:right_top]" aria-hidden="true"></div>
 
     {/* ヘッダー */}
     <header className="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-12 py-6 flex items-center justify-between">
@@ -24,13 +24,13 @@ const Shell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
           className="h-8 md:h-10 w-auto group-hover:scale-105 transition-transform duration-300"
         />
         <div className="flex items-baseline gap-1 whitespace-nowrap">
-          <span className="font-black text-white text-xs md:text-base tracking-tight">TECHSTARS</span>
-          <span className="font-mono text-brand-500 text-[8px] md:text-xs tracking-widest">AI</span>
+          <span className="font-black text-ink text-sm md:text-lg tracking-tight">TECHSTARS</span>
+          <span className="font-black text-brand-700 text-sm md:text-lg tracking-tight">AI</span>
         </div>
       </a>
       <a
         href="/"
-        className="font-mono text-xs font-bold text-slate-400 hover:text-brand-500 transition-colors"
+        className="inline-flex items-center min-h-[44px] font-mono text-xs font-bold text-ink-mute hover:text-brand-700 transition-colors"
       >
         トップへ戻る
       </a>
@@ -81,24 +81,24 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
     return (
       <Shell>
         <div className="animate-slide-up">
-          <span className="font-mono text-xs text-slate-500 tracking-widest block mb-6">
+          <span className="font-mono text-xs text-ink-mute tracking-widest block mb-6">
             // CHECKOUT CANCELLED
           </span>
           <div className="flex items-start gap-5 mb-10">
             <RotateCcw className="w-10 h-10 md:w-14 md:h-14 text-slate-500 shrink-0 mt-1" aria-hidden="true" />
-            <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter leading-[0.9]">
+            <h1 className="text-4xl md:text-6xl font-black jp-display tracking-tight leading-[1.05]">
               お申し込みを
               <br />
               中断しました
             </h1>
           </div>
 
-          <p className="text-slate-400 leading-relaxed max-w-xl mb-12">
+          <p className="text-ink-soft leading-relaxed max-w-xl mb-12">
             決済は完了していません。料金は発生していませんのでご安心ください。
             {plan && (
               <>
                 <br />
-                選択されていたプラン: <span className="text-white font-bold">{plan.name}</span>
+                選択されていたプラン: <span className="text-ink font-bold">{plan.name}</span>
               </>
             )}
           </p>
@@ -106,20 +106,20 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="/#pricing"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black font-sans font-black italic tracking-tighter hover:bg-brand-500 transition-colors"
+              className="group inline-flex items-center justify-center gap-2 min-h-[56px] px-8 rounded-xl bg-gradient-to-b from-brand-400 to-brand-500 text-ink font-sans font-black shadow-cta hover:to-brand-600 transition-colors"
             >
               料金プランへ戻る
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
             <a
               href="/#contact"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-brand-500 text-brand-500 font-mono text-sm font-bold hover:bg-brand-500 hover:text-black transition-colors"
+              className="inline-flex items-center justify-center gap-2 min-h-[56px] px-8 rounded-xl border-2 border-brand-500 bg-white text-brand-700 font-mono text-sm font-bold hover:bg-brand-500 hover:text-ink transition-colors"
             >
               相談してから決めたい
             </a>
           </div>
 
-          <p className="font-mono text-xs text-slate-600 mt-12 leading-relaxed">
+          <p className="font-mono text-xs text-ink-mute mt-12 leading-relaxed">
             うまく決済できなかった場合は support@techstars.studio までご連絡ください。
           </p>
         </div>
@@ -148,15 +148,15 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
   return (
     <Shell>
       <div className="animate-slide-up">
-        <span className="font-mono text-xs text-brand-500 tracking-widest block mb-6">
+        <span className="font-mono font-bold text-xs text-brand-700 tracking-widest block mb-6">
           // CHECKOUT COMPLETE
         </span>
         <div className="flex items-start gap-5 mb-10">
           <CheckCircle2
-            className="w-10 h-10 md:w-14 md:h-14 text-brand-500 shrink-0 mt-1 drop-shadow-[0_0_12px_rgba(0,229,255,0.6)]"
+            className="w-10 h-10 md:w-14 md:h-14 text-brand-500 shrink-0 mt-1"
             aria-hidden="true"
           />
-          <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter leading-[0.9]">
+          <h1 className="text-4xl md:text-6xl font-black jp-display tracking-tight leading-[1.05]">
             お手続き
             <br />
             ありがとうございます
@@ -164,29 +164,29 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
         </div>
 
         {testMode && (
-          <p className="font-mono text-xs text-yellow-300 border border-yellow-500/40 bg-yellow-500/5 p-4 mb-10">
+          <p className="font-mono text-xs text-amber-900 rounded-xl border border-amber-300 bg-amber-50 p-4 mb-10">
             これはテスト環境です。実際の請求は発生していません。
           </p>
         )}
 
         {/* ★決済の成否をこの画面で断定しない。証明は領収書メールに一本化する。 */}
-        <div className="border border-white/10 bg-white/[0.02] p-6 md:p-8 mb-12">
+        <div className="rounded-2xl bg-white shadow-card p-6 md:p-8 mb-12">
           <div className="flex items-start gap-4">
-            <ShieldCheck className="w-6 h-6 text-brand-400 shrink-0 mt-0.5" aria-hidden="true" />
-            <div className="text-sm text-slate-300 leading-relaxed">
-              <p className="font-bold text-white mb-2">決済の証明は、Stripe から届く領収書メールです。</p>
-              <p className="text-slate-400">
+            <ShieldCheck className="w-6 h-6 text-brand-700 shrink-0 mt-0.5" aria-hidden="true" />
+            <div className="text-sm text-ink-soft leading-relaxed">
+              <p className="font-bold text-ink mb-2">決済の証明は、Stripe から届く領収書メールです。</p>
+              <p className="text-ink-soft">
                 この画面は決済後にご案内を表示しているもので、決済が成立したことを証明するものではありません。
                 領収書メールが届かない場合、決済は完了していない可能性があります。お手数ですが
                 support@techstars.studio までご連絡ください。
               </p>
               {plan && (
-                <p className="font-mono text-xs text-slate-500 mt-4">
+                <p className="font-mono text-xs text-ink-mute mt-4">
                   お手続きいただいたプラン（お客様が選択された表示）: {plan.name}
                 </p>
               )}
               {reference && (
-                <p className="font-mono text-xs text-slate-500 mt-1 break-all">
+                <p className="font-mono text-xs text-ink-mute mt-1 break-all">
                   お問い合わせ番号: {reference}
                 </p>
               )}
@@ -194,39 +194,39 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
           </div>
         </div>
 
-        <span className="font-mono text-xs text-brand-500 tracking-widest block mb-6">// このあとの流れ</span>
+        <span className="font-mono font-bold text-xs text-brand-700 tracking-widest block mb-6">// このあとの流れ</span>
         <div className="space-y-4 mb-12">
           {steps.map((s, i) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.title}
-                className="flex items-start gap-5 border border-white/10 bg-white/[0.02] p-6 hover:border-brand-500/50 transition-colors"
+                className="flex items-start gap-5 rounded-2xl bg-white shadow-card p-6 hover:shadow-lift transition-shadow"
               >
-                <div className="flex items-center justify-center w-10 h-10 border border-brand-500/40 bg-brand-500/10 shrink-0">
-                  <Icon className="w-5 h-5 text-brand-400" aria-hidden="true" />
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 shrink-0">
+                  <Icon className="w-5 h-5 text-brand-700" aria-hidden="true" />
                 </div>
                 <div>
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="font-mono text-[10px] text-brand-500">STEP {String(i + 1).padStart(2, '0')}</span>
-                    <h2 className="font-black italic tracking-tight text-lg">{s.title}</h2>
+                    <span className="font-mono text-[12px] font-bold text-brand-700">STEP {String(i + 1).padStart(2, '0')}</span>
+                    <h2 className="font-black tracking-tight text-lg">{s.title}</h2>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">{s.body}</p>
+                  <p className="text-sm text-ink-soft leading-relaxed">{s.body}</p>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className="border-t border-slate-800 pt-8">
-          <p className="font-mono text-xs text-slate-500 leading-relaxed mb-6">
+        <div className="pt-4">
+          <p className="font-mono text-xs text-ink-mute leading-relaxed mb-6">
             お申し込み内容やお支払いに関するご確認は support@techstars.studio まで。
             <br />
             クーリングオフを含む契約条件は
             <button
               type="button"
               onClick={() => onOpenPage(PageType.Tokushoho)}
-              className="text-brand-500 underline underline-offset-4 hover:text-brand-400 mx-1"
+              className="text-brand-700 underline underline-offset-4 hover:text-brand-800 mx-1"
             >
               特定商取引法に基づく表記
             </button>
@@ -234,7 +234,7 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
           </p>
           <a
             href="/"
-            className="group inline-flex items-center gap-2 px-8 py-4 border border-brand-500 text-brand-500 font-mono text-sm font-bold hover:bg-brand-500 hover:text-black transition-colors"
+            className="group inline-flex items-center gap-2 min-h-[56px] px-8 rounded-xl border-2 border-brand-500 bg-white text-brand-700 font-mono text-sm font-bold hover:bg-brand-500 hover:text-ink transition-colors"
           >
             トップへ戻る
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
