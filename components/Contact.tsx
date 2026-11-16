@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
-import { Check, Terminal } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { GenIcon } from './GenIcon';
 
 /**
  * こういう人向け と 君も、星になれ。（お問い合わせ）
@@ -26,7 +26,7 @@ const IdeaValidator = lazy(() =>
 const ValidatorSkeleton: React.FC = () => (
   <div className="w-full" aria-hidden="true">
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-4 text-brand-700">
-      <Terminal className="w-4 h-4" />
+      <GenIcon name="terminal" className="w-5 h-5" />
       <span className="text-[12px] font-mono font-bold tracking-normal sm:tracking-widest uppercase whitespace-nowrap">AI_DIAGNOSTIC_SYSTEM v2.0</span>
       <div className="flex-1" />
       <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export const Contact: React.FC = () => {
                 className="anim-hidden anim-up group relative rounded-xl bg-white shadow-card hover:shadow-lift transition-shadow duration-300"
               >
                 <div className="flex h-full items-center gap-4 p-5 sm:px-6 sm:py-6">
-                  <Check className="w-6 h-6 shrink-0 text-brand-600" strokeWidth={3} aria-hidden="true" />
+                  <GenIcon name="check" className="w-7 h-7" />
                   <p className="jp-body text-[15px] font-medium text-ink text-pretty">{text}</p>
                 </div>
               </div>

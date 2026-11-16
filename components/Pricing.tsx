@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { SectionId, PageType } from '../types';
-import { Check, ArrowUpRight, AlertTriangle, Lock } from 'lucide-react';
 import { PLANS, isCheckoutEnabled, isTestMode, formatYen } from '../services/stripeConfig';
 import { ImageFrame } from './ImageFrame';
+import { GenIcon } from './GenIcon';
 
 interface PricingProps {
   onOpenPage: (page: PageType) => void;
@@ -52,7 +52,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
         {/* ★テストモードのまま本番に出ている場合の警告。塞いでいることを黙らない。 */}
         {!checkoutEnabled && (
           <div className="mb-8 lg:mb-10 flex items-start gap-4 rounded-xl border border-amber-300 bg-amber-50 p-5 sm:p-6">
-            <AlertTriangle className="w-7 h-7 text-amber-600 shrink-0" aria-hidden="true" />
+            <GenIcon name="alert" className="w-8 h-8" />
             <div>
               <p className="font-black text-ink text-base sm:text-lg mb-1">
                 オンライン決済は現在準備中です
@@ -66,7 +66,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
         )}
         {checkoutEnabled && testMode && (
           <div className="mb-8 lg:mb-10 flex items-start gap-4 rounded-xl border border-brand-300 bg-brand-50 p-5 sm:p-6">
-            <AlertTriangle className="w-7 h-7 text-brand-700 shrink-0" aria-hidden="true" />
+            <GenIcon name="alert" className="w-8 h-8" />
             <div>
               <p className="font-black text-ink text-base sm:text-lg mb-1">テストモードで動作しています</p>
               <p className="text-sm text-ink-soft leading-relaxed">
@@ -111,7 +111,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-sm sm:text-[15px] lg:text-sm 2xl:text-[15px] text-ink-soft leading-relaxed">
-                    <Check className="w-4 h-4 shrink-0 mt-1 text-brand-600" strokeWidth={3} aria-hidden="true" />
+                    <GenIcon name="check" className="w-5 h-5 mt-0.5" />
                     <span className="text-pretty">{f}</span>
                   </li>
                 ))}
@@ -133,7 +133,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                   }`}
                 >
                   このプランを申し込む
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />
+                  <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
               ) : (
                 <button
@@ -147,7 +147,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                   }
                   className="flex items-center justify-center gap-2 w-full min-h-[56px] px-6 rounded-xl bg-slate-200 text-ink-mute font-sans font-black text-base cursor-not-allowed"
                 >
-                  <Lock className="w-4 h-4" aria-hidden="true" />
+                  <GenIcon name="lock" className="w-5 h-5" />
                   {checkoutEnabled ? '同意が必要です' : '準備中'}
                 </button>
               )}

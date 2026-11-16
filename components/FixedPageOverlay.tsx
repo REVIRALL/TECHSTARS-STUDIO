@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageType } from '../types';
-import { X, ArrowRight, Shield, FileText, BarChart3, Database, Globe, Users } from 'lucide-react';
 import { PLANS, formatYen } from '../services/stripeConfig';
+import { GenIcon } from './GenIcon';
 
 interface FixedPageOverlayProps {
   page: PageType;
@@ -30,7 +30,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
          <button onClick={onClose} className="group flex items-center gap-3 min-h-[44px] text-sm font-bold hover:text-brand-700 transition-colors">
             <span className="font-mono text-xs hidden md:inline-block opacity-50 group-hover:opacity-100">[ESC] 閉じる</span>
             <div className={`flex items-center justify-center w-10 h-10 rounded-full transition-all group-hover:rotate-90 bg-ink text-white group-hover:bg-brand-500 group-hover:text-ink`}>
-               <X size={16}/>
+               <GenIcon name="close" className="w-5 h-5" />
             </div>
          </button>
       </div>
@@ -73,12 +73,12 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
 
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
                         <div className="bg-white p-6 rounded-2xl shadow-card hover:shadow-lift transition-shadow">
-                           <BarChart3 className="w-8 h-8 text-brand-700 mb-4" />
+                           <GenIcon name="bar-chart" className="w-10 h-10 mb-4" />
                            <h4 className="font-black text-lg mb-2">最短7日</h4>
                            <p className="text-sm text-slate-500">講義4回を最短7日で。LMSは3か月使えます</p>
                         </div>
                         <div className="bg-white p-6 rounded-2xl shadow-card hover:shadow-lift transition-shadow">
-                           <Database className="w-8 h-8 text-brand-700 mb-4" />
+                           <GenIcon name="database" className="w-10 h-10 mb-4" />
                            <h4 className="font-black text-lg mb-2">実践スキル</h4>
                            <p className="text-sm text-slate-500">実務で即使えるスキル</p>
                         </div>
@@ -194,7 +194,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
         {page === PageType.Privacy && (
            <div className="animate-slide-up max-w-3xl">
               <div className="mb-12 flex items-center gap-4 text-brand-700">
-                 <Shield className="w-8 h-8 md:w-12 md:h-12" />
+                 <GenIcon name="shield" className="w-10 h-10 md:w-14 md:h-14" />
                  <h1 className="text-2xl md:text-4xl font-black jp-display text-ink">プライバシーポリシー</h1>
               </div>
 
@@ -312,7 +312,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
         {page === PageType.Terms && (
            <div className="animate-slide-up max-w-3xl">
               <div className="mb-12 flex items-center gap-4 text-brand-700">
-                 <FileText className="w-8 h-8 md:w-12 md:h-12" />
+                 <GenIcon name="file-text" className="w-10 h-10 md:w-14 md:h-14" />
                  <h1 className="text-2xl md:text-4xl font-black jp-display text-ink">利用規約</h1>
               </div>
 
@@ -400,7 +400,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
         {page === PageType.Tokushoho && (
            <div className="animate-slide-up max-w-3xl">
               <div className="mb-12 flex items-center gap-4 text-brand-700">
-                 <FileText className="w-8 h-8 md:w-12 md:h-12" />
+                 <GenIcon name="file-text" className="w-10 h-10 md:w-14 md:h-14" />
                  <h1 className="text-2xl md:text-4xl font-black jp-display text-ink">特定商取引法に基づく表記</h1>
               </div>
 

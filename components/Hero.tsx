@@ -1,7 +1,7 @@
 import React from 'react';
 import { SectionId } from '../types';
-import { ArrowRight } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { GenIcon } from './GenIcon';
 
 /**
  * ヒーロー。
@@ -122,7 +122,7 @@ export const Hero: React.FC = () => {
               className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[68px] px-7 lg:px-10 rounded-xl bg-gradient-to-b from-brand-400 to-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:to-brand-600 transition-colors duration-300"
             >
               無料で詳細を見る
-              <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" />
+              <GenIcon name="arrow-right" className="w-6 h-6 lg:w-7 lg:h-7 group-hover:translate-x-1 transition-transform duration-300" eager />
             </a>
             <a
               href={`#${SectionId.Portfolio}`}

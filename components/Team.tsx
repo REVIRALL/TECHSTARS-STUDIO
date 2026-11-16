@@ -1,7 +1,7 @@
 import React from 'react';
 import { SectionId, TeamMember } from '../types';
-import { Layers, Settings, Briefcase, Users } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { GenIcon } from './GenIcon';
 
 /**
  * 7日後にできること と 講師陣。
@@ -36,7 +36,7 @@ const outcomes = [
   {
     slot: 'outcome.01',
     no: '01',
-    Icon: Layers,
+    icon: 'layers' as const,
     title: 'Webサイト制作',
     desc: 'LP、ポートフォリオを0から実装できる。レスポンシブ対応、SEO基礎も含む。',
     meta: 'HTML / CSS / JS',
@@ -44,7 +44,7 @@ const outcomes = [
   {
     slot: 'outcome.02',
     no: '02',
-    Icon: Settings,
+    icon: 'settings' as const,
     title: '業務自動化',
     desc: 'GASでGmail自動返信、スプレッドシート集計、Slack通知を構築できる。',
     meta: 'GMAIL / GAS / SLACK',
@@ -52,7 +52,7 @@ const outcomes = [
   {
     slot: 'outcome.03',
     no: '03',
-    Icon: Briefcase,
+    icon: 'briefcase' as const,
     title: '案件獲得',
     desc: '見積もりの出し方、提案書テンプレートを提供。卒業翌週から営業開始可能。',
     meta: 'READY_TO_LAUNCH',
@@ -60,7 +60,7 @@ const outcomes = [
   {
     slot: 'outcome.04',
     no: '04',
-    Icon: Users,
+    icon: 'users' as const,
     title: 'コミュニティ',
     desc: '卒業生Slackに招待。案件情報、技術相談、勉強会の案内を共有。',
     meta: 'ACTIVE_MEMBERS',
@@ -97,7 +97,7 @@ export const Team: React.FC = () => {
                     imgClassName="group-hover:scale-[1.04] transition-transform duration-[400ms] ease-out"
                   />
                   <span className="absolute top-3 left-3 z-10 flex items-center gap-2.5 rounded-lg bg-white/95 px-3 py-2 shadow-card">
-                    <item.Icon className="w-5 h-5 text-brand-700" aria-hidden="true" />
+                    <GenIcon name={item.icon} className="w-6 h-6" />
                     <span className="font-mono font-bold text-[13px] text-brand-700 tracking-widest">{item.no}</span>
                   </span>
                 </div>

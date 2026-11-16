@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { validateBusinessIdea } from '../services/geminiService';
 import ReactMarkdown from 'react-markdown';
-import { Loader2, Terminal } from 'lucide-react';
+import { GenIcon } from './GenIcon';
 
 export const IdeaValidator: React.FC = () => {
   const [idea, setIdea] = useState('');
@@ -30,7 +30,7 @@ export const IdeaValidator: React.FC = () => {
       {/* Terminal Input Header */}
       {/* ★2026-11-16 明るい版（正本の絵 designs/lp-bright/sections/07-contact.png の相談の箱）。文言と動きは前のまま */}
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-4 text-brand-700">
-        <Terminal className="w-4 h-4" />
+        <GenIcon name="terminal" className="w-5 h-5" />
         <span className="text-[12px] font-mono font-bold tracking-normal sm:tracking-widest uppercase whitespace-nowrap">AI_DIAGNOSTIC_SYSTEM v2.0</span>
         <div className="flex-1"></div>
         <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export const IdeaValidator: React.FC = () => {
               {/* Beam Effect */}
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
               <span className="relative flex items-center gap-2">
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : 'EXECUTE'}
+                {loading ? <GenIcon name="loader" className="w-5 h-5 animate-spin" /> : 'EXECUTE'}
               </span>
             </button>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SectionId, PageType } from '../types';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { GenIcon } from './GenIcon';
 
 interface NavbarProps {
   onOpenPage: (page: PageType) => void;
@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
           >
-            {isMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
+            <GenIcon name={isMenuOpen ? 'close' : 'menu'} className="w-7 h-7" eager />
           </button>
         </div>
       </nav>
@@ -160,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             className="mt-8 inline-flex items-center justify-center gap-2 min-h-[56px] px-6 rounded-xl bg-gradient-to-b from-brand-400 to-brand-500 text-ink font-black jp-display text-base shadow-cta hover:to-brand-600 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
-            お申し込み <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+            お申し込み <GenIcon name="arrow-up-right" className="w-5 h-5" />
           </a>
           <a
             href="https://lms.techstars.studio/login"
@@ -169,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             className="mt-4 inline-flex items-center justify-center gap-2 min-h-[56px] px-6 rounded-xl border-2 border-brand-500 text-brand-700 font-bold text-base hover:bg-brand-500 hover:text-ink transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
-            受講生専用ページ <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
+            受講生専用ページ <GenIcon name="arrow-up-right" className="w-5 h-5" />
           </a>
         </div>
       )}

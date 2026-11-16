@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowUpRight, CheckCircle2, RotateCcw, Mail, CalendarClock, Laptop, ShieldCheck } from 'lucide-react';
 import { PageType } from '../types';
 import { findPlan, isTestMode } from '../services/stripeConfig';
+import { GenIcon } from './GenIcon';
 
 export type CheckoutOutcome = 'thanks' | 'cancel';
 
@@ -85,7 +85,7 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
             // CHECKOUT CANCELLED
           </span>
           <div className="flex items-start gap-5 mb-10">
-            <RotateCcw className="w-10 h-10 md:w-14 md:h-14 text-slate-500 shrink-0 mt-1" aria-hidden="true" />
+            <GenIcon name="rotate" className="w-12 h-12 md:w-16 md:h-16 mt-1" />
             <h1 className="text-4xl md:text-6xl font-black jp-display tracking-tight leading-[1.05]">
               お申し込みを
               <br />
@@ -109,7 +109,7 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
               className="group inline-flex items-center justify-center gap-2 min-h-[56px] px-8 rounded-xl bg-gradient-to-b from-brand-400 to-brand-500 text-ink font-sans font-black shadow-cta hover:to-brand-600 transition-colors"
             >
               料金プランへ戻る
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
             <a
               href="/#contact"
@@ -129,17 +129,17 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
 
   const steps = [
     {
-      icon: Mail,
+      icon: 'mail' as const,
       title: '決済完了メールが届きます',
       body: 'Stripe から領収書メールが自動送信されます。迷惑メールフォルダもご確認ください。',
     },
     {
-      icon: CalendarClock,
+      icon: 'calendar-clock' as const,
       title: '当社からご連絡します',
       body: '2営業日以内に support@techstars.studio または公式LINEよりご連絡します。契約書面は簡易書留で郵送し、お支払いの確認から7日以内にLMSのアカウントをお知らせします（7日間コースは講義の日程調整もあわせて行います）。',
     },
     {
-      icon: Laptop,
+      icon: 'laptop' as const,
       title: '受講前にご準備いただくもの',
       body: 'PC（Windows / Mac）とインターネット環境、ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）。受講料には含まれません。',
     },
@@ -152,10 +152,7 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
           // CHECKOUT COMPLETE
         </span>
         <div className="flex items-start gap-5 mb-10">
-          <CheckCircle2
-            className="w-10 h-10 md:w-14 md:h-14 text-brand-500 shrink-0 mt-1"
-            aria-hidden="true"
-          />
+          <GenIcon name="check-circle" className="w-12 h-12 md:w-16 md:h-16 mt-1" eager />
           <h1 className="text-4xl md:text-6xl font-black jp-display tracking-tight leading-[1.05]">
             お手続き
             <br />
@@ -172,7 +169,7 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
         {/* ★決済の成否をこの画面で断定しない。証明は領収書メールに一本化する。 */}
         <div className="rounded-2xl bg-white shadow-card p-6 md:p-8 mb-12">
           <div className="flex items-start gap-4">
-            <ShieldCheck className="w-6 h-6 text-brand-700 shrink-0 mt-0.5" aria-hidden="true" />
+            <GenIcon name="shield-check" className="w-7 h-7 mt-0.5" />
             <div className="text-sm text-ink-soft leading-relaxed">
               <p className="font-bold text-ink mb-2">決済の証明は、Stripe から届く領収書メールです。</p>
               <p className="text-ink-soft">
@@ -197,14 +194,13 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
         <span className="font-mono font-bold text-xs text-brand-700 tracking-widest block mb-6">// このあとの流れ</span>
         <div className="space-y-4 mb-12">
           {steps.map((s, i) => {
-            const Icon = s.icon;
             return (
               <div
                 key={s.title}
                 className="flex items-start gap-5 rounded-2xl bg-white shadow-card p-6 hover:shadow-lift transition-shadow"
               >
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 shrink-0">
-                  <Icon className="w-5 h-5 text-brand-700" aria-hidden="true" />
+                  <GenIcon name={s.icon} className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="flex items-center gap-3 mb-2">
@@ -237,7 +233,7 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
             className="group inline-flex items-center gap-2 min-h-[56px] px-8 rounded-xl border-2 border-brand-500 bg-white text-brand-700 font-mono text-sm font-bold hover:bg-brand-500 hover:text-ink transition-colors"
           >
             トップへ戻る
-            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </a>
         </div>
       </div>

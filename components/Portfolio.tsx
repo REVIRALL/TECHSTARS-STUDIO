@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SectionId, PortfolioItem } from '../types';
-import { ArrowUpRight } from 'lucide-react';
 import { ImageFrame } from './ImageFrame';
+import { GenIcon } from './GenIcon';
 
 /**
  * カリキュラム。
@@ -103,8 +103,9 @@ export const Portfolio: React.FC = () => {
                           <h3 className={`text-xl md:text-2xl font-black transition-colors ${isActive ? 'text-brand-700' : 'text-ink group-hover:text-brand-700'}`}>
                             {item.name}
                           </h3>
-                          <ArrowUpRight
-                            className={`w-5 h-5 text-brand-700 transition-all ${
+                          <GenIcon
+                            name="arrow-up-right"
+                            className={`w-6 h-6 transition-all ${
                               isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                             } group-hover:translate-x-1 group-hover:-translate-y-1`}
                             aria-hidden="true"
