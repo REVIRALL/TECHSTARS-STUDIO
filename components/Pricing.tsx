@@ -112,6 +112,9 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
               <p className="text-sm text-slate-400 mb-8 leading-relaxed">{plan.tagline}</p>
 
               <div className="mb-8 pb-8 border-b border-slate-800">
+                {plan.priceLabel && (
+                  <p className="text-sm text-brand-400 mb-3">{plan.priceLabel}</p>
+                )}
                 <div className="flex items-baseline gap-2">
                   <span
                     className={`text-4xl md:text-5xl font-black italic tracking-tighter ${
@@ -122,6 +125,9 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                   </span>
                 </div>
                 <p className="font-mono text-[10px] text-slate-500 mt-2">{plan.taxNote}</p>
+                {plan.priceLabel && (
+                  <p className="text-xs text-slate-400 mt-3 leading-relaxed">面談を受けた方に適用される価格です。</p>
+                )}
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
