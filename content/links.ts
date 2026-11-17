@@ -22,8 +22,9 @@ export const SUPPORT_EMAIL = 'support@techstars.studio';
 /** 一時的な行き先：support@techstars.studio へのメール（件名「TechStars 資料請求・ご相談」） */
 export const REQUEST_MAIL_URL = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent('TechStars 資料請求・ご相談')}`;
 
-/** 相談の行き先。LMS の資料請求が本番に出たら LMS_REQUEST_URL に戻す */
-export const REQUEST_URL: string = REQUEST_MAIL_URL;
+/** 相談の行き先。★2026-11-17 LMS の資料請求（/request）が本番に出たので LMS_REQUEST_URL に戻した。
+ *  LMS が止まった時は REQUEST_MAIL_URL に替えるだけでメールに戻る */
+export const REQUEST_URL: string = LMS_REQUEST_URL;
 
 /** 行き先がメールの間は true（料金の一文をメールの文にする） */
 export const REQUEST_BY_MAIL = REQUEST_URL.startsWith('mailto:');
