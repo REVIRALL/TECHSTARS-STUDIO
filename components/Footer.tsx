@@ -10,13 +10,13 @@ interface FooterProps {
  * ★2026-11-16 明るい版。正本の絵は designs/lp-bright/sections/08-footer.png
  *  （淡い光の地・今の正規のロゴ（/logo.png）と「TECHSTARS AI」・3列のリンク・下の行に著作権と「受付中」）。
  *  上の端に引いていた水色の線と方眼の地は外した。
+ * ★2026-11-17 依頼主「こういうのが全部AIっぽい」→ 地のぼかした写真の光、著作権の上の線、SNS の等幅の書体、
+ *  「受付中」の前の緑の点を外し、著作権は「© 2026 TECHSTARS」を普通の字で。
  */
 export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
   const linkClass = 'inline-flex items-center min-h-[44px] text-left text-ink hover:text-brand-700 transition-colors';
   return (
     <footer className="relative bg-mist text-ink overflow-x-clip pt-16 lg:pt-24 pb-8">
-      <div className="lp-glow opacity-80 [background-position:center_bottom]" aria-hidden="true" />
-
       <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-12 mb-12 lg:mb-14">
           <div className="anim-hidden anim-up">
@@ -56,22 +56,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
                 特定商取引法に基づく表記
               </button>
             </div>
-            <div className="flex flex-col font-mono">
-              <span className="font-sans text-ink-mute font-bold pb-1">SNS</span>
+            <div className="flex flex-col">
+              <span className="text-ink-mute font-bold pb-1">SNS</span>
               <a href="#" className={linkClass}>Twitter / X</a>
               <a href="#" className={linkClass}>Instagram</a>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-300/70 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-mono text-[12px] text-ink-mute tracking-wider text-center">
-            COPYRIGHT &copy; {new Date().getFullYear()} TECHSTARS. ALL RIGHTS RESERVED.
-          </p>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 bg-green-500 rounded-full" aria-hidden="true" />
-            <span className="text-[13px] font-bold text-ink">受付中</span>
-          </div>
+        <div className="pt-4 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-[13px] text-ink-mute text-center">&copy; {new Date().getFullYear()} TECHSTARS</p>
+          <span className="text-[13px] font-bold text-ink">受付中</span>
         </div>
       </div>
     </footer>

@@ -15,6 +15,12 @@ interface PricingProps {
  *  Payment Link の href・押せない時の title）・料金と文言は前のまま（セキュリティの監査済みの部分）。
  *  - 注記の左に引いていた縦の線（border-l）は外した（注記の横に飾りの線を引かない）。
  *  - 見出し・料金の斜体は、和文が合成の斜体で崩れるので外した（絵も料金の数字だけ斜め）。
+ *
+ * ★2026-11-17 依頼主「// WHY NOW?　こういうのが全部AIっぽい」→ 見た目だけ直した。決済の出し分け・リンク・同意・料金は触っていない。
+ *  - 「// 3つのプラン・オンライン完結」は「3つのプラン（すべてオンライン）」の普通の字に。「01 / PLAN」の札を外した。
+ *  - 金額の下の区切り線を外し、余白で区切る。水色のグラデーションのボタンと札は一色の塗り・薄い灰の影に。
+ *  - 補足の「// 決済」「// 別途必要なもの」「// 分割払い」は「//」を取り、太字の「お支払い」「別に必要な物」「分割払い」に。
+ *  - 見出しの字の光とカードに指を乗せた時の影の変化を外した。料金の斜体は正本の絵どおり残す。
  */
 export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
   const [agreed, setAgreed] = useState(false);
@@ -43,10 +49,10 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
 
       <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
         <div className="anim-hidden anim-up flex flex-col md:flex-row justify-between items-start md:items-end mb-8 lg:mb-10 gap-3 pt-6 lg:pt-14">
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black jp-display text-ink [text-shadow:0_0_24px_rgba(255,255,255,0.9)]">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black jp-display text-ink">
             料金プラン
           </h2>
-          <span className="font-mono font-bold text-xs sm:text-sm text-brand-700 md:mb-2 px-2 py-1 rounded bg-white/80">// 3つのプラン・オンライン完結</span>
+          <p className="text-sm sm:text-base font-bold text-ink md:mb-2">3つのプラン（すべてオンライン）</p>
         </div>
 
         {/* ★テストモードのまま本番に出ている場合の警告。塞いでいることを黙らない。 */}
@@ -78,28 +84,25 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
 
         {/* プランカード */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-6 xl:gap-8 items-stretch">
-          {PLANS.map((plan, idx) => (
+          {PLANS.map((plan) => (
             <div
               key={plan.code}
               className={`anim-hidden anim-up relative flex flex-col p-7 sm:p-8 lg:p-7 xl:p-8 rounded-2xl bg-white transition-shadow ${
                 plan.highlight
                   ? 'ring-2 ring-brand-400 shadow-lift mt-4 lg:mt-0'
-                  : 'shadow-card hover:shadow-lift'
+                  : 'shadow-card'
               }`}
             >
               {plan.highlight && (
-                <span className="absolute -top-4 left-7 sm:left-8 rounded-lg bg-gradient-to-b from-brand-400 to-brand-500 text-ink text-sm font-black px-4 py-1.5">
+                <span className="absolute -top-4 left-7 sm:left-8 rounded-lg bg-brand-500 text-ink text-sm font-black px-4 py-1.5">
                   おすすめ
                 </span>
               )}
 
-              <span className="font-mono font-bold text-[13px] text-brand-700 tracking-[0.18em] mb-3">
-                {String(idx + 1).padStart(2, '0')} / PLAN
-              </span>
               <h3 className="text-2xl md:text-3xl font-black jp-display text-ink mb-2">{plan.name}</h3>
               <p className="text-sm sm:text-[15px] text-ink-soft mb-6 leading-relaxed">{plan.tagline}</p>
 
-              <div className="mb-6 pb-6 border-b border-slate-200">
+              <div className="mb-8">
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl md:text-5xl xl:text-[56px] font-black italic tracking-tight text-brand-700">
                     {formatYen(plan.amount)}
@@ -128,7 +131,7 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                   href={plan.paymentLink}
                   className={`group flex items-center justify-center gap-2 w-full min-h-[56px] px-6 rounded-xl font-sans font-black text-base transition-colors duration-300 ${
                     plan.highlight
-                      ? 'bg-gradient-to-b from-brand-400 to-brand-500 text-ink shadow-cta hover:to-brand-600'
+                      ? 'bg-brand-500 text-ink shadow-cta hover:bg-brand-400'
                       : 'bg-white text-ink shadow-card ring-1 ring-slate-200 hover:text-brand-700 hover:ring-brand-400'
                   }`}
                 >
@@ -206,15 +209,15 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
         {/* 補足 */}
         <div className="anim-hidden anim-up mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-[13px] sm:text-sm text-ink-mute">
           <p className="leading-relaxed">
-            <span className="font-mono font-bold text-brand-700 block mb-1">// 決済</span>
+            <span className="font-bold text-ink block mb-1">お支払い</span>
             クレジットカード決済（Stripe）。カード情報は当社を経由せず、Stripeへ直接送信されます。
           </p>
           <p className="leading-relaxed">
-            <span className="font-mono font-bold text-brand-700 block mb-1">// 別途必要なもの</span>
+            <span className="font-bold text-ink block mb-1">別に必要な物</span>
             ChatGPT「Plus」か Claude「Pro」のどちらか1つ（月額20米ドル）をご自身でご契約いただきます。受講料には含まれません。
           </p>
           <p className="leading-relaxed">
-            <span className="font-mono font-bold text-brand-700 block mb-1">// 分割払い</span>
+            <span className="font-bold text-ink block mb-1">分割払い</span>
             分割をご希望の場合はお問い合わせください。提携ローンでのお支払いをご案内します。
           </p>
         </div>

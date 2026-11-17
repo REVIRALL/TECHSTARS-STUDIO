@@ -8,27 +8,30 @@ interface FixedPageOverlayProps {
   onClose: () => void;
 }
 
+/** 上の帯に出す題。★2026-11-17 前は種類の英字（company・faq…）をそのまま出していた */
+const PAGE_TITLE: Record<string, string> = {
+  [PageType.Company]: '講座の詳細',
+  [PageType.FAQ]: 'よくある質問',
+  [PageType.Privacy]: 'プライバシーポリシー',
+  [PageType.Terms]: '利用規約',
+  [PageType.Tokushoho]: '特定商取引法に基づく表記',
+};
+
 export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClose }) => {
   if (page === PageType.None) return null;
 
   // ★2026-11-16 明るい版。前はプライバシー・規約・特商法だけ黒い地だった。全ページを明るい地にそろえる（文言は変えない）
+  // ★2026-11-17 依頼主「こういうのが全部AIっぽい」→ 上の帯の「ID」の箱・「:: 詳細情報 ::」・「[ESC]」、
+  //   「// プログラム詳細」「FAQ」の札、等幅の書体、すりガラス、カードに指を乗せた時の影の変化を外した。
 
   return (
     <div className={`fixed inset-0 z-[100] bg-slate-50 text-ink overflow-y-auto animate-fade-in no-scrollbar`}>
       
       {/* Dynamic Header */}
-      <div className={`fixed top-0 left-0 w-full px-6 lg:px-12 py-4 flex justify-between items-center bg-white/95 backdrop-blur shadow-[0_6px_24px_-14px_rgba(11,27,46,0.25)] z-50`}>
-         <div className="flex items-center gap-4">
-            <div className={`flex flex-col items-center justify-center w-8 h-8 border border-slate-200 bg-slate-100 rounded-md`}>
-               <span className="font-mono text-[12px] font-bold">ID</span>
-            </div>
-            <div>
-               <span className="block font-black text-lg tracking-tighter leading-none">{page.replace('_', ' ')}</span>
-               <span className="block font-mono text-[12px] font-bold text-brand-700 tracking-widest">:: 詳細情報 ::</span>
-            </div>
-         </div>
+      <div className={`fixed top-0 left-0 w-full px-6 lg:px-12 py-4 flex justify-between items-center bg-white shadow-[0_6px_24px_-14px_rgba(11,27,46,0.25)] z-50`}>
+         <span className="block font-black text-lg leading-tight">{PAGE_TITLE[page] ?? ''}</span>
          <button onClick={onClose} className="group flex items-center gap-3 min-h-[44px] text-sm font-bold hover:text-brand-700 transition-colors">
-            <span className="font-mono text-xs hidden md:inline-block opacity-50 group-hover:opacity-100">[ESC] 閉じる</span>
+            <span className="text-sm hidden md:inline-block text-ink-mute group-hover:text-brand-700">閉じる</span>
             <div className={`flex items-center justify-center w-10 h-10 rounded-full transition-all group-hover:rotate-90 bg-ink text-white group-hover:bg-brand-500 group-hover:text-ink`}>
                <GenIcon name="close" className="w-5 h-5" />
             </div>
@@ -44,7 +47,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.8] font-black jp-display">
                   料金<br/>プラン
                </h1>
-               <div className="text-left md:text-right font-mono text-xs">
+               <div className="text-left md:text-right text-sm text-ink-soft">
                   <p>7日間プログラム</p>
                   <p>オンライン / 日本全国</p>
                   <p>受付中</p>
@@ -64,7 +67,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                          出せなければ違反とみなされるため、断定を外して打消し表示を添える。 */}
                      <p className="text-slate-600 leading-relaxed mb-8 font-medium">
                         完全オンライン完結のプログラムです。講師のマンツーマンサポートのもと、
-                        未経験の方もDAY1の環境構築から段階的に進められる構成にしています。
+                        未経験の方も1日目の環境構築から段階的に進められる構成にしています。
                      </p>
                      <p className="text-xs text-slate-500 leading-relaxed mb-8">
                         ※ 習得の度合いには個人差があります。スキルの習得、案件の受注、収入の獲得その他の
@@ -72,12 +75,12 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                      </p>
 
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
-                        <div className="bg-white p-6 rounded-2xl shadow-card hover:shadow-lift transition-shadow">
+                        <div className="bg-white p-6 rounded-2xl shadow-card">
                            <GenIcon name="bar-chart" className="w-10 h-10 mb-4" />
                            <h4 className="font-black text-lg mb-2">最短7日</h4>
                            <p className="text-sm text-slate-500">講義4回を最短7日で。LMSは3か月使えます</p>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-card hover:shadow-lift transition-shadow">
+                        <div className="bg-white p-6 rounded-2xl shadow-card">
                            <GenIcon name="database" className="w-10 h-10 mb-4" />
                            <h4 className="font-black text-lg mb-2">実践スキル</h4>
                            <p className="text-sm text-slate-500">実務で即使えるスキル</p>
@@ -90,10 +93,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                <div className="lg:col-span-5">
                   <div className="bg-white rounded-2xl shadow-lift p-1 relative">
                      <div className="p-6">
-                        <h3 className="font-mono text-xs font-bold text-brand-700 mb-6 tracking-widest">
-                           // プログラム詳細
-                        </h3>
-                        <dl className="space-y-6 font-mono text-sm">
+                        <dl className="space-y-6 text-sm">
                            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-1 sm:gap-4">
                               <dt className="text-slate-500">期間</dt>
                               <dd className="sm:col-span-2 font-bold">3か月（LMSの利用期間。7日間コースの講義4回もこの期間内に受講します）</dd>
@@ -155,9 +155,6 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
         {page === PageType.FAQ && (
           <div className="animate-slide-up">
             <div className="mb-16">
-               <div className="inline-block rounded-md bg-ink text-white px-3 py-1 font-mono text-xs font-bold mb-4">
-                  FAQ
-               </div>
                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1] font-black jp-display mb-8">
                 よくある<br/><span className="text-brand-700 pb-1 inline-block">質問</span>
               </h1>
@@ -181,8 +178,8 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                   { q: "プランはどれを選べばいいですか？", a: "講師とのマンツーマン講義を受けたい方は「7日間コース」、教材だけを自分のペースで進めたい方は「LMSのみ」をお選びください。「ビジネスプラン」は7日間コースに加えて、案件獲得の商談同行や要件定義・提案書作成まで当社が伴走するプランです。" },
                   { q: "申し込み後の流れを教えてください", a: "契約の締結後、契約書面を簡易書留で郵送します。お支払いの確認から7日以内にLMSのアカウントをお知らせし、その日から3か月間が提供期間です。7日間コースは、講義の日程もご相談のうえで決めます。" }
                ].map((item, i) => (
-                  <div key={i} className="group relative bg-white rounded-2xl shadow-card p-5 md:p-8 hover:shadow-lift transition-shadow">
-                     <h3 className="text-base md:text-xl font-black mb-4 group-hover:text-brand-700 transition-colors">{item.q}</h3>
+                  <div key={i} className="relative bg-white rounded-2xl shadow-card p-5 md:p-8">
+                     <h3 className="text-base md:text-xl font-black mb-4">{item.q}</h3>
                      <p className="text-sm md:text-base text-slate-600 leading-relaxed">{item.a}</p>
                   </div>
                ))}

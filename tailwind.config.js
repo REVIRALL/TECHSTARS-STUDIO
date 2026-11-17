@@ -49,7 +49,8 @@ export default {
         // 正本の白いカード・ボタンの影（淡く広い）
         card: '0 10px 30px -12px rgba(11, 27, 46, 0.18), 0 2px 6px -2px rgba(11, 27, 46, 0.06)',
         lift: '0 18px 40px -16px rgba(11, 27, 46, 0.24), 0 4px 10px -4px rgba(11, 27, 46, 0.08)',
-        cta: '0 12px 28px -10px rgba(20, 180, 234, 0.55)',
+        // ★2026-11-17 ボタンの影は水色の光をやめ、カードと同じ薄い灰に（依頼主「こういうのが全部AIっぽい」）
+        cta: '0 10px 24px -12px rgba(11, 27, 46, 0.28), 0 2px 6px -2px rgba(11, 27, 46, 0.08)',
       },
       animation: {
         'blink': 'blink 1s step-end infinite',

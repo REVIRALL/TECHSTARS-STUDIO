@@ -10,6 +10,12 @@ import { GenIcon } from './GenIcon';
  *    札のアイコンは絵と同じ形（重なった板・歯車・かばん・人）。
  *    札の上に引いていた区切りの線は外した（絵にも無い）。
  *  - 講師の写真は実物（/sakamoto.jpg・/numakura.jpg）。六角形の切り抜き・走査線・暗い光は外し、明るいカードに置く。
+ *
+ * ★2026-11-17 依頼主「// WHY NOW?　こういうのが全部AIっぽい」→ 見た目だけ直した。
+ *  - 「// OUTPUT」「// INSTRUCTORS」の札、写真の上の白い札の「01」〜「04」（印は残す）、
+ *    「READY_TO_LAUNCH」「ACTIVE_MEMBERS」と点つきの札を外した。
+ *  - 「HTML / CSS / JS」「GMAIL / GAS / SLACK」は「使う物：HTML・CSS・JavaScript」「使う物：Gmail・GAS・Slack」を普通の字で。
+ *  - 講師の肩書は等幅・字間の広い書体をやめ、普通の書体に。カードの浮く動き・写真の拡大、地のぼかした写真の光を外した。
  */
 
 const members: TeamMember[] = [
@@ -32,51 +38,42 @@ const members: TeamMember[] = [
   },
 ];
 
-const outcomes = [
+const outcomes: { slot: string; icon: 'layers' | 'settings' | 'briefcase' | 'users'; title: string; desc: string; meta?: string }[] = [
   {
     slot: 'outcome.01',
-    no: '01',
     icon: 'layers' as const,
     title: 'Webサイト制作',
     desc: 'LP、ポートフォリオを0から実装できる。レスポンシブ対応、SEO基礎も含む。',
-    meta: 'HTML / CSS / JS',
+    meta: '使う物：HTML・CSS・JavaScript',
   },
   {
     slot: 'outcome.02',
-    no: '02',
     icon: 'settings' as const,
     title: '業務自動化',
     desc: 'GASでGmail自動返信、スプレッドシート集計、Slack通知を構築できる。',
-    meta: 'GMAIL / GAS / SLACK',
+    meta: '使う物：Gmail・GAS・Slack',
   },
   {
     slot: 'outcome.03',
-    no: '03',
     icon: 'briefcase' as const,
     title: '案件獲得',
     desc: '見積もりの出し方、提案書テンプレートを提供。卒業翌週から営業開始可能。',
-    meta: 'READY_TO_LAUNCH',
   },
   {
     slot: 'outcome.04',
-    no: '04',
     icon: 'users' as const,
     title: 'コミュニティ',
     desc: '卒業生Slackに招待。案件情報、技術相談、勉強会の案内を共有。',
-    meta: 'ACTIVE_MEMBERS',
   },
 ];
 
 export const Team: React.FC = () => {
   return (
     <section id={SectionId.Team} className="lp-sec bg-white relative overflow-hidden">
-      <div className="lp-glow opacity-70 [background-position:right_top] [mask-image:linear-gradient(180deg,#000_0%,transparent_28%,transparent_52%,#000_75%,transparent_100%)]" aria-hidden="true" />
-
       <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
         {/* ===== 受講後のあなた ===== */}
         <div className="mb-16 lg:mb-24">
           <div className="anim-hidden anim-up mb-8 lg:mb-10">
-            <p className="font-mono font-bold text-xs sm:text-sm text-brand-700 mb-4 tracking-[0.3em]">// OUTPUT</p>
             <h2 className="text-[28px] md:text-[36px] lg:text-[56px] leading-[1.15] font-black jp-display text-ink mb-4">
               7日後に<span className="text-brand-700">できること</span>
             </h2>
@@ -87,30 +84,21 @@ export const Team: React.FC = () => {
             {outcomes.map((item) => (
               <article
                 key={item.slot}
-                className="anim-hidden anim-up group relative rounded-2xl bg-white shadow-card hover:shadow-lift hover:-translate-y-1 transition-[box-shadow,translate] duration-300 p-2.5 flex flex-col"
+                className="anim-hidden anim-up relative rounded-2xl bg-white shadow-card p-2.5 flex flex-col"
               >
                 <div className="relative aspect-[20/21] overflow-hidden rounded-xl">
-                  <ImageFrame
-                    slot={item.slot}
-                    fill
-                    density="compact"
-                    imgClassName="group-hover:scale-[1.04] transition-transform duration-[400ms] ease-out"
-                  />
-                  <span className="absolute top-3 left-3 z-10 flex items-center gap-2.5 rounded-lg bg-white/95 px-3 py-2 shadow-card">
+                  <ImageFrame slot={item.slot} fill density="compact" />
+                  <span className="absolute top-3 left-3 z-10 flex items-center justify-center rounded-lg bg-white/95 p-2 shadow-card">
                     <GenIcon name={item.icon} className="w-6 h-6" />
-                    <span className="font-mono font-bold text-[13px] text-brand-700 tracking-widest">{item.no}</span>
                   </span>
                 </div>
 
                 <div className="px-3 pt-5 pb-3 lg:px-4 flex-1 flex flex-col">
-                  <h3 className="text-lg lg:text-xl font-black text-ink mb-2 group-hover:text-brand-700 transition-colors">
+                  <h3 className="text-lg lg:text-xl font-black text-ink mb-2">
                     {item.title}
                   </h3>
                   <p className="text-sm text-ink-soft leading-relaxed flex-1 text-pretty">{item.desc}</p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-brand-500 rounded-full" aria-hidden="true" />
-                    <span className="font-mono text-[12px] text-ink-mute tracking-widest">{item.meta}</span>
-                  </div>
+                  {item.meta && <p className="mt-4 text-[13px] font-bold text-ink-mute">{item.meta}</p>}
                 </div>
               </article>
             ))}
@@ -120,7 +108,6 @@ export const Team: React.FC = () => {
         {/* ===== 講師陣 ===== */}
         <div className="relative">
           <div className="anim-hidden anim-left mb-8 lg:mb-10">
-            <p className="font-mono font-bold text-xs sm:text-sm text-brand-700 mb-4 tracking-[0.3em]">// INSTRUCTORS</p>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-ink">講師陣</h2>
           </div>
 
@@ -128,19 +115,19 @@ export const Team: React.FC = () => {
             {members.map((member) => (
               <div
                 key={member.id}
-                className="anim-hidden anim-scale group relative rounded-2xl bg-white shadow-card p-2.5 flex flex-col"
+                className="anim-hidden anim-scale relative rounded-2xl bg-white shadow-card p-2.5 flex flex-col"
               >
                 <div className="relative aspect-[3/2] overflow-hidden rounded-xl bg-slate-100">
                   <img
                     src={member.image}
                     alt={`${member.name}の写真`}
                     loading="lazy"
-                    className="w-full h-full object-cover object-[50%_22%] group-hover:scale-[1.03] transition-transform duration-500"
+                    className="w-full h-full object-cover object-[50%_22%]"
                   />
                 </div>
 
                 <div className="px-4 pt-5 pb-4 lg:px-5">
-                  <p className="font-mono font-bold text-[13px] text-brand-700 tracking-wider mb-1">{member.role}</p>
+                  <p className="font-bold text-sm text-brand-700 mb-1">{member.role}</p>
                   <h3 className="text-xl lg:text-2xl font-black text-ink mb-3">{member.name}</h3>
                   {/* hover 依存だとタッチ端末で経歴が読めないので常時表示にする */}
                   <p className="jp-body text-[14px] text-ink-soft text-pretty">{member.bio}</p>

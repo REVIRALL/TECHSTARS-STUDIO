@@ -53,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
       <nav
         className={`fixed top-0 left-0 w-full z-50 transition-[background-color,box-shadow,padding] duration-300 ${
           isScrolled || isMenuOpen
-            ? 'bg-white/95 backdrop-blur-md shadow-[0_6px_24px_-12px_rgba(11,27,46,0.18)] py-2.5'
+            ? 'bg-white shadow-[0_6px_24px_-12px_rgba(11,27,46,0.18)] py-2.5'
             : 'bg-transparent py-4 lg:py-6'
         }`}
         aria-label="メインナビゲーション"
@@ -129,17 +129,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay。白い地・濃紺の大きな字・番号は水色（区切りの線は引かない） */}
+      {/* Mobile Menu Overlay。白い地・濃紺の大きな字（区切りの線は引かない）。
+          ★2026-11-17 項目の前の等幅の番号「01」〜「04」は外した（意味の無い番号。依頼主「こういうのが全部AIっぽい」） */}
       {isMenuOpen && (
         <div id="mobile-menu" className="fixed inset-0 bg-white z-[45] flex flex-col pt-24 pb-10 px-6 overflow-y-auto">
-          {navLinks.map((link, idx) => (
+          {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-2xl sm:text-3xl font-black jp-display text-ink py-3.5 hover:text-brand-700 transition-colors flex items-center gap-3 sm:gap-4"
+              className="text-2xl sm:text-3xl font-black jp-display text-ink py-3.5 hover:text-brand-700 transition-colors flex items-center"
               onClick={() => setIsMenuOpen(false)}
             >
-              <span className="text-sm font-mono font-bold text-brand-700">0{idx + 1}</span>
               {link.label}
             </a>
           ))}
@@ -157,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           </button>
           <a
             href={`#${SectionId.Pricing}`}
-            className="mt-8 inline-flex items-center justify-center gap-2 min-h-[56px] px-6 rounded-xl bg-gradient-to-b from-brand-400 to-brand-500 text-ink font-black jp-display text-base shadow-cta hover:to-brand-600 transition-colors"
+            className="mt-8 inline-flex items-center justify-center gap-2 min-h-[56px] px-6 rounded-xl bg-brand-500 text-ink font-black jp-display text-base shadow-cta hover:bg-brand-400 transition-colors"
             onClick={() => setIsMenuOpen(false)}
           >
             お申し込み <GenIcon name="arrow-up-right" className="w-5 h-5" />

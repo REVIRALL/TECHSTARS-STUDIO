@@ -11,6 +11,12 @@ import { GenIcon } from './GenIcon';
  *    1回目の絵は上の写真が最初の画面の女性とそっくり、下の写真が「ノートPCに向かう黒髪の男性」になったので描き直させた。
  *  - 引用の上に引いていた区切りの線は外した（注記の上下に飾りの線を引かない）。
  *  - スマホは写真（4:5）の上の明るい所に見出しを載せ、その下に引用と相談の箱を続ける（写真は消さない）。
+ *
+ * ★2026-11-17 依頼主「// WHY NOW?　こういうのが全部AIっぽい」→ 見た目を直した。
+ *  - 「// TARGET_PROFILE.scan()」の札、一言の帯の小さい四角・太い水色の枠・「SIGNAL_DETECTED」を外した。
+ *  - 「$ mission …」「$ status …」の作り物の端末の行をやめ、「メール：support@techstars.studio」だけ残した。
+ *  - 相談の箱の「ai_consultation.exe」・赤黄緑の丸・「READY」・「>」の題の帯と、すりガラス風のぼかしを外し、白一色に。
+ *  - 地のぼかした写真の光、カードに指を乗せた時の影の変化を外した。
  */
 
 /**
@@ -25,25 +31,13 @@ const IdeaValidator = lazy(() =>
 
 const ValidatorSkeleton: React.FC = () => (
   <div className="w-full" aria-hidden="true">
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-4 text-brand-700">
-      <GenIcon name="terminal" className="w-5 h-5" />
-      <span className="text-[12px] font-mono font-bold tracking-normal sm:tracking-widest uppercase whitespace-nowrap">AI_DIAGNOSTIC_SYSTEM v2.0</span>
-      <div className="flex-1" />
-      <div className="flex items-center gap-2">
-        <div className="w-2 h-2 bg-slate-300 rounded-full" />
-        <span className="text-[12px] font-mono text-ink-mute">STANDBY</span>
-      </div>
-    </div>
+    <p className="mb-2 text-sm font-bold text-ink">知りたいこと・お悩み</p>
     <div className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
-      <div className="relative">
-        <div className="absolute top-4 left-4 font-mono font-bold text-brand-700 text-sm">&gt;_</div>
-        <div className="w-full pl-11 pr-4 py-4 font-mono text-sm text-slate-500 min-h-[92px]">
-          あなたの目標やお悩みを入力...
-        </div>
+      <div className="w-full px-4 py-4 text-base sm:text-sm text-slate-500 min-h-[100px]">
+        あなたの目標やお悩みを入力...
       </div>
-      <div className="px-4 py-3 flex justify-between items-center bg-white">
-        <span className="text-[12px] text-ink-mute font-mono whitespace-nowrap">GEMINI_ENGINE</span>
-        <div className="min-h-[44px] flex items-center px-6 rounded-lg bg-slate-200 text-ink-mute text-sm font-mono font-bold tracking-widest">
+      <div className="px-4 py-3 flex justify-end items-center bg-white">
+        <div className="min-h-[44px] flex items-center px-6 rounded-lg bg-slate-200 text-ink-mute text-sm font-black">
           EXECUTE
         </div>
       </div>
@@ -81,13 +75,10 @@ export const Contact: React.FC = () => {
 
   return (
     <section ref={sectionRef} id={SectionId.Contact} className="lp-sec !pb-0 bg-white relative overflow-hidden">
-      <div className="lp-glow opacity-70 [background-position:right_top] [mask-image:linear-gradient(180deg,#000_0%,transparent_40%)]" aria-hidden="true" />
-
       <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative">
         {/* ===== こんな人におすすめ ===== */}
         <div className="relative z-10 mb-12 lg:mb-6">
           <div className="anim-hidden anim-up mb-8 lg:mb-10">
-            <p className="font-mono font-bold text-xs sm:text-sm text-brand-700 mb-4 tracking-[0.3em]">// TARGET_PROFILE.scan()</p>
             <h2 className="text-[28px] md:text-[36px] lg:text-[56px] leading-[1.15] font-black jp-display text-ink">
               <span className="text-brand-700">こういう人</span>向け
             </h2>
@@ -97,7 +88,7 @@ export const Contact: React.FC = () => {
             {TARGETS.map((text) => (
               <div
                 key={text}
-                className="anim-hidden anim-up group relative rounded-xl bg-white shadow-card hover:shadow-lift transition-shadow duration-300"
+                className="anim-hidden anim-up relative rounded-xl bg-white shadow-card"
               >
                 <div className="flex h-full items-center gap-4 p-5 sm:px-6 sm:py-6">
                   <GenIcon name="check" className="w-7 h-7" />
@@ -108,13 +99,9 @@ export const Contact: React.FC = () => {
           </div>
 
           <div className="anim-hidden anim-up mt-8 lg:mt-10 text-center">
-            <div className="inline-flex flex-wrap items-center justify-center gap-x-4 gap-y-1 rounded-xl border-2 border-brand-400 bg-white px-6 py-4">
-              <span className="hidden sm:inline-block w-3.5 h-3.5 rounded-sm bg-brand-500" aria-hidden="true" />
-              <p className="text-ink font-black text-[15px] sm:text-base text-balance">
-                <span className="text-brand-700">1つでも刺さったら、</span>詳細を見てほしい。
-              </p>
-              <span className="font-mono font-bold text-[12px] text-brand-700">SIGNAL_DETECTED</span>
-            </div>
+            <p className="inline-block rounded-xl bg-brand-50 px-6 sm:px-8 py-3.5 text-ink font-black text-[15px] sm:text-base text-balance">
+              <span className="text-brand-700">1つでも刺さったら、</span>詳細を見てほしい。
+            </p>
           </div>
         </div>
 
@@ -154,47 +141,16 @@ export const Contact: React.FC = () => {
               AIを味方につけた者が、次の時代を創る。"
             </p>
 
-            <div className="space-y-2.5">
-              <div className="flex flex-wrap items-center gap-x-3 font-mono text-sm">
-                <span className="text-brand-700 font-bold">$</span>
-                <span className="text-ink-mute">mission</span>
-                <span className="text-ink">BECOME_A_STAR</span>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-3 font-mono text-sm">
-                <span className="text-brand-700 font-bold">$</span>
-                <span className="text-ink-mute">contact</span>
-                <span className="text-ink">support@techstars.studio</span>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-3 font-mono text-sm">
-                <span className="text-brand-700 font-bold">$</span>
-                <span className="text-ink-mute">status</span>
-                <span className="text-green-700 font-bold">LAUNCHING_NOW</span>
-              </div>
-            </div>
+            <p className="text-sm sm:text-[15px] text-ink">
+              <span className="font-bold">メール：</span>support@techstars.studio
+            </p>
           </div>
 
           {/* 相談の箱 */}
           <div className="anim-hidden anim-right col-start-1 row-start-3 lg:col-start-2 lg:row-start-1 lg:row-span-2 relative z-10 pt-10 pb-12 lg:p-0 lg:self-center">
-            <div className="overflow-hidden rounded-2xl bg-white/95 backdrop-blur shadow-lift ring-1 ring-slate-200/70">
-              {/* 窓の上の帯 */}
-              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 sm:px-5 py-3.5 bg-[#F4F8FB]">
-                <div className="flex items-center gap-2" aria-hidden="true">
-                  <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-                  <span className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
-                  <span className="w-3 h-3 rounded-full bg-[#28C840]" />
-                </div>
-                <span className="font-mono text-[12px] sm:text-[13px] text-ink-mute">ai_consultation.exe</span>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-brand-500 rounded-full" aria-hidden="true" />
-                  <span className="font-mono text-[12px] font-bold text-brand-700">READY</span>
-                </div>
-              </div>
-
+            <div className="overflow-hidden rounded-2xl bg-white shadow-lift ring-1 ring-slate-200/70">
               <div className="p-5 sm:p-6 lg:p-8">
-                <div className="flex items-center gap-2 mb-6">
-                  <span className="font-mono font-black text-brand-700 text-xl">&gt;</span>
-                  <h3 className="text-xl sm:text-2xl font-black text-ink">無料で詳細を確認</h3>
-                </div>
+                <h3 className="mb-5 text-xl sm:text-2xl font-black text-ink">無料で詳細を確認</h3>
                 {isVisible ? (
                   <Suspense fallback={<ValidatorSkeleton />}>
                     <IdeaValidator />

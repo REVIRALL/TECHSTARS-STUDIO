@@ -101,11 +101,9 @@ export const Hero: React.FC = () => {
         </div>
 
         {/* ===== 本文 ===== */}
-        <div className="relative z-20 w-full max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[88px] pt-[88px] sm:pt-28 lg:pt-[150px] pb-8 lg:pb-12 flex-1 flex flex-col">
-          <p className="fv-in mb-3 sm:mb-5 lg:mb-6 font-mono font-bold text-[12px] sm:text-[13px] lg:text-[15px] tracking-[0.36em] lg:tracking-[0.42em] text-brand-700">
-            AI ENGINEER BOOTCAMP
-          </p>
-
+        {/* ★2026-11-17 見出しの上の英字の札「AI ENGINEER BOOTCAMP」（等幅・字間の広い大文字）は外した（依頼主「こういうのが全部AIっぽい」）。
+            札の分だけ見出しが上がるので、上の余白を少し足して写真との釣り合いを保つ */}
+        <div className="relative z-20 w-full max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[88px] pt-[104px] sm:pt-32 lg:pt-[176px] pb-8 lg:pb-12 flex-1 flex flex-col">
           {/* 主役。最初に描く物なので動かさない */}
           <h1 className="mb-4 sm:mb-7 lg:mb-8 font-black tracking-[-0.02em] leading-[1.02]">
             <span className="block text-[15vw] sm:text-[12vw] lg:text-[8vw] xl:text-[118px] [@media(max-height:700px)]:text-[12.5vw] lg:[@media(max-height:700px)]:text-[7vw] text-ink">
@@ -126,7 +124,7 @@ export const Hero: React.FC = () => {
           <div className="fv-in fv-in-3 flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8">
             <a
               href={`#${SectionId.Contact}`}
-              className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[68px] px-7 lg:px-10 rounded-xl bg-gradient-to-b from-brand-400 to-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:to-brand-600 transition-colors duration-300"
+              className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[68px] px-7 lg:px-10 rounded-xl bg-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:bg-brand-400 transition-colors duration-300"
             >
               無料で詳細を見る
               <GenIcon name="arrow-right" className="w-6 h-6 lg:w-7 lg:h-7 group-hover:translate-x-1 transition-transform duration-300" eager />
@@ -145,7 +143,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* スマホ・タブレットは1画面の写真の下にエンブレムを置く（1画面に字と写真と4つを詰めない） */}
-      <div className="lg:hidden relative bg-gradient-to-b from-white to-mist px-5 pt-8 pb-10">
+      <div className="lg:hidden relative bg-white px-5 pt-8 pb-10">
         <Emblems />
       </div>
     </section>
