@@ -29,6 +29,8 @@ export interface Plan {
   amount: number;
   /** 税の内訳表示用 */
   taxNote: string;
+  /** 面談を受けた方に適用する価格の表示。通常価格とは区別する。 */
+  priceLabel?: string;
   features: string[];
   /** Stripe Payment Link。ビルド時に注入され、未設定なら空文字。 */
   paymentLink: string;
@@ -46,6 +48,7 @@ export const PLANS: Plan[] = [
     tagline: '自分のペースで、教材だけ',
     amount: 217800,
     taxNote: '198,000円 + 消費税10%',
+    priceLabel: '面談特典価格',
     features: [
       '学習管理システム（LMS）の利用（3か月）',
       '15コース・授業383本の動画とテキスト教材',
@@ -56,10 +59,11 @@ export const PLANS: Plan[] = [
   },
   {
     code: 'techstars_7days',
-    name: '7日間コース',
+    name: '1対1コンサルプラン（7日間コース）',
     tagline: '講師とマンツーマン4回。最短7日で受講',
     amount: 437800,
     taxNote: '398,000円 + 消費税10%',
+    priceLabel: '面談特典価格',
     features: [
       'マンツーマン講義 4回（各90分・DAY1・3・5・7）',
       '講義とLMSの利用期限は3か月',

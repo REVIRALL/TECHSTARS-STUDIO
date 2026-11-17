@@ -121,12 +121,29 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                     おすすめ
                   </span>
                 )}
-                <h3 className="text-[26px] lg:text-[24px] xl:text-[34px] font-black jp-display text-ink leading-tight">{plan.name}</h3>
+                {/* ★名前に「（7日間コース）」のような括弧が付くと「…プラ／ン」と語の途中で折れた。括弧の前で2行に分ける */}
+                <h3 className="text-[26px] lg:text-[24px] xl:text-[34px] font-black jp-display text-ink leading-tight">
+                  {plan.name.includes('（') ? (
+                    <>
+                      <span className="block whitespace-nowrap">{plan.name.slice(0, plan.name.indexOf('（'))}</span>
+                      <span className="block whitespace-nowrap text-[0.72em]">{plan.name.slice(plan.name.indexOf('（'))}</span>
+                    </>
+                  ) : (
+                    plan.name
+                  )}
+                </h3>
                 <p className="mt-1.5 lg:mt-2.5 max-w-[21em] text-sm lg:text-[13px] xl:text-[17px] text-ink-soft leading-snug [word-break:keep-all] [overflow-wrap:anywhere]">{plan.tagline}</p>
+                {/* ★2026-11-17 REVIRALL の main（2609ff2）の直しを取り込む：面談を受けた方に適用される「面談特典価格」の札と注記 */}
+                {plan.priceLabel && (
+                  <span className="mt-2.5 xl:mt-3 rounded-full bg-brand-50 px-3 py-0.5 text-[12px] xl:text-[14px] font-bold text-brand-700">{plan.priceLabel}</span>
+                )}
                 <span className="mt-3 lg:mt-3 xl:mt-5 text-[40px] lg:text-[38px] xl:text-[60px] leading-none font-black italic tracking-tight text-brand-700">
                   {formatYen(plan.amount)}
                 </span>
                 <p className="mt-2.5 lg:mt-2.5 xl:mt-4 text-[13px] xl:text-[16px] text-ink-mute">{plan.taxNote}</p>
+                {plan.priceLabel && (
+                  <p className="mt-1.5 whitespace-nowrap text-[12px] xl:text-[13px] text-ink-mute leading-snug">面談を受けた方に適用される価格です。</p>
+                )}
               </div>
 
               <ul className="mt-7 lg:mt-9 space-y-3 mb-7 flex-1">
