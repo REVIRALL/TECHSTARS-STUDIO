@@ -3,6 +3,7 @@ import { SectionId, PageType } from '../types';
 import { PLANS, isCheckoutEnabled, isTestMode, formatYen } from '../services/stripeConfig';
 import { ImageFrame } from './ImageFrame';
 import { GenIcon } from './GenIcon';
+import { REQUEST_URL } from '../content/links';
 
 interface PricingProps {
   onOpenPage: (page: PageType) => void;
@@ -48,11 +49,11 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
       </div>
 
       <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
-        <div className="anim-hidden anim-up flex flex-col md:flex-row justify-between items-start md:items-end mb-8 lg:mb-10 gap-3 pt-6 lg:pt-14">
+        <div className="anim-hidden anim-up flex flex-col items-start mb-8 lg:mb-10 gap-2 lg:gap-3 pt-6 lg:pt-14">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black jp-display text-ink">
             料金プラン
           </h2>
-          <p className="text-sm sm:text-base font-bold text-ink md:mb-2">3つのプラン（すべてオンライン）</p>
+          <p className="text-sm sm:text-base font-bold text-ink">3つのプラン（すべてオンライン）</p>
         </div>
 
         {/* ★テストモードのまま本番に出ている場合の警告。塞いでいることを黙らない。 */}
@@ -65,7 +66,12 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
               </p>
               <p className="text-sm text-ink-soft leading-relaxed">
                 決済システムの審査手続き中のため、カードでのお申し込みを一時的に停止しています。
-                お申し込みご希望の方は下部のお問い合わせからご連絡ください。
+                {/* ★2026-11-17 fix-copy #15：前は「下部のお問い合わせから」だったが、LP に問い合わせ欄は無い。行き先は LMS の資料請求 */}
+                お問い合わせは、
+                <a href={REQUEST_URL} className="text-brand-700 font-bold underline underline-offset-4 hover:text-brand-800">
+                  資料請求のページ
+                </a>
+                からどうぞ。
               </p>
             </div>
           </div>

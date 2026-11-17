@@ -1,110 +1,84 @@
-import React, { useState } from 'react';
-import { SectionId, PortfolioItem } from '../types';
+import React from 'react';
+import { SectionId } from '../types';
 import { ImageFrame } from './ImageFrame';
+import { SCHEDULE } from '../content/program';
 
 /**
- * カリキュラム。
- * ★2026-11-16 明るい版。正本の絵は designs/lp-bright/sections/03-portfolio.png
- *  （左に4つの段のカード・右に選んでいる段の写真の窓。白い地・角丸のカード・水色の差し色）。
- *  1回目の絵は右の写真が「黒髪の男性が画面に向かう横顔」（ユーザーが嫌う定番）になったので描き直させた。
+ * カリキュラム（7日間の表）。
+ * ★2026-11-16 明るい版。正本の絵は designs/lp-bright/sections/03-portfolio.png と 04-process.png。
  *
- * ★2026-11-17 依頼主「// WHY NOW?　こういうのが全部AIっぽい」→ 見た目だけ直した（文は変えていない）。
- *  - 「// CURRICULUM」「// 7日間プログラム」の札、カードの上の帯（色の丸3つ）、「01」〜「04」の札、
- *    進み具合の棒と %、押しても飛ばない外へ出る矢印を外した。
- *  - 右の窓は「curriculum_preview.exe」・赤黄緑の丸・「LIVE」と下の「STATUS／RENDERING／7 DAYS…」を外し、写真だけ残した。
- *  - 日付は「1〜2日目」の形にそろえ、普通の書体で見出しの上に置く。地のぼかした写真の光も外した。
+ * ★2026-11-17 依頼主「// WHY NOW?　こういうのが全部AIっぽい」→
+ *  見た目（fix-visual.md）：英字の札・作り物の窓（赤黄緑の丸・curriculum_preview.exe・LIVE・STATUS）・「01」〜「04」の札・
+ *    進み具合の棒と %・5〜7日目だけ灰色・地のぼかした写真の光を外し、日付は「1日目」の形に。
+ *  文（fix-copy.md #8・#9）：7日間の説明が「カリキュラム」と「学習スケジュール」（と学習の流れ）の3区画に分かれ、
+ *    7日目の中身が3通り・3日目の講義が60分と90分で食い違っていたので、この区画の1つの表にまとめた。
+ *    中身は content/program.ts（料金の7日間コースと FAQ に合わせた物）。段の英単語（IGNITE など）は使わない。
+ *    学習スケジュールの区画（Process.tsx）は外し、その7枚の写真の帯だけこの区画に移した。
+ *    ナビ・最初の画面の「カリキュラム」はこの区画（#portfolio）へ飛ぶ。
  */
-
-const items: PortfolioItem[] = [
-  {
-    id: 1,
-    name: 'Web制作',
-    category: '1〜2日目',
-    description: 'Claude Code環境構築 → LP/ポートフォリオ実装 → レスポンシブ対応 → デプロイ',
-    slot: 'curriculum.01',
-  },
-  {
-    id: 2,
-    name: '業務自動化',
-    category: '3〜4日目',
-    description: 'GAS基礎 → Gmail自動返信 → スプレッドシート集計 → Slack通知連携',
-    slot: 'curriculum.02',
-  },
-  {
-    id: 3,
-    name: 'バックエンド',
-    category: '5〜6日目',
-    description: 'Render + Supabase環境構築 → DB設計 → CRUD実装 → 本番デプロイ',
-    slot: 'curriculum.03',
-  },
-  {
-    id: 4,
-    name: '卒業',
-    category: '7日目',
-    description: 'ポートフォリオ完成 → 案件獲得講座 → 見積もり実践 → コミュニティ招待',
-    slot: 'curriculum.04',
-  },
-];
-
 export const Portfolio: React.FC = () => {
-  const [activeId, setActiveId] = useState<number>(items[0].id);
-  const active = items.find((i) => i.id === activeId) ?? items[0];
-
   return (
-    <section id={SectionId.Portfolio} className="lp-sec relative bg-white overflow-hidden">
+    <section id={SectionId.Portfolio} className="lp-sec relative bg-mist text-ink overflow-hidden">
       <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
-        <div className="anim-hidden anim-up mb-8 lg:mb-12">
+        <div className="anim-hidden anim-up flex flex-col md:flex-row justify-between items-start md:items-end gap-3 mb-8 lg:mb-10">
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-black jp-display text-ink">カリキュラム</h2>
+          <p className="max-w-xl text-sm sm:text-[15px] leading-relaxed text-ink-soft md:text-right text-pretty">
+            7日間コースの流れです。講義は4回（各90分）で、日程はご相談のうえ決めます。
+          </p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
-          {/* ===== リスト ===== */}
-          <div className="lg:col-span-7 space-y-4 lg:space-y-5">
-            {items.map((item) => {
-              const isActive = item.id === activeId;
-              return (
-                <div
-                  key={item.id}
-                  className={`anim-hidden anim-left relative overflow-hidden rounded-xl bg-white transition-[box-shadow] duration-300 cursor-pointer ${
-                    isActive ? 'shadow-lift ring-2 ring-brand-400' : 'shadow-card'
-                  }`}
-                  onMouseEnter={() => setActiveId(item.id)}
-                  onFocus={() => setActiveId(item.id)}
-                  tabIndex={0}
-                >
-                  {/* モバイル・タブレットでは画像をカード内に直接出す（右のプレビューが無いため） */}
-                  <div className="lg:hidden relative aspect-[16/10]">
-                    <ImageFrame slot={item.slot} fill density="compact" imgClassName="object-[50%_35%]" />
-                  </div>
-
-                  {/* 本文 */}
-                  <div className="p-5 md:px-7 md:py-6">
-                    <p className="text-[13px] sm:text-sm font-bold text-brand-700 mb-1">{item.category}</p>
-                    <h3 className={`text-xl md:text-2xl font-black mb-2 transition-colors ${isActive ? 'text-brand-700' : 'text-ink'}`}>
-                      {item.name}
-                    </h3>
-                    {/* 「→」でつないだ段の語（デプロイ・ポートフォリオ実装など）を途中で折らない。空白でだけ折り、入り切らない時だけ途中で折る */}
-                    <p className="text-[14px] md:text-[15px] text-ink-soft leading-relaxed [word-break:keep-all] [overflow-wrap:anywhere]">{item.description}</p>
-                  </div>
+        {/* 7日を表す写真の帯（飾り） */}
+        <div className="anim-hidden anim-scale mb-6 lg:mb-8 rounded-2xl bg-white shadow-card p-2 sm:p-3">
+          <ol className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 sm:gap-1" aria-hidden="true">
+            {SCHEDULE.map((d, i) => (
+              <li key={d.day} className="flex flex-col">
+                <div className={`relative aspect-[4/7] overflow-hidden ${i === 0 ? 'sm:rounded-l-xl' : ''} ${i === SCHEDULE.length - 1 ? 'sm:rounded-r-xl' : ''} rounded-lg sm:rounded-none`}>
+                  <ImageFrame slot={`schedule.0${i + 1}`} fill density="compact" imgClassName="object-[50%_30%]" />
                 </div>
-              );
-            })}
-          </div>
+                <span className="mt-2 mb-1 text-center font-bold text-[13px] text-brand-700">{d.day}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-          {/* ===== 追従プレビュー（PCのみ）。写真だけ ===== */}
-          <div className="anim-hidden anim-scale hidden lg:block lg:col-span-5 relative">
-            <div className="sticky top-32 overflow-hidden rounded-xl bg-white shadow-lift">
-              <div className="relative aspect-[8/7]">
-                <ImageFrame slot={active.slot} fill density="compact" imgClassName="object-[50%_30%]">
-                  <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-ink/70 via-ink/0 to-transparent" />
-                  <div className="absolute bottom-5 left-6 right-6 z-10 pointer-events-none">
-                    <p className="text-sm font-bold text-white">{active.category}</p>
-                    <p className="text-3xl font-black jp-display text-white">{active.name}</p>
-                  </div>
-                </ImageFrame>
-              </div>
-            </div>
-          </div>
+        {/* 7日間の表（日・やること・講義か自習・できる物）。スマホは1日ずつ縦に積む */}
+        <div className="anim-hidden anim-up rounded-2xl bg-white shadow-card px-5 sm:px-8 lg:px-10 py-2 sm:py-4">
+          <table className="block md:table w-full border-collapse text-left">
+            <thead className="hidden md:table-header-group">
+              <tr className="border-b border-slate-200 text-[13px] text-ink-mute">
+                <th scope="col" className="py-3.5 pr-6 font-bold whitespace-nowrap">日</th>
+                <th scope="col" className="py-3.5 pr-6 font-bold">やること</th>
+                <th scope="col" className="py-3.5 pr-6 font-bold whitespace-nowrap">講義・自習</th>
+                <th scope="col" className="py-3.5 font-bold whitespace-nowrap">できる物</th>
+              </tr>
+            </thead>
+            <tbody className="block md:table-row-group">
+              {SCHEDULE.map((d, i) => (
+                <tr
+                  key={d.day}
+                  className={`grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 py-4 md:table-row md:py-0 ${i < SCHEDULE.length - 1 ? 'border-b border-slate-200' : ''}`}
+                >
+                  <th scope="row" className="md:table-cell md:py-5 md:pr-6 align-top text-[15px] md:text-base font-black text-brand-700 whitespace-nowrap">
+                    {d.day}
+                  </th>
+                  <td className="col-span-2 row-start-2 md:table-cell md:py-5 md:pr-6 align-top text-base md:text-[17px] font-bold leading-relaxed text-ink [word-break:keep-all] [overflow-wrap:anywhere] md:col-auto md:row-auto">
+                    {d.what}
+                  </td>
+                  <td className="col-start-2 row-start-1 self-center md:table-cell md:py-5 md:pr-6 align-top text-[13px] md:text-sm font-bold text-ink-mute whitespace-nowrap md:col-auto md:row-auto">
+                    <span className="md:hidden">（</span>{d.mode}<span className="md:hidden">）</span>
+                  </td>
+                  <td className="col-span-2 md:table-cell md:py-5 align-top text-sm md:text-[15px] text-ink-soft md:whitespace-nowrap md:col-auto">
+                    {d.make ? (
+                      <>
+                        <span className="md:hidden">できる物：</span>
+                        {d.make}
+                      </>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>

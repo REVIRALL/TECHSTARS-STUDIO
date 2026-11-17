@@ -12,7 +12,9 @@ html {
   scroll-behavior: smooth;
 }
 /* 固定ナビの下に見出しが潜らないようにする */
-section[id] {
+section[id],
+#flow,
+#instructors {
   scroll-margin-top: 96px;
 }
 body {

@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
 import { ImageFrame } from './ImageFrame';
 import { GenIcon } from './GenIcon';
+import { REQUEST_URL } from '../content/links';
 
 /**
  * こういう人向け と 君も、星になれ。（お問い合わせ）
@@ -17,6 +18,15 @@ import { GenIcon } from './GenIcon';
  *  - 「$ mission …」「$ status …」の作り物の端末の行をやめ、「メール：support@techstars.studio」だけ残した。
  *  - 相談の箱の「ai_consultation.exe」・赤黄緑の丸・「READY」・「>」の題の帯と、すりガラス風のぼかしを外し、白一色に。
  *  - 地のぼかした写真の光、カードに指を乗せた時の影の変化を外した。
+ *
+ * ★2026-11-17 文の直し（fix-copy.md）：
+ *  #12 一言の帯を「当てはまる物があれば、下から無料で相談できます。」に。6枚は意味を変えずに「短文。短文」の2拍をばらした。
+ *  #13 「君も、星になれ。」「TECH × 星」「7日後、別人になっている。」をやめ、
+ *      見出し「まずは無料で、話を聞いてください。」・説明「7日間で何を作るか…講師が無料でお答えします。」に。
+ *  #14 出典の無い引用を外した。
+ *  #15 相談の行き先を LMS の資料請求（content/links.ts）にし、見出しの下に大きいボタンで置く。
+ *      AI 診断の箱は残すが、相談の受け口ではないと分かるよう「AIにその場で聞く（答えるのはAI）」の名前にした。
+ *  #17 AI 診断のボタン「EXECUTE」→「AIに聞いてみる」。
  */
 
 /**
@@ -38,7 +48,7 @@ const ValidatorSkeleton: React.FC = () => (
       </div>
       <div className="px-4 py-3 flex justify-end items-center bg-white">
         <div className="min-h-[44px] flex items-center px-6 rounded-lg bg-slate-200 text-ink-mute text-sm font-black">
-          EXECUTE
+          AIに聞いてみる
         </div>
       </div>
     </div>
@@ -46,12 +56,12 @@ const ValidatorSkeleton: React.FC = () => (
 );
 
 const TARGETS = [
-  'Progateで挫折した。でも諦めたくない',
-  '仕事が忙しい。週末しか時間がない',
-  'ChatGPTは使ってる。もっと実用的に使いたい',
-  '副業したい。でも何から始めていいかわからない',
-  '毎日同じ作業の繰り返し。自動化したい',
-  'エンジニアに転職したい。独学は限界',
+  'Progate を途中でやめてしまったが、まだ諦めていない',
+  '平日は忙しく、週末しか時間が取れない',
+  'ChatGPT を使っているが、仕事でもっと役立てたい',
+  '副業を始めたいのに、何から手をつければいいか分からない',
+  '毎日くり返している作業を、自動にしたい',
+  '独学に限界を感じていて、エンジニアへの転職も考えている',
 ];
 
 export const Contact: React.FC = () => {
@@ -92,15 +102,15 @@ export const Contact: React.FC = () => {
               >
                 <div className="flex h-full items-center gap-4 p-5 sm:px-6 sm:py-6">
                   <GenIcon name="check" className="w-7 h-7" />
-                  <p className="jp-body text-[15px] font-medium text-ink text-pretty">{text}</p>
+                  <p className="jp-body text-[15px] font-medium text-ink ![word-break:keep-all]">{text}</p>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="anim-hidden anim-up mt-8 lg:mt-10 text-center">
-            <p className="inline-block rounded-xl bg-brand-50 px-6 sm:px-8 py-3.5 text-ink font-black text-[15px] sm:text-base text-balance">
-              <span className="text-brand-700">1つでも刺さったら、</span>詳細を見てほしい。
+            <p className="inline-block rounded-xl bg-brand-50 px-6 sm:px-8 py-3.5 text-ink font-black text-[15px] sm:text-base [word-break:keep-all] [overflow-wrap:anywhere]">
+              <span className="text-brand-700">当てはまる物があれば、</span>下から無料で相談できます。
             </p>
           </div>
         </div>
@@ -124,33 +134,37 @@ export const Contact: React.FC = () => {
 
           {/* 見出しと説明 */}
           <div className="anim-hidden anim-left col-start-1 row-start-1 relative z-10 self-start pt-6 sm:pt-10 lg:pt-0">
-            <h2 className="text-[44px] md:text-6xl lg:text-7xl leading-[1.08] font-black text-ink tracking-tight mb-5 lg:mb-6">
-              君も、<br /><span className="text-brand-700">星になれ。</span>
+            <h2 className="text-[32px] sm:text-[44px] md:text-[56px] lg:text-[42px] xl:text-[52px] leading-[1.2] font-black text-ink tracking-tight mb-5 lg:mb-6 whitespace-nowrap">
+              まずは無料で、<br /><span className="text-brand-700">話を聞いてください。</span>
             </h2>
-            <p className="text-[15px] sm:text-lg text-ink-soft font-medium leading-[1.8] max-w-md">
-              TECHSTARSは「TECH × 星」。<br/>
-              テクノロジーの力で、あなたを輝く星に変える。<br/>
-              <span className="text-ink font-bold">7日後、別人になっている。</span>
+            <p className="text-[15px] sm:text-lg text-ink-soft font-medium leading-[1.8] max-w-md text-pretty">
+              7日間で何を作るか、あなたの仕事でどう使えるかを、講師が無料でお答えします。
             </p>
           </div>
 
-          {/* 引用と連絡先 */}
+          {/* 相談の行き先（LMS の資料請求）と連絡先 */}
           <div className="anim-hidden anim-left col-start-1 row-start-2 relative z-10 pt-8 lg:pt-10">
-            <p className="mb-8 max-w-md text-sm sm:text-[15px] leading-[1.8] text-ink-soft">
-              "コードを書かなくても、システムは作れる。<br/>
-              AIを味方につけた者が、次の時代を創る。"
-            </p>
+            <a
+              href={REQUEST_URL}
+              className="group mb-6 inline-flex items-center gap-3 min-h-[56px] lg:min-h-[64px] px-7 lg:px-9 rounded-xl bg-brand-500 text-ink text-base sm:text-lg font-black shadow-cta hover:bg-brand-400 transition-colors duration-300"
+            >
+              無料で資料請求・相談する
+              <GenIcon name="arrow-right" className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
+            </a>
 
             <p className="text-sm sm:text-[15px] text-ink">
               <span className="font-bold">メール：</span>support@techstars.studio
             </p>
           </div>
 
-          {/* 相談の箱 */}
+          {/* AI 診断の箱（相談の受け口ではない。答えるのは AI） */}
           <div className="anim-hidden anim-right col-start-1 row-start-3 lg:col-start-2 lg:row-start-1 lg:row-span-2 relative z-10 pt-10 pb-12 lg:p-0 lg:self-center">
             <div className="overflow-hidden rounded-2xl bg-white shadow-lift ring-1 ring-slate-200/70">
               <div className="p-5 sm:p-6 lg:p-8">
-                <h3 className="mb-5 text-xl sm:text-2xl font-black text-ink">無料で詳細を確認</h3>
+                <h3 className="mb-1.5 text-xl sm:text-2xl font-black text-ink">AIにその場で聞く</h3>
+                <p className="mb-5 text-sm text-ink-soft leading-relaxed text-pretty">
+                  答えるのはAIです。講師への相談は「無料で資料請求・相談する」からどうぞ。
+                </p>
                 {isVisible ? (
                   <Suspense fallback={<ValidatorSkeleton />}>
                     <IdeaValidator />

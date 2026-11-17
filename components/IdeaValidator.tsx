@@ -30,7 +30,8 @@ export const IdeaValidator: React.FC = () => {
       {/* ★2026-11-16 明るい版（正本の絵 designs/lp-bright/sections/07-contact.png の相談の箱）。
           ★2026-11-17 依頼主「こういうのが全部AIっぽい」→ 端末の印・「AI_DIAGNOSTIC_SYSTEM v2.0」「ONLINE」、
           入力欄の「>_」と等幅の書体、「GEMINI_ENGINE」「0 CHARS」、ボタンの光が走る動きとグラデーション、
-          答えの「OUTPUT_STREAM」「SUCCESS」を外した。入力欄には見える名札を付けた。 */}
+          答えの「OUTPUT_STREAM」「SUCCESS」を外した。入力欄には見える名札を付けた。
+          ★2026-11-17 fix-copy #17：ボタンを「EXECUTE」→「AIに聞いてみる」。見える字がそのままボタンの名前になるよう aria-label は外した */}
       <form onSubmit={handleSubmit} aria-label="AI診断フォーム">
         <label htmlFor="idea-input" className="block mb-2 text-sm font-bold text-ink">
           知りたいこと・お悩み
@@ -50,11 +51,11 @@ export const IdeaValidator: React.FC = () => {
             <button
               type="submit"
               disabled={loading || !idea.trim()}
-              aria-label="AI診断を開始する"
+              aria-label={loading ? '送信中' : undefined}
               className="min-h-[44px] px-6 rounded-lg bg-brand-500 text-ink text-sm font-black hover:bg-brand-400 disabled:bg-slate-200 disabled:text-ink-mute disabled:cursor-not-allowed transition-colors"
             >
               <span className="flex items-center gap-2">
-                {loading ? <GenIcon name="loader" className="w-5 h-5 animate-spin" /> : 'EXECUTE'}
+                {loading ? <GenIcon name="loader" className="w-5 h-5 animate-spin" /> : 'AIに聞いてみる'}
               </span>
             </button>
           </div>

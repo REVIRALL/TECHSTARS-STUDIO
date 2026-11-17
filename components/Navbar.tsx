@@ -42,10 +42,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
   }, [isMenuOpen]);
 
   const navLinks = [
-    { label: '学習の流れ', href: `#${SectionId.Model}` },
+    // ★2026-11-17 学習の流れは「7日間で作る3つの物」の下の小見出し（#flow）にある。区画の頭ではなくそこへ飛ばす
+    { label: '学習の流れ', href: '#flow' },
     { label: 'カリキュラム', href: `#${SectionId.Portfolio}` },
     { label: '料金プラン', href: `#${SectionId.Pricing}` },
-    { label: '講師陣', href: `#${SectionId.Team}` },
+    { label: '講師陣', href: '#instructors' },
   ];
 
   return (

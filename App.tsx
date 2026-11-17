@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { StudioModel } from './components/StudioModel';
-import { Process } from './components/Process';
 import { Portfolio } from './components/Portfolio';
 import { Pricing } from './components/Pricing';
 import { Team } from './components/Team';
@@ -66,8 +65,8 @@ const App: React.FC = () => {
       <main>
         <Hero />
         <StudioModel />
+        {/* ★2026-11-17 fix-copy #8：7日間の説明を「カリキュラム」の1区画の表にまとめ、学習スケジュール（Process）は外した */}
         <Portfolio />
-        <Process />
         <Pricing onOpenPage={handleOpenPage} />
         <Team />
         <Contact />

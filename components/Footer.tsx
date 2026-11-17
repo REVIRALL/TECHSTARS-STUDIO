@@ -12,6 +12,8 @@ interface FooterProps {
  *  上の端に引いていた水色の線と方眼の地は外した。
  * ★2026-11-17 依頼主「こういうのが全部AIっぽい」→ 地のぼかした写真の光、著作権の上の線、SNS の等幅の書体、
  *  「受付中」の前の緑の点を外し、著作権は「© 2026 TECHSTARS」を普通の字で。
+ * ★2026-11-17 文の直し（fix-copy #16）：行き先が「#」のままの SNS（本物の住所が分からない）と「受付中」（決済は準備中）を外した。
+ *  一言は、古い見出し「7日間でプロへ。」の言い過ぎをやめ、最初の画面の新しい見出しにそろえた（言い切りの扱い）。
  */
 export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
   const linkClass = 'inline-flex items-center min-h-[44px] text-left text-ink hover:text-brand-700 transition-colors';
@@ -28,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
               </div>
             </div>
             <p className="text-sm sm:text-base text-ink-soft max-w-xs sm:max-w-none">
-              7日間でプロへ。AIと作る、動くシステム3つ。
+              7日間で、動くシステムを3つ作る。
             </p>
           </div>
 
@@ -56,17 +58,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
                 特定商取引法に基づく表記
               </button>
             </div>
-            <div className="flex flex-col">
-              <span className="text-ink-mute font-bold pb-1">SNS</span>
-              <a href="#" className={linkClass}>Twitter / X</a>
-              <a href="#" className={linkClass}>Instagram</a>
-            </div>
           </div>
         </div>
 
-        <div className="pt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[13px] text-ink-mute text-center">&copy; {new Date().getFullYear()} TECHSTARS</p>
-          <span className="text-[13px] font-bold text-ink">受付中</span>
+        <div className="pt-4">
+          <p className="text-[13px] text-ink-mute text-center md:text-left">&copy; {new Date().getFullYear()} TECHSTARS</p>
         </div>
       </div>
     </footer>

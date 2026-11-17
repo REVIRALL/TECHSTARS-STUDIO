@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PageType } from '../types';
 import { findPlan, isTestMode } from '../services/stripeConfig';
 import { GenIcon } from './GenIcon';
+import { REQUEST_URL } from '../content/links';
 
 export type CheckoutOutcome = 'thanks' | 'cancel';
 
@@ -109,8 +110,9 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
               料金プランへ戻る
               <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
+            {/* ★2026-11-17 fix-copy #15：相談の行き先は LMS の資料請求（前は LP の AI 診断の箱へ戻していた） */}
             <a
-              href="/#contact"
+              href={REQUEST_URL}
               className="inline-flex items-center justify-center gap-2 min-h-[56px] px-8 rounded-xl border-2 border-brand-500 bg-white text-brand-700 text-base font-bold hover:bg-brand-500 hover:text-ink transition-colors"
             >
               相談してから決めたい

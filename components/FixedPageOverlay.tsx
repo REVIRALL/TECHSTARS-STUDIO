@@ -50,7 +50,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                <div className="text-left md:text-right text-sm text-ink-soft">
                   <p>7日間プログラム</p>
                   <p>オンライン / 日本全国</p>
-                  <p>受付中</p>
+                  {/* ★2026-11-17 fix-copy #16 と同じ理由（決済は準備中）で「受付中」は外した */}
                </div>
             </div>
 
@@ -59,7 +59,8 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                <div className="lg:col-span-7">
                   <div className="prose prose-lg max-w-none">
                      <p className="text-xl md:text-2xl font-bold leading-relaxed mb-8">
-                        7日間で、次世代エンジニアへ。<br/>
+                        {/* ★2026-11-17 fix-copy「言い切りの扱い」：「次世代エンジニアへ」の言い過ぎをやめ、最初の画面の見出しにそろえた */}
+                        7日間で、動くシステムを3つ作ります。<br/>
                         <span className="bg-brand-200 px-1">AIを相棒にした開発スキル</span>を習得します。
                      </p>
                      {/* ★「確実に」は効果の断定で、景表法5条1号（優良誤認）と特商法12条の
@@ -83,7 +84,8 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                         <div className="bg-white p-6 rounded-2xl shadow-card">
                            <GenIcon name="database" className="w-10 h-10 mb-4" />
                            <h4 className="font-black text-lg mb-2">実践スキル</h4>
-                           <p className="text-sm text-slate-500">実務で即使えるスキル</p>
+                           {/* ★2026-11-17 fix-copy「言い切りの扱い」：「実務で即使える」→「業務で使える形まで作る」 */}
+                           <p className="text-sm text-slate-500">業務で使える形まで作る</p>
                         </div>
                      </div>
                   </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { SectionId } from '../types';
 import { ImageFrame } from './ImageFrame';
 import { GenIcon } from './GenIcon';
+import { REQUEST_URL } from '../content/links';
 
 /**
  * ヒーロー。
@@ -104,26 +105,28 @@ export const Hero: React.FC = () => {
         {/* ★2026-11-17 見出しの上の英字の札「AI ENGINEER BOOTCAMP」（等幅・字間の広い大文字）は外した（依頼主「こういうのが全部AIっぽい」）。
             札の分だけ見出しが上がるので、上の余白を少し足して写真との釣り合いを保つ */}
         <div className="relative z-20 w-full max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[88px] pt-[104px] sm:pt-32 lg:pt-[176px] pb-8 lg:pb-12 flex-1 flex flex-col">
-          {/* 主役。最初に描く物なので動かさない */}
-          <h1 className="mb-4 sm:mb-7 lg:mb-8 font-black tracking-[-0.02em] leading-[1.02]">
-            <span className="block text-[15vw] sm:text-[12vw] lg:text-[8vw] xl:text-[118px] [@media(max-height:700px)]:text-[12.5vw] lg:[@media(max-height:700px)]:text-[7vw] text-ink">
-              7日間で
+          {/* 主役。最初に描く物なので動かさない。
+              ★2026-11-17 文の直し（fix-copy #1）：「7日間で プロへ。」→「7日間で、」「動くシステムを3つ作る。」。
+              2行目（全角10字＋数字）が 360px 幅でも1行に収まる大きさ（8.2vw）にし、1行目はそれより一回り大きくする */}
+          <h1 className="mb-4 sm:mb-7 lg:mb-8 font-black tracking-[-0.02em] leading-[1.18]">
+            <span className="block text-[12vw] sm:text-[11vw] lg:text-[5.8vw] xl:text-[84px] [@media(max-height:700px)]:text-[10.5vw] lg:[@media(max-height:700px)]:text-[5.6vw] text-ink">
+              7日間で、
             </span>
-            <span className="block text-[15vw] sm:text-[12vw] lg:text-[8vw] xl:text-[118px] [@media(max-height:700px)]:text-[12.5vw] lg:[@media(max-height:700px)]:text-[7vw] text-brand-700">
-              プロへ。
+            <span className="block whitespace-nowrap text-[8.2vw] sm:text-[8vw] lg:text-[4vw] xl:text-[58px] [@media(max-height:700px)]:text-[7.6vw] lg:[@media(max-height:700px)]:text-[4vw] text-brand-700">
+              動くシステムを3つ作る。
             </span>
           </h1>
 
+          {/* ★2026-11-17 fix-copy #2：説明は1文に */}
           <p className="fv-in fv-in-2 max-w-[30em] mb-5 sm:mb-8 lg:mb-9 text-[15px] sm:text-lg lg:text-[22px] leading-[1.75] lg:leading-[1.65] font-medium text-ink [@media(max-height:700px)]:text-[14px]">
-            コードは書かない。<span className="font-bold">AIに指示を出す。</span>
-            <br className="hidden sm:block" />
-            7日後、動くシステムが3つ、手元に残る。
+            AIに指示を出して、動くシステムを3つ作ります。
           </p>
 
           {/* CTA。ファーストビュー内に必ず置く */}
           <div className="fv-in fv-in-3 flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8">
+            {/* ★2026-11-17 fix-copy #15：行き先を AI 診断の箱から LMS の資料請求へ */}
             <a
-              href={`#${SectionId.Contact}`}
+              href={REQUEST_URL}
               className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[68px] px-7 lg:px-10 rounded-xl bg-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:bg-brand-400 transition-colors duration-300"
             >
               無料で詳細を見る
