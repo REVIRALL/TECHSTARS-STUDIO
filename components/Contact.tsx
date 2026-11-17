@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { SectionId } from '../types';
 import { ImageFrame } from './ImageFrame';
 import { GenIcon } from './GenIcon';
-import { REQUEST_URL } from '../content/links';
+import { REQUEST_URL, REQUEST_BY_MAIL } from '../content/links';
 
 /**
  * こういう人向け と 君も、星になれ。（お問い合わせ）
@@ -135,7 +135,10 @@ export const Contact: React.FC = () => {
               まずは無料で、<br /><span className="text-brand-700">話を聞いてください。</span>
             </h2>
             <p className="jp-text text-[15px] sm:text-lg lg:text-[20px] text-ink-soft font-medium leading-[1.8] max-w-[24em] mb-7 lg:mb-9">
-              資料請求のページから、資料のお届けとご質問の受け付けをしています。
+              {/* ★2026-11-17 行き先が一時的にメールの間は文もメールに合わせる（content/links.ts の REQUEST_BY_MAIL）。LMS の資料請求に戻すと自動で前の文に戻る */}
+              {REQUEST_BY_MAIL
+                ? 'メールで、資料のお届けとご質問の受け付けをしています。'
+                : '資料請求のページから、資料のお届けとご質問の受け付けをしています。'}
             </p>
             {/* 相談の行き先（LMS の資料請求）と連絡先 */}
             <a
