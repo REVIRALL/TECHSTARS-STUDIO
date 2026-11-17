@@ -25,11 +25,18 @@ import { GenIcon } from './GenIcon';
  * label は盾の内側で折り返す位置を決めて行に分けてある（自然な折り返しだと「作/る」のように切れる）。
  * img の幅と高さは画像の実寸（読み込み中に高さがずれないように）。
  */
+/*
+  ★2026-11-17 エンブレムの2回目。ユーザー「王冠はもうちょっとLPに使われてるような感じで。真ん中が黒い青だと暗い感じになるから、
+    白系がいいかも真ん中は。王冠自体は金でいいけど」→ 白系の5案から「４」＝金の月桂樹の輪の中に白い円・上に金の王冠
+    （public/img/crown-*.webp・字の無い透明の画像。描かせた台本は LMS 側の designs/lp-emblem2）。
+    「もう一回りサイズ小さくてもいいかも。今の主張強いので」→ 高さを PC 226→184px・スマホ 150→136px に。
+    字は白い円の内側（画像の横 19〜80%・縦 26〜83% を測った値）に、紺と読める濃さの青で載せる。
+*/
 const STATS = [
-  { value: '7', unit: '日間', label: ['最短で完走'], img: '/img/emblem-1.webp', w: 394, h: 420 },
-  { value: '3', unit: '種', label: ['動くシステム', 'を作る'], img: '/img/emblem-2.webp', w: 370, h: 420 },
-  { value: '1:1', unit: '', label: ['マンツーマン', '指導'], img: '/img/emblem-3.webp', w: 354, h: 420 },
-  { value: '∞', unit: '', label: ['卒業後も', 'つながる'], img: '/img/emblem-4.webp', w: 368, h: 420 },
+  { value: '7', unit: '日間', label: ['最短で完走'], img: '/img/crown-1.webp', w: 412, h: 420 },
+  { value: '3', unit: '種', label: ['動くシステム', 'を作る'], img: '/img/crown-2.webp', w: 404, h: 420 },
+  { value: '1:1', unit: '', label: ['マンツーマン', '指導'], img: '/img/crown-3.webp', w: 400, h: 420 },
+  { value: '∞', unit: '', label: ['卒業後も', 'つながる'], img: '/img/crown-4.webp', w: 396, h: 420 },
 ];
 
 const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
@@ -37,7 +44,7 @@ const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
     {STATS.map((s) => (
       <div
         key={s.value}
-        className="group relative h-[150px] sm:h-[176px] lg:h-[200px] xl:h-[226px] transition-transform duration-300 hover:-translate-y-1"
+        className="group relative h-[136px] sm:h-[150px] lg:h-[168px] xl:h-[184px] transition-transform duration-300 hover:-translate-y-1"
         style={{ aspectRatio: `${s.w} / ${s.h}` }}
       >
         <img
@@ -47,20 +54,20 @@ const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
           alt=""
           aria-hidden="true"
           decoding="async"
-          className="absolute inset-0 h-full w-full select-none [filter:drop-shadow(0_12px_18px_rgba(11,27,46,0.28))]"
+          className="absolute inset-0 h-full w-full select-none [filter:drop-shadow(0_8px_14px_rgba(11,27,46,0.18))]"
         />
-        <div className="absolute inset-x-[21%] top-[33%] bottom-[27%] flex flex-col items-center justify-center text-center">
+        <div className="absolute inset-x-[22%] top-[29%] bottom-[19%] flex flex-col items-center justify-center text-center">
           <dd className="flex items-baseline justify-center gap-0.5 leading-none">
-            <span className="text-[30px] sm:text-[36px] lg:text-[40px] xl:text-[46px] font-black tracking-[-0.04em] tabular-nums text-brand-400 [text-shadow:0_0_16px_rgba(0,229,255,0.55)]">
+            <span className="text-[26px] sm:text-[30px] lg:text-[34px] xl:text-[38px] font-black tracking-[-0.04em] tabular-nums text-brand-700">
               {s.value}
             </span>
             {s.unit && (
-              <span className="text-[13px] sm:text-[15px] lg:text-base xl:text-lg font-black text-brand-400 [text-shadow:0_0_12px_rgba(0,229,255,0.45)]">
+              <span className="text-[12px] sm:text-[13px] lg:text-[14px] xl:text-[15px] font-black text-brand-700">
                 {s.unit}
               </span>
             )}
           </dd>
-          <dt className="mt-1.5 sm:mt-2 text-[12px] lg:text-[13px] xl:text-[14px] font-bold leading-[1.35] tracking-[0.02em] text-white">
+          <dt className="mt-1 sm:mt-1.5 text-[12px] xl:text-[13px] font-bold leading-[1.35] tracking-[0.02em] text-ink">
             {s.label.map((line) => (
               <span key={line} className="block whitespace-nowrap">
                 {line}
