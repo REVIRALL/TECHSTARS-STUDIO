@@ -3,7 +3,7 @@ import { SectionId, PageType } from '../types';
 import { PLANS, isCheckoutEnabled, isTestMode, formatYen } from '../services/stripeConfig';
 import { ImageFrame } from './ImageFrame';
 import { GenIcon } from './GenIcon';
-import { REQUEST_URL } from '../content/links';
+import { REQUEST_URL, REQUEST_BY_MAIL, SUPPORT_EMAIL } from '../content/links';
 
 interface PricingProps {
   onOpenPage: (page: PageType) => void;
@@ -70,11 +70,25 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
               <p className="text-sm sm:text-base text-ink-soft leading-relaxed">
                 決済システムの審査手続き中のため、カードでのお申し込みを一時的に停止しています。
                 {/* ★2026-11-17 fix-copy #15：前は「下部のお問い合わせから」だったが、LP に問い合わせ欄は無い。行き先は LMS の資料請求 */}
-                お問い合わせは、
-                <a href={REQUEST_URL} className="text-brand-700 font-bold underline underline-offset-4 hover:text-brand-800">
-                  資料請求のページ
-                </a>
-                からどうぞ。
+                {/* ★2026-11-17 LMS の資料請求が本番に出るまで行き先はメール（content/links.ts）。メールの間はメールだと分かる文にする。
+                    REQUEST_URL を LMS に戻すと、下の「資料請求のページからどうぞ」の文に自動で戻る */}
+                {REQUEST_BY_MAIL ? (
+                  <>
+                    お問い合わせは、
+                    <a href={REQUEST_URL} className="text-brand-700 font-bold underline underline-offset-4 hover:text-brand-800 [overflow-wrap:anywhere]">
+                      {SUPPORT_EMAIL}
+                    </a>
+                    までメールでどうぞ。
+                  </>
+                ) : (
+                  <>
+                    お問い合わせは、
+                    <a href={REQUEST_URL} className="text-brand-700 font-bold underline underline-offset-4 hover:text-brand-800">
+                      資料請求のページ
+                    </a>
+                    からどうぞ。
+                  </>
+                )}
               </p>
             </div>
           </div>

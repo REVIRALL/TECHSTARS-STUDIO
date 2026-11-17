@@ -14,6 +14,13 @@ import { REQUEST_URL } from '../content/links';
  *  - 写真は v2 の場面を字と UI を抜いて描き直した物（PC 16:9・スマホ 9:16。content/imageSlots.ts の hero.backdrop）。
  *  - スマホは写真を画面いっぱい（100svh・下限540px）に敷き、字はその上（字の下に白いかすみ）。
  *    2人は写真の下の半分にいるので、object-position を下に寄せて主役を必ず画面に入れる。
+ *  ★2026-11-17 依頼主「ここの手前のレイヤーに文字重ねないと。なんで？」（スマホの最初の画面で、字が写真に1つも重なっていなかった）。
+ *    原因：白いかすみが写真の上半分を白で塗りつぶし、写真は下に寄せて人物が字から逃げ、字は画面の上半分を使っていた。
+ *    → スマホ・タブレット（lg 未満）だけ：白いかすみを外し、字の塊を画面の下に寄せて、写真の手前に白い字で重ねる。
+ *      字の後ろは下から濃い紺のぼかし（字の塊に付けて伸び縮み）。見出しの2行目は紺の地で読める明るいシアン（brand-300）。
+ *      写真は下を支点に 1.35 倍にして、2人の顔を画面の上〜中ほどへ上げる（タブレットは等倍で顔が上半分に来る）。
+ *      背の低いスマホ（高さ 600px 以下・320x568 など）は字の塊が画面の4割を超えるので、1.55 倍にして顔をもう一段上げ、下の余白を少し詰める。
+ *      文は変えず、大きさと間隔だけ詰めた。「カリキュラムを見る」は白い札をやめ、白い字の文字リンク。PC（lg 以上）は変えない。
  *  - 実績の4つは「王冠のエンブレム」。前の回にユーザーが5（王冠のエンブレム）を選び、
  *    「エンブレムだけはこの派手さでいいけど背景とかは透過して」。字の無い透明の画像（public/img/emblem-*.webp）の
  *    盾の内側に、字をサイトの文字として載せる（読み上げと検索のため。画像に焼き込まない）。
@@ -103,56 +110,63 @@ export const Hero: React.FC = () => {
             slot="hero.backdrop"
             fill
             priority
-            imgClassName="object-cover object-[50%_100%] md:object-[72%_100%] lg:object-[84%_42%] lg:scale-[1.22] lg:origin-[80%_42%]"
+            imgClassName="object-cover object-[58%_100%] scale-[1.35] max-md:[@media(max-height:600px)]:scale-[1.55] origin-[50%_100%] md:object-[72%_100%] md:scale-100 lg:object-[84%_42%] lg:scale-[1.22] lg:origin-[80%_42%]"
             placeholderClassName="opacity-60"
             chipPosition="top-24 right-4"
-          >
-            {/* 字の下だけ白いかすみ（スマホ・タブレット）。PC は写真が字にかからない */}
-            <div className="absolute inset-0 pointer-events-none lg:hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_38%,rgba(255,255,255,0.55)_56%,rgba(255,255,255,0)_72%)]" />
-          </ImageFrame>
+          />
         </div>
         {/* スマホは写真の下の端を白い弧にする（絵 fv-sp の写真の丸み） */}
-        <div aria-hidden="true" className="lg:hidden absolute z-[1] -left-[35%] w-[130%] -bottom-[46px] h-[96px] rounded-[50%] bg-white pointer-events-none" />
+        <div aria-hidden="true" className="lg:hidden absolute z-[25] -left-[35%] w-[130%] -bottom-[46px] h-[96px] rounded-[50%] bg-white pointer-events-none" />
         {/* スマホの画面の端の円（絵 fv-sp の右上・左下の円） */}
         <span aria-hidden="true" className="dot lg:hidden z-[1] w-[120px] h-[120px] -right-[36px] -top-[44px] opacity-90" />
         <span aria-hidden="true" className="dot lg:hidden z-[1] w-9 h-9 right-[30%] top-[40px] opacity-90" />
 
         {/* ===== 本文 ===== */}
-        <div className="relative z-20 w-full max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[86px] pt-[104px] sm:pt-32 lg:pt-[196px] pb-8 lg:pb-0 flex-1 flex flex-col">
+        <div className="relative z-20 w-full max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[86px] pt-[104px] sm:pt-32 lg:pt-[196px] pb-16 max-md:[@media(max-height:600px)]:pb-14 lg:pb-0 flex-1 flex flex-col justify-end lg:justify-start">
+          {/* 字の塊（見出し・説明・2つのボタン）。スマホ・タブレットは写真の手前に白い字で重ねる */}
+          <div className="relative">
+          {/* 字の後ろの濃い紺のぼかし（スマホ・タブレット）。字の塊の上 120px からなめらかに濃くなり、字の上端で 0.8・下で 0.86。
+              字の塊の高さに合わせて伸び縮みするので、どの画面の高さでも字の後ろは同じ濃さになる（白い字で 4.5:1 以上）。
+              下の端は画面の下の白い弧の後ろへ入る */}
+          <div
+            aria-hidden="true"
+            className="lg:hidden absolute -z-10 -inset-x-5 sm:-inset-x-8 -top-[120px] -bottom-16 max-md:[@media(max-height:600px)]:-bottom-14 pointer-events-none bg-[linear-gradient(180deg,rgba(8,24,48,0)_0px,rgba(8,24,48,0.1)_24px,rgba(8,24,48,0.28)_52px,rgba(8,24,48,0.52)_80px,rgba(8,24,48,0.72)_104px,rgba(8,24,48,0.8)_120px,rgba(8,24,48,0.86)_100%)]"
+          />
           {/* 主役。最初に描く物なので動かさない。
               ★2026-11-17 文の直し（fix-copy #1）：「7日間で プロへ。」→「7日間で、」「動くシステムを3つ作る。」。
               2行目（全角10字＋数字）が 360px 幅でも1行に収まる大きさ（8.2vw）にし、1行目はそれより一回り大きくする */}
-          <h1 className="mb-4 sm:mb-7 lg:mb-7 font-black tracking-[-0.02em] leading-[1.18]">
-            <span className="block text-[12vw] sm:text-[11vw] lg:text-[5.6vw] xl:text-[80px] [@media(max-height:700px)]:text-[10.5vw] lg:[@media(max-height:700px)]:text-[5.4vw] text-ink">
+          <h1 className="mb-3 sm:mb-5 lg:mb-7 font-black tracking-[-0.02em] leading-[1.18]">
+            <span className="block text-[10.5vw] sm:text-[9.5vw] lg:text-[5.6vw] xl:text-[80px] [@media(max-height:700px)]:text-[10vw] lg:[@media(max-height:700px)]:text-[5.4vw] text-white lg:text-ink">
               7日間で、
             </span>
-            <span className="block whitespace-nowrap text-[8.2vw] sm:text-[8vw] lg:text-[3.9vw] xl:text-[56px] [@media(max-height:700px)]:text-[7.6vw] lg:[@media(max-height:700px)]:text-[3.9vw] text-brand-700">
+            <span className="block whitespace-nowrap text-[8.2vw] sm:text-[7.2vw] lg:text-[3.9vw] xl:text-[56px] [@media(max-height:700px)]:text-[7.6vw] lg:[@media(max-height:700px)]:text-[3.9vw] text-brand-300 lg:text-brand-700">
               動くシステムを3つ作る。
             </span>
           </h1>
 
           {/* ★2026-11-17 fix-copy #2：説明は1文に（作る3つの物・講師と1対1） */}
-          <p className="fv-in fv-in-2 max-w-[30.5em] mb-5 sm:mb-8 lg:mb-8 text-[15px] sm:text-lg lg:text-[21px] xl:text-[22px] leading-[1.75] lg:leading-[1.6] font-medium text-ink [@media(max-height:700px)]:text-[14px] [word-break:keep-all] [overflow-wrap:anywhere]">
+          <p className="fv-in fv-in-2 max-w-[30.5em] mb-4 sm:mb-6 lg:mb-8 text-[15px] sm:text-lg lg:text-[21px] xl:text-[22px] leading-[1.7] lg:leading-[1.6] font-medium text-white lg:text-ink [@media(max-height:700px)]:text-[14px] [word-break:keep-all] [overflow-wrap:anywhere]">
             Webサイト・業務の自動化・データベースを使うWebアプリを、講師と1対1で作ります。
           </p>
 
           {/* CTA。ファーストビュー内に必ず置く */}
-          <div className="fv-in fv-in-3 flex flex-wrap items-center gap-x-7 gap-y-2 sm:gap-x-8">
+          <div className="fv-in fv-in-3 flex flex-wrap items-center gap-x-5 gap-y-1 max-md:[@media(max-height:600px)]:gap-y-0 sm:gap-x-8 lg:gap-y-2">
             {/* ★2026-11-17 fix-copy #15：行き先を AI 診断の箱から LMS の資料請求へ */}
             <a
               href={REQUEST_URL}
-              className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[72px] px-7 lg:px-12 rounded-2xl bg-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:bg-brand-400 transition-colors duration-300"
+              className="group inline-flex items-center gap-3 min-h-[52px] sm:min-h-[56px] lg:min-h-[72px] px-6 sm:px-7 lg:px-12 rounded-2xl bg-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:bg-brand-400 transition-colors duration-300"
             >
               無料で詳細を見る
               <GenIcon name="arrow-right" className="w-6 h-6 lg:w-8 lg:h-8 group-hover:translate-x-1 transition-transform duration-300" eager />
             </a>
-            {/* スマホ・タブレットは写真の上に乗るので、字の後ろに白い丸い札を敷く（写真の暗い所でコントラストが 1.6 まで落ちた） */}
+            {/* スマホ・タブレットは紺のぼかしの上なので、白い字の文字リンク（押せると分かるよう下線つき）。PC は今のまま */}
             <a
               href={`#${SectionId.Portfolio}`}
-              className="inline-flex items-center min-h-[44px] px-4 -ml-1 lg:ml-0 lg:px-0 rounded-full bg-white/95 lg:bg-transparent text-sm sm:text-base lg:text-[19px] font-black text-brand-700 hover:underline underline-offset-4"
+              className="inline-flex items-center min-h-[44px] text-[15px] sm:text-base lg:text-[19px] font-black text-white underline decoration-2 underline-offset-[6px] lg:text-brand-700 lg:no-underline lg:hover:underline lg:decoration-auto lg:underline-offset-4"
             >
               カリキュラムを見る
             </a>
+          </div>
           </div>
 
           {/* PC は写真の下にかけて、エンブレム4つを中央にまとめて並べる（絵 fv-pc の位置） */}

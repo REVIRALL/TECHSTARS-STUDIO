@@ -10,6 +10,12 @@ import React from 'react';
  *   1つずつ背景を透明で描かせ、余白を切って 128px の正方形の WebP にした（public/img/icons/・名前は前と同じ）。
  *   描かせた台本と元の絵は LMS 側の作業場 designs/lp-creative（gen_lp_icons3.py・icons3/）にある。
  *
+ * ★2026-11-17 スマホのメニューを案4「円の写真の上に」（LMS 側 designs/lp-menu/v4.png）に組み直した時に3つ足した
+ *   （描かせた台本は designs/lp-menu/gen_menu_icons.py・縮めたのは to_webp.py）。
+ *   - menu-round・close-round：白い紙の丸のボタンごと描いた三本線と×。ボタンの丸の中心を画像の中心にそろえ、
+ *     スマホで 46px ほどに出すので 192px の正方形（ほかは 128px）。
+ *   - message-circle：「よくある質問」の前の吹き出し（今の31個に無かった）。128px。
+ *
  * ★印は飾り＝読み上げに渡さない（alt を空・aria-hidden）。意味は隣の文字が持つ。
  *   ボタンの中身が印だけになる所（メニューの開閉など）は、ボタンの側に aria-label を付ける。
  */
@@ -24,6 +30,7 @@ export type GenIconName =
   | 'check-circle'
   | 'circle-dashed'
   | 'close'
+  | 'close-round'
   | 'copy'
   | 'database'
   | 'download'
@@ -36,6 +43,8 @@ export type GenIconName =
   | 'lock'
   | 'mail'
   | 'menu'
+  | 'menu-round'
+  | 'message-circle'
   | 'monitor'
   | 'rotate'
   | 'settings'

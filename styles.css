@@ -163,6 +163,155 @@ body {
 @media (min-width: 641px) { .lp-sec-wave { padding-top: calc(64px + 48px); padding-bottom: calc(64px + 48px); } }
 @media (min-width: 1200px) { .lp-sec-wave { padding-top: calc(88px + 56px); padding-bottom: calc(88px + 56px); } }
 
+/* ==========================================================================
+   スマホのメニュー（2026-11-17）
+   依頼主「ハンバーガーメニューの画像も綺麗に生成」→ 5案 →「良い感じの案でいいよ」。案4「円の写真の上に」
+   （LMS 側 designs/lp-menu/v4.png）を写した。三本線・×・印は GPT に描かせた画像、丸い形は border-radius だけ（SVG にしない）。
+   飾りの線・光るグラデーション・ガラス風は使わない。
+   ========================================================================== */
+
+/* 開閉ボタン：白い紙の丸のボタン（画像）の後ろに淡い水色の円。三本線と×は同じ所に重ねて入れ替える */
+.m-toggle-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  background: #dcf2fd;
+}
+.m-toggle-img {
+  grid-area: 1 / 1;
+  position: relative;
+}
+.m-toggle-close { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+.m-toggle.is-open .m-toggle-menu { opacity: 0; transform: rotate(90deg) scale(0.6); }
+.m-toggle.is-open .m-toggle-close { opacity: 1; transform: none; }
+.m-toggle:focus-visible { outline: 3px solid #0675ad; outline-offset: 4px; }
+
+/* 開いた全画面のメニュー。閉じている間は見えない・押せない（visibility） */
+.m-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  overflow: hidden;
+  background: #edf8fd;
+  visibility: hidden;
+  opacity: 0;
+}
+.m-menu.is-open { visibility: visible; opacity: 1; }
+
+/* 右の写真（大きな丸みの形。左下が大きな弧） */
+.m-menu-photo {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  width: 74%;
+  height: 84%;
+  overflow: hidden;
+  background: #dcf2fd;
+  border-radius: 32px 32px 32px 50% / 32px 32px 32px 22%;
+}
+/* 写真は下に寄せて少し大きく：上に観葉植物、白い面の右に講師の顔が入る（4通り撮って選んだ） */
+.m-menu-photo img {
+  object-position: 45% 100%;
+  transform: scale(1.1);
+  transform-origin: 60% 100%;
+}
+.m-menu-dot { z-index: 2; }
+
+/* 左の白い丸みの面（右の端が大きな弧でふくらむ） */
+.m-menu-sheet {
+  position: absolute;
+  z-index: 3;
+  left: 10px;
+  top: 10px;
+  bottom: 0;
+  width: 68%;
+  background: #ffffff;
+  /* 上はロゴの所まで白、項目の高さで右へふくらみ、2つのボタンの下で大きく引っ込む（下に写真がのぞく）。
+     下の弧は高さの下 26% だけ＝ボタンの右の端が弧からはみ出さない（360x780 で測った） */
+  border-radius: 32px 36% 62% 0 / 32px 44% 26% 0;
+  box-shadow: 0 18px 40px -22px rgba(11, 27, 46, 0.22);
+}
+
+/* 項目と2つのボタン。白い面の中に収める */
+.m-menu-body {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 100px 34% 32px 32px;
+}
+.m-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  /* 箱は字の長さまで（全幅にすると、上の項目の箱の右上が白い面の弧の外＝写真の上に出て、選んだ時の枠が写真にかかる） */
+  width: fit-content;
+  padding-right: 12px;
+  min-height: 60px;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: #0b1b2e;
+  text-align: left;
+  white-space: nowrap;
+  border-radius: 14px;
+}
+.m-menu-link:hover span { color: #0675ad; }
+.m-menu-link:focus-visible,
+.m-menu-cta a:focus-visible { outline: 3px solid #0675ad; outline-offset: 3px; }
+.m-menu-icon { width: 34px; height: 34px; }
+.m-menu-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+/* 背の高い画面は項目の間を広げる（案4の詰まり方） */
+@media (min-height: 760px) {
+  .m-menu-link { min-height: 64px; font-size: 20px; }
+  .m-menu-icon { width: 36px; height: 36px; }
+}
+/* 背の低い画面（横向き・小さいスマホ）は詰める。収まらない時は中で動かせる。ボタンが画面の下の方に来るので、下の弧はさらに下で */
+@media (max-height: 700px) {
+  .m-menu-sheet { border-radius: 32px 36% 30% 0 / 32px 44% 14% 0; }
+  .m-menu-body { padding-top: 88px; }
+  .m-menu-link { min-height: 50px; font-size: 18px; }
+  .m-menu-icon { width: 30px; height: 30px; }
+  .m-menu-cta { margin-top: 16px; gap: 10px; }
+}
+@media (max-width: 359px) {
+  .m-menu-sheet { width: 70%; }
+  .m-menu-body { padding-left: 26px; padding-right: 30%; }
+  .m-menu-link { font-size: 17px; gap: 12px; }
+}
+
+/* 動き：開く時に、三本線のボタンの所から円が広がって開き、写真・白い面・項目が順に出る。閉じる時は薄くなって消える。
+   動きを減らす設定では動かさない（すぐ開いて、すぐ閉じる） */
+@keyframes mmReveal {
+  from { clip-path: circle(30px at calc(100% - 42px) 40px); }
+  to { clip-path: circle(150% at calc(100% - 42px) 40px); }
+}
+@keyframes mmPhoto { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes mmSheet { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+@keyframes mmItem { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+@media screen and (prefers-reduced-motion: no-preference) {
+  .m-toggle-img { transition: opacity 0.2s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+  .m-toggle:active .m-toggle-img { scale: 0.94; }
+  .m-menu { transition: opacity 0.22s ease, visibility 0s linear 0.22s; }
+  .m-menu.is-open { transition: opacity 0.22s ease; animation: mmReveal 0.5s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  .m-menu.is-open .m-menu-photo { transform-origin: 90% 4%; animation: mmPhoto 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .m-menu.is-open .m-menu-sheet { animation: mmSheet 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both; }
+  .m-menu.is-open .m-menu-item {
+    animation: mmItem 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.12s + var(--i, 0) * 0.04s);
+  }
+}
+@media print {
+  .m-menu, .m-toggle { display: none !important; }
+}
+
 /* 日本語の折り返し（2026-11-17）
    ・.jp-text＝本文。普通の折り返しに禁則（。、を行頭に置かない）。keep-all だと狭い列で「。」だけの行や語の途中の折れが出た
    ・.jp-phrase＝札・短い名前。Chrome は文節（auto-phrase）で折る。効かないブラウザは .jp-text と同じ */
