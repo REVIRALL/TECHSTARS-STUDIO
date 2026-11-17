@@ -117,9 +117,11 @@ export const Hero: React.FC = () => {
             </span>
           </h1>
 
-          {/* ★2026-11-17 fix-copy #2：説明は1文に */}
-          <p className="fv-in fv-in-2 max-w-[30em] mb-5 sm:mb-8 lg:mb-9 text-[15px] sm:text-lg lg:text-[22px] leading-[1.75] lg:leading-[1.65] font-medium text-ink [@media(max-height:700px)]:text-[14px]">
-            AIに指示を出して、動くシステムを3つ作ります。
+          {/* ★2026-11-17 fix-copy #2：説明は1文に。
+              残りの片付け：見出しと同じ「動くシステムを3つ作る」の言い直しをやめ、正本の事実（作る3つの物・
+              7日間コースのマンツーマン講義＝services/stripeConfig.ts）で補う */}
+          <p className="fv-in fv-in-2 max-w-[30em] mb-5 sm:mb-8 lg:mb-9 text-[15px] sm:text-lg lg:text-[22px] leading-[1.75] lg:leading-[1.65] font-medium text-ink [@media(max-height:700px)]:text-[14px] [word-break:keep-all] [overflow-wrap:anywhere]">
+            Webサイト・業務の自動化・データベースを使うWebアプリを、講師と1対1で作ります。
           </p>
 
           {/* CTA。ファーストビュー内に必ず置く */}

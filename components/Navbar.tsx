@@ -42,8 +42,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
   }, [isMenuOpen]);
 
   const navLinks = [
-    // ★2026-11-17 学習の流れは「7日間で作る3つの物」の下の小見出し（#flow）にある。区画の頭ではなくそこへ飛ばす
-    { label: '学習の流れ', href: '#flow' },
+    // ★2026-11-17 学習の流れの区画は見出しと進め方の4段だけになったので、区画の頭（#model）へ飛ばす
+    { label: '学習の流れ', href: `#${SectionId.Model}` },
     { label: 'カリキュラム', href: `#${SectionId.Portfolio}` },
     { label: '料金プラン', href: `#${SectionId.Pricing}` },
     { label: '講師陣', href: '#instructors' },

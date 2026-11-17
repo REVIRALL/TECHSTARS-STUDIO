@@ -142,10 +142,7 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                            </div>
                         </dl>
 
-                        {/* Program ID */}
-                        <div className="mt-8 pt-2">
-                           <p className="text-[12px] text-center text-slate-500">プログラムID: 7DAYS-PRO-2026</p>
-                        </div>
+                        {/* ★2026-11-17 作り物の「プログラムID: 7DAYS-PRO-2026」は外した（依頼主「やりきって」・残りの片付け） */}
                      </div>
                   </div>
                </div>

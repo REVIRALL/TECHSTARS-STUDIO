@@ -27,6 +27,8 @@ import { REQUEST_URL } from '../content/links';
  *  #15 相談の行き先を LMS の資料請求（content/links.ts）にし、見出しの下に大きいボタンで置く。
  *      AI 診断の箱は残すが、相談の受け口ではないと分かるよう「AIにその場で聞く（答えるのはAI）」の名前にした。
  *  #17 AI 診断のボタン「EXECUTE」→「AIに聞いてみる」。
+ *  残りの片付け：説明の「講師が無料でお答えします」は言い切りをやめ、資料請求ページの作り（資料をメールで送る・
+ *  ご質問の欄がある）に合わせた。AI の箱の「講師への相談は…」も同じ理由で「資料やご質問は…」に。
  */
 
 /**
@@ -137,8 +139,8 @@ export const Contact: React.FC = () => {
             <h2 className="text-[32px] sm:text-[44px] md:text-[56px] lg:text-[42px] xl:text-[52px] leading-[1.2] font-black text-ink tracking-tight mb-5 lg:mb-6 whitespace-nowrap">
               まずは無料で、<br /><span className="text-brand-700">話を聞いてください。</span>
             </h2>
-            <p className="text-[15px] sm:text-lg text-ink-soft font-medium leading-[1.8] max-w-md text-pretty">
-              7日間で何を作るか、あなたの仕事でどう使えるかを、講師が無料でお答えします。
+            <p className="text-[15px] sm:text-lg text-ink-soft font-medium leading-[1.8] max-w-md [word-break:keep-all] [overflow-wrap:anywhere]">
+              資料請求のページから、資料のお届けとご質問の受け付けをしています。
             </p>
           </div>
 
@@ -163,7 +165,7 @@ export const Contact: React.FC = () => {
               <div className="p-5 sm:p-6 lg:p-8">
                 <h3 className="mb-1.5 text-xl sm:text-2xl font-black text-ink">AIにその場で聞く</h3>
                 <p className="mb-5 text-sm text-ink-soft leading-relaxed text-pretty">
-                  答えるのはAIです。講師への相談は「無料で資料請求・相談する」からどうぞ。
+                  答えるのはAIです。資料やご質問は「無料で資料請求・相談する」からどうぞ。
                 </p>
                 {isVisible ? (
                   <Suspense fallback={<ValidatorSkeleton />}>

@@ -13,7 +13,6 @@ html {
 }
 /* 固定ナビの下に見出しが潜らないようにする */
 section[id],
-#flow,
 #instructors {
   scroll-margin-top: 96px;
 }
