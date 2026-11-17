@@ -41,7 +41,7 @@ const STATS = [
 ];
 
 const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <dl className={`grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-y-6 justify-items-center lg:flex lg:flex-nowrap lg:justify-center lg:gap-x-6 xl:gap-x-8 ${className}`}>
+  <dl className={`grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-y-6 justify-items-center lg:flex lg:flex-nowrap lg:justify-center lg:gap-x-10 xl:gap-x-14 ${className}`}>
     {STATS.map((s) => (
       <div
         key={s.value}
@@ -83,74 +83,92 @@ const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
 
 export const Hero: React.FC = () => {
   return (
-    <section id={SectionId.Home} className="relative bg-white text-ink overflow-hidden">
-      {/* ===== 写真の舞台。スマホはぴったり1画面、PC は最低 880px ===== */}
-      <div className="relative h-[100svh] min-h-[540px] lg:h-auto lg:min-h-[max(100svh,880px)] flex flex-col">
-        <div className="absolute inset-0 z-0">
+    <section id={SectionId.Home} className="relative bg-white text-ink overflow-x-clip">
+      {/* ★2026-11-17 円と曲線の版。正本は designs/lp-creative/sections/fv-pc.png（PC）・fv-sp.png（スマホ）。
+          PC：右に写真を大きな丸みの形（.hero-blob）で切り抜き、まわりに淡い水色の円。エンブレムは写真の下に中央でまとめて並べ、
+          下の端は波の境。スマホ：決まりどおり写真を画面いっぱい（100svh・下限540px）に敷き、字はその上（字の下に白いかすみ）。 */}
+      {/* 地の円の色面（絵の位置。字にかからない所だけ） */}
+      <span aria-hidden="true" className="dot hidden lg:block w-[124px] h-[124px] left-[28%] -top-[22px]" />
+      <span aria-hidden="true" className="dot hidden lg:block w-10 h-10 left-[26.5%] top-[92px]" />
+      <span aria-hidden="true" className="dot hidden lg:block w-[30px] h-[30px] left-[2.2%] top-[166px]" />
+      <span aria-hidden="true" className="dot hidden lg:block w-[72px] h-[72px] left-[33.6%] top-[200px]" />
+      <span aria-hidden="true" className="dot hidden lg:block w-20 h-20 right-[1.8%] top-[653px] z-10" />
+      <span aria-hidden="true" className="dot hidden lg:block w-11 h-11 right-[7.3%] top-[743px] z-10" />
+
+      {/* ===== 写真の舞台。スマホはぴったり1画面 ===== */}
+      <div className="relative h-[100svh] min-h-[540px] lg:h-auto lg:min-h-0 flex flex-col">
+        {/* 写真：スマホは全面、PC は右の丸みの形 */}
+        <div className="absolute inset-0 z-0 overflow-hidden lg:inset-auto lg:left-[46.2%] lg:right-[-1px] lg:top-[88px] lg:h-[min(42.5vw,640px)] hero-blob">
           <ImageFrame
             slot="hero.backdrop"
             fill
             priority
-            imgClassName="object-cover object-[50%_100%] md:object-[72%_100%] lg:object-[70%_center]"
+            imgClassName="object-cover object-[50%_100%] md:object-[72%_100%] lg:object-[84%_42%] lg:scale-[1.22] lg:origin-[80%_42%]"
             placeholderClassName="opacity-60"
             chipPosition="top-24 right-4"
           >
-            {/* 字の下だけ白いかすみを敷く。スマホは上から、PC は左から */}
-            <div className="absolute inset-0 pointer-events-none lg:hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(255,255,255,0.86)_34%,rgba(255,255,255,0.45)_52%,rgba(255,255,255,0)_66%)]" />
-            <div className="absolute inset-0 pointer-events-none hidden lg:block bg-[linear-gradient(90deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.9)_26%,rgba(255,255,255,0.55)_42%,rgba(255,255,255,0)_58%)]" />
+            {/* 字の下だけ白いかすみ（スマホ・タブレット）。PC は写真が字にかからない */}
+            <div className="absolute inset-0 pointer-events-none lg:hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_38%,rgba(255,255,255,0.55)_56%,rgba(255,255,255,0)_72%)]" />
           </ImageFrame>
         </div>
+        {/* スマホは写真の下の端を白い弧にする（絵 fv-sp の写真の丸み） */}
+        <div aria-hidden="true" className="lg:hidden absolute z-[1] -left-[35%] w-[130%] -bottom-[46px] h-[96px] rounded-[50%] bg-white pointer-events-none" />
+        {/* スマホの画面の端の円（絵 fv-sp の右上・左下の円） */}
+        <span aria-hidden="true" className="dot lg:hidden z-[1] w-[120px] h-[120px] -right-[36px] -top-[44px] opacity-90" />
+        <span aria-hidden="true" className="dot lg:hidden z-[1] w-9 h-9 right-[30%] top-[40px] opacity-90" />
 
         {/* ===== 本文 ===== */}
-        {/* ★2026-11-17 見出しの上の英字の札「AI ENGINEER BOOTCAMP」（等幅・字間の広い大文字）は外した（依頼主「こういうのが全部AIっぽい」）。
-            札の分だけ見出しが上がるので、上の余白を少し足して写真との釣り合いを保つ */}
-        <div className="relative z-20 w-full max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[88px] pt-[104px] sm:pt-32 lg:pt-[176px] pb-8 lg:pb-12 flex-1 flex flex-col">
+        <div className="relative z-20 w-full max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[86px] pt-[104px] sm:pt-32 lg:pt-[196px] pb-8 lg:pb-0 flex-1 flex flex-col">
           {/* 主役。最初に描く物なので動かさない。
               ★2026-11-17 文の直し（fix-copy #1）：「7日間で プロへ。」→「7日間で、」「動くシステムを3つ作る。」。
               2行目（全角10字＋数字）が 360px 幅でも1行に収まる大きさ（8.2vw）にし、1行目はそれより一回り大きくする */}
-          <h1 className="mb-4 sm:mb-7 lg:mb-8 font-black tracking-[-0.02em] leading-[1.18]">
-            <span className="block text-[12vw] sm:text-[11vw] lg:text-[5.8vw] xl:text-[84px] [@media(max-height:700px)]:text-[10.5vw] lg:[@media(max-height:700px)]:text-[5.6vw] text-ink">
+          <h1 className="mb-4 sm:mb-7 lg:mb-7 font-black tracking-[-0.02em] leading-[1.18]">
+            <span className="block text-[12vw] sm:text-[11vw] lg:text-[5.6vw] xl:text-[80px] [@media(max-height:700px)]:text-[10.5vw] lg:[@media(max-height:700px)]:text-[5.4vw] text-ink">
               7日間で、
             </span>
-            <span className="block whitespace-nowrap text-[8.2vw] sm:text-[8vw] lg:text-[4vw] xl:text-[58px] [@media(max-height:700px)]:text-[7.6vw] lg:[@media(max-height:700px)]:text-[4vw] text-brand-700">
+            <span className="block whitespace-nowrap text-[8.2vw] sm:text-[8vw] lg:text-[3.9vw] xl:text-[56px] [@media(max-height:700px)]:text-[7.6vw] lg:[@media(max-height:700px)]:text-[3.9vw] text-brand-700">
               動くシステムを3つ作る。
             </span>
           </h1>
 
-          {/* ★2026-11-17 fix-copy #2：説明は1文に。
-              残りの片付け：見出しと同じ「動くシステムを3つ作る」の言い直しをやめ、正本の事実（作る3つの物・
-              7日間コースのマンツーマン講義＝services/stripeConfig.ts）で補う */}
-          <p className="fv-in fv-in-2 max-w-[30em] mb-5 sm:mb-8 lg:mb-9 text-[15px] sm:text-lg lg:text-[22px] leading-[1.75] lg:leading-[1.65] font-medium text-ink [@media(max-height:700px)]:text-[14px] [word-break:keep-all] [overflow-wrap:anywhere]">
+          {/* ★2026-11-17 fix-copy #2：説明は1文に（作る3つの物・講師と1対1） */}
+          <p className="fv-in fv-in-2 max-w-[30.5em] mb-5 sm:mb-8 lg:mb-8 text-[15px] sm:text-lg lg:text-[21px] xl:text-[22px] leading-[1.75] lg:leading-[1.6] font-medium text-ink [@media(max-height:700px)]:text-[14px] [word-break:keep-all] [overflow-wrap:anywhere]">
             Webサイト・業務の自動化・データベースを使うWebアプリを、講師と1対1で作ります。
           </p>
 
           {/* CTA。ファーストビュー内に必ず置く */}
-          <div className="fv-in fv-in-3 flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8">
+          <div className="fv-in fv-in-3 flex flex-wrap items-center gap-x-7 gap-y-2 sm:gap-x-8">
             {/* ★2026-11-17 fix-copy #15：行き先を AI 診断の箱から LMS の資料請求へ */}
             <a
               href={REQUEST_URL}
-              className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[68px] px-7 lg:px-10 rounded-xl bg-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:bg-brand-400 transition-colors duration-300"
+              className="group inline-flex items-center gap-3 min-h-[56px] lg:min-h-[72px] px-7 lg:px-12 rounded-2xl bg-brand-500 text-ink text-base sm:text-lg lg:text-[22px] font-black tracking-tight shadow-cta hover:bg-brand-400 transition-colors duration-300"
             >
               無料で詳細を見る
-              <GenIcon name="arrow-right" className="w-6 h-6 lg:w-7 lg:h-7 group-hover:translate-x-1 transition-transform duration-300" eager />
+              <GenIcon name="arrow-right" className="w-6 h-6 lg:w-8 lg:h-8 group-hover:translate-x-1 transition-transform duration-300" eager />
             </a>
+            {/* スマホ・タブレットは写真の上に乗るので、字の後ろに白い丸い札を敷く（写真の暗い所でコントラストが 1.6 まで落ちた） */}
             <a
               href={`#${SectionId.Portfolio}`}
-              className="inline-flex items-center min-h-[44px] text-sm sm:text-base lg:text-[17px] font-bold text-brand-700 hover:underline underline-offset-4"
+              className="inline-flex items-center min-h-[44px] px-4 -ml-1 lg:ml-0 lg:px-0 rounded-full bg-white/95 lg:bg-transparent text-sm sm:text-base lg:text-[19px] font-black text-brand-700 hover:underline underline-offset-4"
             >
               カリキュラムを見る
             </a>
           </div>
 
-          {/* PC は写真の上、画面の下の中央にエンブレムを並べる（正本の絵の位置） */}
-          <Emblems className="fv-in fv-in-3 hidden lg:flex mt-auto pt-8" />
+          {/* PC は写真の下にかけて、エンブレム4つを中央にまとめて並べる（絵 fv-pc の位置） */}
+          <Emblems className="fv-in fv-in-3 hidden lg:flex mt-5 pb-[112px] relative z-20" />
         </div>
       </div>
 
       {/* スマホ・タブレットは1画面の写真の下にエンブレムを置く（1画面に字と写真と4つを詰めない） */}
-      <div className="lg:hidden relative bg-white px-5 pt-8 pb-10">
-        <Emblems />
+      <div className="lg:hidden relative bg-white px-5 pt-8 pb-16">
+        <span aria-hidden="true" className="dot w-12 h-12 -left-3 bottom-24" />
+        <span aria-hidden="true" className="dot w-16 h-16 -right-4 top-6" />
+        <Emblems className="relative z-10" />
       </div>
+
+      {/* 下の端の波（次の区画の頭の淡い水色の帯へつながる） */}
+      <div aria-hidden="true" className="wave wave-bottom [--from:#EDF8FD]" />
     </section>
   );
 };

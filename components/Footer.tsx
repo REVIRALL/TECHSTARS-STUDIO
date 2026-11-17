@@ -1,5 +1,6 @@
 import React from 'react';
 import { PageType } from '../types';
+import { ImageFrame } from './ImageFrame';
 
 interface FooterProps {
   onOpenPage: (page: PageType) => void;
@@ -18,8 +19,16 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
   const linkClass = 'inline-flex items-center min-h-[44px] text-left text-ink hover:text-brand-700 transition-colors';
   return (
-    <footer className="relative bg-mist text-ink overflow-x-clip pt-16 lg:pt-24 pb-8">
-      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
+    <footer className="relative bg-mist text-ink overflow-x-clip pt-[150px] sm:pt-[170px] lg:pt-[232px] pb-8 lg:pb-12">
+      {/* ★2026-11-17 円と曲線の版。正本は designs/lp-creative/sections/footer-pc.png。
+          上の端は白から淡い水色への波。右上に丸い写真（波の上にかかる）と円の色面。 */}
+      <div aria-hidden="true" className="wave wave-top wave-flip [--from:#ffffff]" />
+      <span aria-hidden="true" className="dot w-16 h-16 lg:w-[140px] lg:h-[140px] right-[44%] sm:right-[28%] lg:right-[34%] top-[36px] lg:top-[14px] z-[1]" />
+      <div aria-hidden="true" className="absolute z-[2] right-[6%] lg:right-[17%] top-[12px] lg:-top-[118px] w-[136px] sm:w-[170px] lg:w-[316px] aspect-square rounded-full overflow-hidden bg-white">
+        <ImageFrame slot="footer.person" fill density="compact" hideChip imgClassName="object-[50%_30%]" />
+      </div>
+      <span aria-hidden="true" className="dot dot-deep w-7 h-7 lg:w-12 lg:h-12 right-[3%] lg:right-[14.6%] top-[120px] lg:top-[72px] z-[3]" />
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[52px] relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-12 mb-12 lg:mb-14">
           <div className="anim-hidden anim-up">
             <div className="flex items-center gap-3 sm:gap-4 mb-4">

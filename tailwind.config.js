@@ -43,7 +43,10 @@ export default {
           mute: '#475569',
         },
         // 区画の淡い地（白の次の段）
-        mist: '#F1F8FC',
+        // ★2026-11-17 円と曲線の版：区画の絵（designs/lp-creative/sections）の地を測った色（#ECF8FD〜#EFF8FD）に寄せた
+        mist: '#EDF8FD',
+        // 地に置く円の色面（絵の円を測った色 #D8F2FD〜#DEF3FD と、濃い方 #D2EFFD）
+        bubble: { DEFAULT: '#DCF2FD', deep: '#C9EBFC' },
       },
       boxShadow: {
         // 正本の白いカード・ボタンの影（淡く広い）

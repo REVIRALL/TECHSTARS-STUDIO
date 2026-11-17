@@ -1,6 +1,7 @@
 import React from 'react';
 import { SectionId } from '../types';
 import { ImageFrame } from './ImageFrame';
+import { GenIcon } from './GenIcon';
 
 /**
  * 学習の流れ（進め方）。
@@ -51,45 +52,55 @@ const FLOW = [
 
 export const StudioModel: React.FC = () => {
   return (
-    <section id={SectionId.Model} className="lp-sec relative bg-white overflow-hidden">
-      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 relative z-10">
-        <div className="anim-hidden anim-up mb-8 lg:mb-12">
-          <h2 className="text-[28px] md:text-[36px] lg:text-[52px] leading-[1.25] font-black jp-display text-ink [word-break:keep-all]">
+    <section id={SectionId.Model} className="lp-sec lp-sec-wave relative bg-white overflow-x-clip">
+      {/* ★2026-11-17 円と曲線の版。正本は designs/lp-creative/sections/model-pc.png。
+          見出しは左に大きく、右に小見出しと説明。4つの段は丸く切り抜いた写真を横に並べ、写真の間に矢印の印、
+          写真の左上に丸い番号。上下の端は淡い水色の波、右上と左下に円の色面。 */}
+      <div aria-hidden="true" className="wave wave-top wave-flip [--from:#EDF8FD]" />
+      <div aria-hidden="true" className="wave wave-bottom [--from:#EDF8FD]" />
+      <span aria-hidden="true" className="dot w-16 h-16 lg:w-[86px] lg:h-[86px] right-[3.5%] top-[64px] lg:top-[84px]" />
+      <span aria-hidden="true" className="dot hidden lg:block w-5 h-5 right-[9.5%] top-[160px]" />
+      <span aria-hidden="true" className="dot w-28 h-28 lg:w-[180px] lg:h-[180px] -left-14 lg:-left-[72px] bottom-[40px] lg:bottom-[36px] opacity-80" />
+
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[86px] relative z-10">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,452px)] gap-x-12 gap-y-5 items-start mb-10 lg:mb-14">
+          <h2 className="anim-hidden anim-up text-[28px] md:text-[40px] lg:text-[48px] xl:text-[56px] leading-[1.3] font-black jp-display text-ink [word-break:keep-all]">
             いまは、コードを覚える前に、
             <br />
             <span className="text-brand-700">AIに書かせて作れます。</span>
           </h2>
+          <div className="anim-hidden anim-up lg:pt-6">
+            <h3 className="text-xl lg:text-2xl font-black text-ink mb-2.5">学習の流れ</h3>
+            <p className="jp-text text-base lg:text-[20px] font-medium leading-[1.8] text-ink-soft">
+              授業では、作りたい物をAIに伝え、出てきたコードを動かして確かめます。
+            </p>
+          </div>
         </div>
 
-        {/* ===== 学習の流れ（進め方） ===== */}
-        <div className="anim-hidden anim-up flex flex-col md:flex-row md:items-baseline gap-2 md:gap-8 mb-6 lg:mb-8">
-          <h3 className="shrink-0 text-2xl lg:text-3xl font-black text-ink">学習の流れ</h3>
-          <p className="text-base lg:text-lg font-bold leading-[1.8] text-ink-soft [word-break:keep-all] [overflow-wrap:anywhere]">
-            授業では、作りたい物をAIに伝え、出てきたコードを動かして確かめます。
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-          {FLOW.map((item) => (
-            <article
-              key={item.slot}
-              className="anim-hidden anim-up relative overflow-hidden rounded-2xl bg-white shadow-card flex flex-col"
-            >
-              <div className="relative aspect-[5/4] overflow-hidden">
-                <ImageFrame slot={item.slot} fill density="compact" />
-                <span className="absolute top-3 left-3 z-10 min-w-[36px] h-9 px-2 rounded-lg bg-brand-500 text-ink font-black text-base flex items-center justify-center">
+        {/* 4つの段。PC は横に4つ、間に矢印の印。641〜1023px は2列、スマホは1列 */}
+        <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 lg:gap-x-10 gap-y-10">
+          {FLOW.map((item, i) => (
+            <li key={item.slot} className="anim-hidden anim-up relative grid grid-cols-[clamp(116px,34vw,150px)_minmax(0,1fr)] gap-x-5 items-center sm:flex sm:flex-col">
+              <div className="relative w-full sm:w-[78%] lg:w-full max-w-[280px] aspect-square">
+                <div className="absolute inset-0 rounded-full overflow-hidden bg-mist">
+                  <ImageFrame slot={item.slot} fill density="compact" imgClassName="object-[50%_40%]" />
+                </div>
+                <span className="absolute left-[2%] top-[6%] z-10 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full bg-brand-300 text-ink font-black text-base sm:text-lg lg:text-xl">
                   {item.step}
                 </span>
+                {i < FLOW.length - 1 && (
+                  <GenIcon name="arrow-right" className="hidden lg:block absolute top-1/2 -right-[34px] -translate-y-1/2 w-7 h-7" />
+                )}
               </div>
-              <div className="p-5 lg:p-6 flex-1 flex flex-col">
-                <h4 className="font-black text-xl lg:text-[22px] leading-snug text-ink mb-2.5 [word-break:keep-all]">
-                  {item.title}
-                </h4>
-                <p className="text-sm text-ink-mute leading-relaxed text-pretty">{item.desc}</p>
+              <div>
+              <h4 className="sm:mt-6 lg:mt-8 font-black text-[19px] sm:text-[22px] lg:text-[24px] xl:text-[26px] leading-snug text-ink mb-3 jp-phrase">
+                {item.title}
+              </h4>
+              <p className="jp-text text-base lg:text-[16px] xl:text-[17px] text-ink-mute leading-[1.75]">{item.desc}</p>
               </div>
-            </article>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

@@ -422,6 +422,47 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     },
   }),
 
+  /* ------------------------------------------- 円と曲線の版（2026-11-17） */
+  /* 依頼主「クリエイティブさが一切ないのもよくない。斜めだったり他の形だったり欲しい。デザインが単調」→ 組み方は「円と曲線」。
+     区画ごとに GPT に描かせた絵（LMS 側 designs/lp-creative/sections/*-pc.png）にあって、前の LP に無かった丸い写真。
+     絵の同じ場所を切って参照に渡し、字を抜いて写真として描き直させた（designs/lp-creative/gen_photos.py）。 */
+  ...([
+    ['curriculum.desk', 'カリキュラムの表の横の丸い写真', 'CURRICULUM', '机の上のノートPCと観葉植物', 840, `A laptop open on a light wood desk with a white mug, a notebook and a potted plant, no people.`],
+    ['outcome.web', '7日間で作る物 Webサイト', 'OUTPUT', 'Webサイトの画面のノートPCで作業する手元', 560, `Hands typing on a laptop whose screen shows a soft, unreadable website layout.`],
+    ['outcome.app', '7日間で作る物 Webアプリ', 'OUTPUT', 'Webアプリの管理画面のノートPCで作業する手元', 560, `Hands typing on a laptop whose screen shows a soft, unreadable web app dashboard with a side menu.`],
+    ['after.community', '終わったあとに使える物 コミュニティ', 'OUTPUT', '並んで座り笑顔で話す2人', 440, `A smiling woman and a man sitting side by side and talking in a bright room.`],
+    ['after.lms', '終わったあとに使える物 LMSの教材', 'OUTPUT', '教材の画面のノートPC', 440, `A laptop on a desk showing a soft, unreadable video lesson page.`],
+    ['cta.person', '呼びかけの丸い写真', 'CONTACT', '', 1024, `A woman resting her hand on her chin, listening and laughing in a bright room, a small plant in front.`],
+    ['footer.person', '下の帯の丸い写真', 'FOOTER', '', 680, `A woman smiling and looking slightly up in front of a laptop by a bright window.`],
+  ] as const).map(([id, label, section, alt, deliver, subject]) =>
+    slot({
+      id,
+      label,
+      section,
+      role: '円と曲線の版の丸い写真（丸く切り抜いて置く）。',
+      alt,
+      decorative: alt === '',
+      desktop: { size: [1024, 1024], aspect: '1:1', deliver, subject, composition: `Square 1:1, 50mm, the subject in the center (it is cropped to a circle).` },
+    })
+  ),
+  ...[1, 2, 3, 4, 5, 6].map((n) =>
+    slot({
+      id: `target.0${n}`,
+      label: `こういう人向け 0${n} の顔写真`,
+      section: 'CONTACT',
+      role: 'こういう人向けの札の左の丸い顔写真（考える表情）。6人とも別の人。',
+      alt: '',
+      decorative: true,
+      desktop: {
+        size: [1024, 1024],
+        aspect: '1:1',
+        deliver: 320,
+        subject: `A Japanese working adult with a thoughtful expression, hand near the chin, chest-up, in a bright office. Never the same person as the other five.`,
+        composition: `Square 1:1, 50mm, the face in the center (it is cropped to a small circle).`,
+      },
+    })
+  ),
+
   /* ------------------------------------------------------------ CONTACT */
   slot({
     id: 'contact.cta',

@@ -61,7 +61,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
       >
         <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 flex justify-between items-center gap-4">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 md:gap-3 group z-50 shrink-0 min-h-[44px]">
+          {/* ★2026-11-17 行き先を「#」から最初の画面（#home）に（押す検査で「行き先が無い」と出た） */}
+          <a href="#home" className="flex items-center gap-2 md:gap-3 group z-50 shrink-0 min-h-[44px]">
             <img
               src="/logo.png"
               alt="TechStars"

@@ -90,3 +90,93 @@ body {
 
 /* ★2026-11-17 使っていなかった光る動き（hover-lift・hover-glow・surge-line・surge-flash）は消した。
    カードに指を乗せた時に浮く・光る・光が走る動きは、どの区画にも付けない。 */
+
+/* ==========================================================================
+   円と曲線（2026-11-17）
+   依頼主「SVGみたいなやつが立体的すぎておかしい。あと、クリエイティブさが一切ないのもよくない。
+   斜めだったり他の形だったり欲しい。デザインが単調」→ 組み方の5案から「３」＝円と曲線。
+   見た目の正本は区画ごとに GPT に描かせた絵（LMS 側 designs/lp-creative/sections/*-pc.png・*-sp.png）。
+   円・弧・波は CSS の border-radius だけで作る（手書きの SVG の飾りにしない）。
+   ========================================================================== */
+
+/* 区画の境の弧。前（または次）の区画の色が、大きな楕円の弧でこの区画に食い込む。
+   --from＝食い込む色（前の区画の地）。.wave-flip で山を右寄りにする。飾りなので読み上げない（aria-hidden の div に付ける） */
+.wave {
+  --h: 44px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--h);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+@media (min-width: 641px) { .wave { --h: 64px; } }
+@media (min-width: 1200px) { .wave { --h: 96px; } }
+.wave::before {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  /* 楕円1つの弧。山を左寄り（35%）に置いて左右で高さを変える（2つの楕円を重ねると交わりに角が出た） */
+  left: -45%;
+  width: 160%;
+  top: -100%;
+  height: 200%;
+  background: var(--from);
+}
+.wave-top { top: 0; }
+.wave-bottom { bottom: 0; transform: scaleY(-1); }
+.wave-flip { transform: scaleX(-1); }
+.wave-bottom.wave-flip { transform: scale(-1, -1); }
+
+/* 地に置く円の色面（飾り）。大きさと位置は区画ごとに絵から */
+.dot {
+  position: absolute;
+  border-radius: 9999px;
+  background: #dcf2fd;
+  pointer-events: none;
+  z-index: 0;
+}
+.dot-deep { background: #c9ebfc; }
+
+/* 最初の画面の写真の切り抜き（絵 fv-pc.png の写真の外形を測った角の丸み）。PC（1024px〜）だけ。スマホは写真を画面いっぱいに敷く */
+@media (min-width: 1024px) {
+  .hero-blob {
+    border-radius: 43% 14% 44% 56% / 54% 18% 23% 46%;
+  }
+}
+/* 料金の見出しの右上の写真（上と右は画面の端で切れ、左下が大きな弧） */
+.price-photo {
+  border-radius: 0 0 26% 62% / 0 0 34% 100%;
+}
+/* カリキュラムの表をのせる白い面（右下へ少しふくらむ形） */
+.table-blob {
+  border-radius: 48px 140px 96px 56px / 48px 120px 120px 56px;
+}
+/* 呼びかけの写真（横長の楕円） */
+.cta-oval {
+  border-radius: 50%;
+}
+
+/* 上下に波を置く区画は、波の分だけ上下の余白を足す（波が字にかからない） */
+.lp-sec-wave { padding-top: calc(52px + 36px); padding-bottom: calc(52px + 36px); }
+@media (min-width: 641px) { .lp-sec-wave { padding-top: calc(64px + 48px); padding-bottom: calc(64px + 48px); } }
+@media (min-width: 1200px) { .lp-sec-wave { padding-top: calc(88px + 56px); padding-bottom: calc(88px + 56px); } }
+
+/* 日本語の折り返し（2026-11-17）
+   ・.jp-text＝本文。普通の折り返しに禁則（。、を行頭に置かない）。keep-all だと狭い列で「。」だけの行や語の途中の折れが出た
+   ・.jp-phrase＝札・短い名前。Chrome は文節（auto-phrase）で折る。効かないブラウザは .jp-text と同じ */
+.jp-text {
+  word-break: normal;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  /* 最後の行が「す。」だけになるのを避ける（Chrome・Safari 26〜） */
+  text-wrap: pretty;
+}
+.jp-phrase {
+  word-break: normal;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  word-break: auto-phrase;
+  text-wrap: balance;
+}
