@@ -140,7 +140,7 @@ Stripe の手元の鍵は試しの場（ダッシュボード表示名「株式�
 
 ```bash
 STRIPE_SECRET_KEY=sk_test_... node scripts/stripe-setup.mjs           # 何をするか見るだけ
-STRIPE_SECRET_KEY=sk_test_... node scripts/stripe-setup.mjs --apply   # そろえる（最後に VITE_PAY_LINK_* の3行を出す）
+STRIPE_SECRET_KEY=sk_test_... node scripts/stripe-setup.mjs --apply   # そろえる（最後に Netlify の env と、面談の後に送るリンクを出す）
 node scripts/stripe-setup.mjs --self-test                              # 読み取り・指紋の自己検査
 ```
 
@@ -160,8 +160,6 @@ Stripe 側に 217,800／437,800／880,000 円・入力欄3つ・住所・電話�
 ローカルで確認するときは、環境変数で渡して `npm run dev`（または gitignore 済みの `.env.local`）:
 
 ```
-VITE_PAY_LINK_LMS_ONLY=https://buy.stripe.com/test_xxxx
-VITE_PAY_LINK_TECHSTARS_7DAYS=https://buy.stripe.com/test_yyyy
 VITE_PAY_LINK_TECHSTARS_BUSINESS=https://buy.stripe.com/test_zzzz
 ```
 
@@ -175,9 +173,23 @@ VITE_PAY_LINK_TECHSTARS_BUSINESS=https://buy.stripe.com/test_zzzz
    `revirall-corp/credentials/accounts.local.json` の Stripe の欄に置く（チャットに貼らない）
 3. `STRIPE_SECRET_KEY=rk_live_... node scripts/stripe-setup.mjs --apply`（**試しの場の商品は本番へ引き継がれない**ので本番で作り直す）
 4. `STRIPE_SECRET_KEY=rk_live_... npm run verify:stripe` で金額と戻り先の対応を突合する
-5. 出てきた `VITE_PAY_LINK_*` の3行を Netlify の環境変数に入れ、本番を組み直す（Netlify が `npm run build` する）
+5. 出てきた `VITE_PAY_LINK_TECHSTARS_BUSINESS` を Netlify の環境変数に入れ、本番を組み直す（Netlify が `npm run build` する）。
+   LMSのみ・1対1コンサルのリンクは LP に入れず、面談を受けた方へ運営が送る（下の「面談の後に送るプラン」）
 6. 本番の LP で「準備中」が消え、同意の後の3本のリンクが本番の決済画面（試しの場の札が無い・正しい金額）を開くことを確かめる。
    本物の支払いでの確かめは、運営が自分のカードで1回払って返金する
+
+### 面談の後に送るプラン（2026-11-18 ユーザー決定）
+
+LMSのみ（217,800円）と1対1コンサル（437,800円）は「面談を受けた方に適用される面談特典価格」なので、
+LP からは申し込ませない。`stripeConfig.ts` で `afterInterview: true`・`paymentLink: ''` にし、
+カードの下には「面談を受けた方に、お申し込みのご案内（お支払いのリンク）をお送りします」と
+資料請求・相談のページ（`REQUEST_URL`）へのボタンだけを出す。
+
+- ★決済の URL を配信物に入れない（env を読まない）。ボタンを隠すだけでは、配信物から URL を取り出せる（上の監査の教訓）。
+  手元で `VITE_PAY_LINK_LMS_ONLY` を渡して開いても、画面の HTML に入らないことを確かめた
+- リンクは `stripe-setup.mjs` が作り、最後に「面談を受けた方にだけ送るリンク」として出す。戻り先は同じ `/checkout/thanks?plan=`
+- 申し込みのボタン・同意のチェック・「準備中」の出し分けはビジネスプランだけを見る（`PUBLIC_PLANS`）
+- 面談を挟む申し込みは電話勧誘販売（クーリング・オフが付く）。特商法の表記は両方の経路を書いてある
 
 ### `/checkout/cancel` は Stripe からは呼ばれない
 

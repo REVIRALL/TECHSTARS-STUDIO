@@ -161,7 +161,26 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                 </p>
               )}
 
-              {canBuy ? (
+              {/* ★2026-11-18 ユーザー決定：面談特典価格のプランは LP から申し込ませない。面談を受けた方にだけ決済リンクを送る。
+                  ここには決済の URL を置かない（stripeConfig.ts で常に空文字）。行き先は資料請求・相談のページ */}
+              {plan.afterInterview ? (
+                <div className="flex flex-col gap-3">
+                  <p className="text-[13px] lg:text-[14px] text-ink-mute leading-relaxed lg:px-2">
+                    面談を受けた方に、お申し込みのご案内（お支払いのリンク）をお送りします。
+                  </p>
+                  <a
+                    href={REQUEST_URL}
+                    className={`group flex items-center justify-center gap-2 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl font-sans font-black text-base lg:text-lg transition-colors duration-300 ${
+                      plan.highlight
+                        ? 'bg-brand-500 text-ink shadow-cta hover:bg-brand-400'
+                        : 'bg-white text-ink shadow-card ring-1 ring-slate-200 hover:text-brand-700 hover:ring-brand-400'
+                    }`}
+                  >
+                    資料請求・面談のご相談
+                    <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </a>
+                </div>
+              ) : canBuy ? (
                 <a
                   href={plan.paymentLink}
                   className={`group flex items-center justify-center gap-2 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl font-sans font-black text-base lg:text-lg transition-colors duration-300 ${

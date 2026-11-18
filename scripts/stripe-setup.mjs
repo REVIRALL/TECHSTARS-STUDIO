@@ -45,6 +45,7 @@ export function readPlans(src = readFileSync('services/stripeConfig.ts', 'utf8')
     const feat = /features:\s*\[([\s\S]*?)\]/.exec(b);
     const features = feat ? [...feat[1].matchAll(/'([^']*)'/g)].map((m) => m[1]) : [];
     const env = (/link\('([A-Z0-9_]+)'\)/.exec(b) ?? [])[1] ?? '';
+    const afterInterview = /\n\s+afterInterview:\s*true/.test(b);
     return {
       code: str(b, 'code'),
       name: str(b, 'name'),
@@ -54,14 +55,16 @@ export function readPlans(src = readFileSync('services/stripeConfig.ts', 'utf8')
       amount,
       features,
       env,
+      afterInterview,
     };
   });
   for (const p of plans) {
     if (!p.code || !p.name || !Number.isInteger(p.amount) || p.amount <= 0) {
       throw new Error(`stripeConfig.ts の読み取りに失敗: ${JSON.stringify(p)}`);
     }
-    if (ENV_OF[p.code] !== p.env) {
-      throw new Error(`${p.code} の環境変数名が ${p.env}（この道具は ${ENV_OF[p.code]} を出す）`);
+    // ★面談の後にだけ案内するプランは LP に URL を入れない（env を読まない）。それ以外は env 名が合っていること
+    if (p.afterInterview ? p.env !== '' : ENV_OF[p.code] !== p.env) {
+      throw new Error(`${p.code} の環境変数名が「${p.env}」（${p.afterInterview ? '面談の後に案内するプランは env を読まない' : `この道具は ${ENV_OF[p.code]} を出す`}）`);
     }
   }
   if (plans.length !== Object.keys(ENV_OF).length) throw new Error(`プランが ${plans.length} 件（${Object.keys(ENV_OF).length} 件のはず）`);
@@ -137,7 +140,7 @@ if (process.argv.includes('--self-test')) {
   };
   console.log('[stripe-setup] 自己検査');
   const plans = readPlans();
-  ok(plans.length === 3, `PLANS を3件読めた（${plans.map((p) => `${p.code}=${p.amount}`).join(', ')}）`);
+  ok(plans.length === 3 && plans.filter((p) => p.afterInterview).length === 2, `PLANS を3件読めた・面談の後に案内するのは2件（${plans.map((p) => `${p.code}=${p.amount}`).join(', ')}）`);
   ok(plans.every((p) => p.features.length > 0), '全プランの項目を読めた');
   const a = linkParamsOf(plans[0], 'price_x');
   const b = linkParamsOf(plans[0], 'price_y');
@@ -220,6 +223,7 @@ const products = await listAll('/products');
 const links = await listAll('/payment_links', { active: 'true' });
 const actions = [];
 const envLines = [];
+const sendLines = [];
 
 for (const p of plans) {
   const want = productOf(p);
@@ -288,12 +292,15 @@ for (const p of plans) {
       });
     }
   }
-  if (link) envLines.push(`${ENV_OF[p.code]}=${link.url}`);
+  if (link && p.afterInterview) sendLines.push(`${p.name}（¥${p.amount.toLocaleString('ja-JP')}）: ${link.url}`);
+  else if (link) envLines.push(`${ENV_OF[p.code]}=${link.url}`);
 }
 
 console.log(actions.length ? actions.map((a) => '  - ' + a).join('\n') : '  変える物はありません（もうそろっています）');
 if (!APPLY && actions.length) console.log('\n[stripe-setup] 見るだけで終わりました。書くには --apply を付けて流す。');
-if (envLines.length === plans.length) {
+if (envLines.length + sendLines.length === plans.length) {
   console.log(`\n[stripe-setup] Netlify の環境変数（${LIVE ? '本番' : '★テスト。本番のビルドには入れない'}）:`);
   for (const l of envLines) console.log('  ' + l);
+  console.log(`\n[stripe-setup] 面談を受けた方にだけ送るリンク（LP には載せない）${LIVE ? '' : '★テスト'}:`);
+  for (const l of sendLines) console.log('  ' + l);
 }

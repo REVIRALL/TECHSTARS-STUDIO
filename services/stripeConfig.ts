@@ -13,9 +13,10 @@
  *   空なら申し込み導線そのものを描画しない（fail-closed）。
  *   ローカルで動作確認したいときだけ、gitignore 済みの `.env.local` に置く:
  *
- *     VITE_PAY_LINK_LMS_ONLY=https://buy.stripe.com/test_xxxx
- *     VITE_PAY_LINK_TECHSTARS_7DAYS=https://buy.stripe.com/test_yyyy
  *     VITE_PAY_LINK_TECHSTARS_BUSINESS=https://buy.stripe.com/test_zzzz
+ *
+ *   ★2026-11-18 から LP で申し込めるのはビジネスプランだけ（env は1本）。LMSのみ・1対1コンサルは
+ *     面談特典価格なので afterInterview にし、面談を受けた方にだけリンクを送る（env を読まない）
  *
  *   本番化するときは live の URL を Netlify の環境変数に設定してビルドする。
  *   `npm run build` は dist に `test_` リンクが混ざっていたら失敗する（scripts/verify-dist.mjs）。
@@ -32,8 +33,12 @@ export interface Plan {
   /** 面談を受けた方に適用する価格の表示。通常価格とは区別する。 */
   priceLabel?: string;
   features: string[];
-  /** Stripe Payment Link。ビルド時に注入され、未設定なら空文字。 */
+  /** Stripe Payment Link。ビルド時に注入され、未設定なら空文字。
+   *  ★面談の後にだけ案内するプラン（afterInterview）は常に空文字。配信物に URL を入れない
+   *    （ボタンを隠すだけでは、配信物を grep すれば URL が取り出せる＝塞いだことにならない） */
   paymentLink: string;
+  /** ★2026-11-18 ユーザー決定：面談特典価格のプランは LP から申し込ませず、面談を受けた方にだけ決済リンクを送る */
+  afterInterview?: boolean;
   highlight?: boolean;
   note?: string;
 }
@@ -55,7 +60,8 @@ export const PLANS: Plan[] = [
       'マンツーマン講義は付きません',
       '3か月を過ぎた後は1か月33,000円（税込）で延長できます（任意）',
     ],
-    paymentLink: link('VITE_PAY_LINK_LMS_ONLY'),
+    paymentLink: '',
+    afterInterview: true,
   },
   {
     code: 'techstars_7days',
@@ -74,7 +80,8 @@ export const PLANS: Plan[] = [
       'LMS の利用',
       '公式LINEでの質問サポート',
     ],
-    paymentLink: link('VITE_PAY_LINK_TECHSTARS_7DAYS'),
+    paymentLink: '',
+    afterInterview: true,
     highlight: true,
   },
   {
@@ -98,6 +105,9 @@ export const PLANS: Plan[] = [
 /** リンクが Stripe のテストモードのものか。 */
 const isTestLink = (url: string): boolean => url.includes('/test_');
 
+/** LP から申し込めるプラン（面談の後にだけ案内するプランを除く）。決済の出し分けはこれだけを見る。 */
+export const PUBLIC_PLANS: Plan[] = PLANS.filter((p) => !p.afterInterview);
+
 /** 申し込み導線を出してよいか。★判定は「安全側に倒す」。
  *  - リンクが1本でも空なら出さない（未設定のまま公開する事故を防ぐ）
  *  - テストリンクが混ざっていたら、開発ビルド以外では出さない
@@ -105,19 +115,20 @@ const isTestLink = (url: string): boolean => url.includes('/test_');
  *      fail-open な作りだった。ホスト名に安全を委ねない）
  */
 export const isCheckoutEnabled = (): boolean => {
-  const links = PLANS.map((p) => p.paymentLink);
+  if (PUBLIC_PLANS.length === 0) return false;
+  const links = PUBLIC_PLANS.map((p) => p.paymentLink);
   if (links.some((l) => l === '')) return false;
   if (links.some(isTestLink)) return Boolean(import.meta.env.DEV);
   return true;
 };
 
 /** 画面に「テスト環境です」と出すべきか。 */
-export const isTestMode = (): boolean => PLANS.some((p) => isTestLink(p.paymentLink));
+export const isTestMode = (): boolean => PUBLIC_PLANS.some((p) => isTestLink(p.paymentLink));
 
 /** 決済導線が止まっている理由。画面に出して黙らせない。 */
 export const checkoutDisabledReason = (): string => {
-  if (PLANS.some((p) => p.paymentLink === '')) return 'unconfigured';
-  if (PLANS.some((p) => isTestLink(p.paymentLink))) return 'test-link-on-production';
+  if (PUBLIC_PLANS.some((p) => p.paymentLink === '')) return 'unconfigured';
+  if (PUBLIC_PLANS.some((p) => isTestLink(p.paymentLink))) return 'test-link-on-production';
   return '';
 };
 
