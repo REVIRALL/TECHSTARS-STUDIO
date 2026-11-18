@@ -121,7 +121,7 @@ npm run verify:stripe -- --self-test              # 対応を壊して赤くな�
 | | |
 |---|---|
 | 方式 | Stripe Payment Link。URLは **ビルド時に `VITE_PAY_LINK_*` から注入** |
-| なぜ Checkout Session でないか | サーバに `sk_` を置く必要があるが、techstars.studio の Netlify にデプロイ権限が手元に無く Functions を足せない |
+| なぜ Checkout Session でないか | サーバに `sk_` を置く必要がある。LP は静的なままにし、秘密鍵を LP に置かない（2026-11-18 も同じ判断。Netlify の権限は今はあるが、鍵を置く場所を増やさない）。誰が払ったかは Stripe の画面と通知メールで見る |
 | プラン | LMSのみ ¥217,800 ／ 1対1コンサル（7日間コース）¥437,800 は面談特典価格。ビジネスプラン ¥880,000（すべて税込の請求額） |
 
 ### ★今は決済できない（意図的に塞いである）
@@ -130,10 +130,34 @@ npm run verify:stripe -- --self-test              # 対応を壊して赤くな�
 `isCheckoutEnabled()` がリンクの空を見て false を返し、ボタンは「準備中」で理由を表示する。
 DOM 上に Stripe へのリンクが無いので、隠したボタンを迂回するという経路自体が無い。
 
-Stripe アカウントも `charges_enabled=false` で本審査を通っていない。
-テスト用 Payment Link は Stripe 側で `active=false` にしてある。
+Stripe の手元の鍵は試しの場（ダッシュボード表示名「株式会社リバイラルサンドボックス」）の物だけ。
+本番の口座の有効化（審査）と本番の鍵がそろうまで、本番では塞いだままにする。
+試しの場の Payment Link は有効のまま置いてある（試しの場はお金が動かない。配信物には verify-dist が入れさせない）。
 
-ローカルで確認するときだけ、gitignore 済みの `.env.local` に置いて `npm run dev`:
+### Stripe 側は `scripts/stripe-setup.mjs` でそろえる（2026-11-18）
+
+商品・価格・Payment Link は **`services/stripeConfig.ts` の PLANS を正本にして、この道具で作る**。Stripe の画面で手で直さない。
+
+```bash
+STRIPE_SECRET_KEY=sk_test_... node scripts/stripe-setup.mjs           # 何をするか見るだけ
+STRIPE_SECRET_KEY=sk_test_... node scripts/stripe-setup.mjs --apply   # そろえる（最後に VITE_PAY_LINK_* の3行を出す）
+node scripts/stripe-setup.mjs --self-test                              # 読み取り・指紋の自己検査
+```
+
+- 何度流しても同じ（2回目は「変える物はありません」になることを実測）。plan_code の metadata で既存の物を探す
+- 金額を変えると新しい価格を作って付け替え、古い価格と古いリンクを止める（止めたリンクには案内の文を出す）
+- リンクの設定（戻り先 `?plan=`・請求先住所・電話・**お名前（漢字）／お名前（フリガナ）／会社名**・請求書の作成・
+  支払いボタンの上の案内）を変えた時も、設定の指紋が変わるので作り直す
+- ★Stripe が集める名前はカード名義（ローマ字）だけ。契約書面を簡易書留で送る宛名のため、漢字とカナの欄を足した（欄は上限の3つ）
+- ★`revirall-corp/05_銀行口座/stripe/register_techstars_plans.py` は使わない（7日間コースが古い 298,000 円のまま）
+- 本番の鍵（`rk_live_` の制限付きキーで足りる）で流すと、本番の口座が `charges_enabled=false` の間は書かずに止まる
+
+2026-11-18 に試しの場で通しで確かめた：手元の LP で同意 → 3プランそれぞれ申し込む → Stripe の決済画面（金額・プラン名・説明）→
+試し用のカード 4242… で支払う → `https://techstars.studio/checkout/thanks?plan=<code>` に戻り、選んだプランが出る。
+Stripe 側に 217,800／437,800／880,000 円・入力欄3つ・住所・電話・支払い済みの請求書が残ることを API で確かめ、全額返金して片付けた。
+同意にチェックする前は、画面に Stripe へのリンクが1本も無いことも確かめた。
+
+ローカルで確認するときは、環境変数で渡して `npm run dev`（または gitignore 済みの `.env.local`）:
 
 ```
 VITE_PAY_LINK_LMS_ONLY=https://buy.stripe.com/test_xxxx
@@ -145,12 +169,15 @@ VITE_PAY_LINK_TECHSTARS_BUSINESS=https://buy.stripe.com/test_zzzz
 
 本番化の手順:
 
-1. Stripe の本審査を通す
-2. live キーで `revirall-corp/05_銀行口座/stripe/register_techstars_plans.py` を流し直す
-   （**テストモードの商品は本番モードへ引き継がれない**）
-3. live の Payment Link を作り、Netlify の環境変数に `VITE_PAY_LINK_*` を設定
-4. `npm run build` して `dist/` も一緒にコミットする
-5. `STRIPE_SECRET_KEY=sk_live_... npm run verify:stripe` で金額と戻り先の対応を突合する
+1. Stripe の画面で本番の口座を有効化する（会社の情報・代表者の本人確認・入金口座。**本人が入れる**）。
+   あわせて、明細書表記（半角英数）・お客様へのメールの「支払い成功時の領収書」をオンにする
+2. 本番の制限付きキー（商品・価格・Payment Link の書き込み、Checkout Session の読み取り）を作り、
+   `revirall-corp/credentials/accounts.local.json` の Stripe の欄に置く（チャットに貼らない）
+3. `STRIPE_SECRET_KEY=rk_live_... node scripts/stripe-setup.mjs --apply`（**試しの場の商品は本番へ引き継がれない**ので本番で作り直す）
+4. `STRIPE_SECRET_KEY=rk_live_... npm run verify:stripe` で金額と戻り先の対応を突合する
+5. 出てきた `VITE_PAY_LINK_*` の3行を Netlify の環境変数に入れ、本番を組み直す（Netlify が `npm run build` する）
+6. 本番の LP で「準備中」が消え、同意の後の3本のリンクが本番の決済画面（試しの場の札が無い・正しい金額）を開くことを確かめる。
+   本物の支払いでの確かめは、運営が自分のカードで1回払って返金する
 
 ### `/checkout/cancel` は Stripe からは呼ばれない
 
