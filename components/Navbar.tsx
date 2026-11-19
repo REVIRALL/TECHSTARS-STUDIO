@@ -31,7 +31,9 @@ type MobileItem =
 const MOBILE_ITEMS: MobileItem[] = [
   { label: '学習の流れ', icon: 'arrow-right', href: `#${SectionId.Model}` },
   { label: 'カリキュラム', icon: 'file-text', href: `#${SectionId.Portfolio}` },
-  { label: '料金プラン', icon: 'bar-chart', href: `#${SectionId.Pricing}` },
+  // ★2026-11-19 ユーザー「料金プランは、ヘッダーのところ押したら前みたいにポップアップで出るようにして」
+  //   → 区画へ飛ばさず、料金のポップアップ（FixedPageOverlay の Company＝見出し「料金プラン」・受講料の一覧）を開く
+  { label: '料金プラン', icon: 'bar-chart', page: PageType.Company },
   { label: '講師陣', icon: 'users', href: '#instructors' },
   { label: 'プログラム詳細', icon: 'laptop', page: PageType.Company },
   { label: 'よくある質問', icon: 'message-circle', page: PageType.FAQ },
@@ -90,9 +92,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
     // ★2026-11-17 学習の流れの区画は見出しと進め方の4段だけになったので、区画の頭（#model）へ飛ばす
     { label: '学習の流れ', href: `#${SectionId.Model}` },
     { label: 'カリキュラム', href: `#${SectionId.Portfolio}` },
-    { label: '料金プラン', href: `#${SectionId.Pricing}` },
+    { label: '料金プラン', page: PageType.Company },
     { label: '講師陣', href: '#instructors' },
-  ];
+  ] as ({ label: string; href: string } | { label: string; page: PageType })[];
 
   return (
     <>
@@ -127,15 +129,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-4">
             <div className="flex items-center">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                'href' in link ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <button
+                    key={link.label}
+                    type="button"
+                    onClick={() => onOpenPage(link.page)}
+                    className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
+                  >
+                    {link.label}
+                  </button>
+                ),
+              )}
               <button
                 onClick={() => onOpenPage(PageType.Company)}
                 className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
