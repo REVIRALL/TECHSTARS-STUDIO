@@ -2,10 +2,13 @@ import React from 'react';
 import { PageType } from '../types';
 import { PLANS, formatYen } from '../services/stripeConfig';
 import { GenIcon } from './GenIcon';
+import { Pricing } from './Pricing';
 
 interface FixedPageOverlayProps {
   page: PageType;
   onClose: () => void;
+  /** 料金プランのポップアップの中から、利用規約・特商法・プライバシーを開くため */
+  onOpenPage: (page: PageType) => void;
 }
 
 /** 上の帯に出す題。★2026-11-17 前は種類の英字（company・faq…）をそのまま出していた */
@@ -15,9 +18,10 @@ const PAGE_TITLE: Record<string, string> = {
   [PageType.Privacy]: 'プライバシーポリシー',
   [PageType.Terms]: '利用規約',
   [PageType.Tokushoho]: '特定商取引法に基づく表記',
+  [PageType.Pricing]: '料金プラン',
 };
 
-export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClose }) => {
+export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClose, onOpenPage }) => {
   if (page === PageType.None) return null;
 
   // ★2026-11-16 明るい版。前はプライバシー・規約・特商法だけ黒い地だった。全ページを明るい地にそろえる（文言は変えない）
@@ -38,7 +42,15 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
          </button>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 pt-32 pb-20">
+      {/* ★2026-11-19 料金プラン：ページにあった区画（カード・同意・お支払いの補足）をそのまま出す。
+          区画は自分で幅と余白を持つので、下の共通の箱には入れない。上の帯の分だけ下げる */}
+      {page === PageType.Pricing && (
+        <div className="pt-[60px] lg:pt-[44px]">
+          <Pricing onOpenPage={onOpenPage} inOverlay />
+        </div>
+      )}
+
+      <div className={`max-w-[1400px] mx-auto px-6 lg:px-12 pt-32 pb-20 ${page === PageType.Pricing ? 'hidden' : ''}`}>
         
         {/* COMPANY PAGE (PRICING): Technical Spec Sheet Style */}
         {page === PageType.Company && (

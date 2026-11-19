@@ -7,6 +7,9 @@ import { REQUEST_URL, REQUEST_BY_MAIL, SUPPORT_EMAIL } from '../content/links';
 
 interface PricingProps {
   onOpenPage: (page: PageType) => void;
+  /** ★2026-11-19 料金プランはページに置かず、ポップアップ（FixedPageOverlay の Pricing）の中だけで出す。
+   *  ポップアップでは見出しの右上の写真を外す（上に帯があり、写真が帯の下に潜る）。id も付けない */
+  inOverlay?: boolean;
 }
 
 /**
@@ -23,7 +26,7 @@ interface PricingProps {
  *  - 補足の「// 決済」「// 別途必要なもの」「// 分割払い」は「//」を取り、太字の「お支払い」「別に必要な物」「分割払い」に。
  *  - 見出しの字の光とカードに指を乗せた時の影の変化を外した。料金の斜体は正本の絵どおり残す。
  */
-export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
+export const Pricing: React.FC<PricingProps> = ({ onOpenPage, inOverlay = false }) => {
   const [agreed, setAgreed] = useState(false);
   // ★既定は「塞いだ状態」。判定の既定を「通す」側に置くと、評価が走る前の一瞬や
   //   評価が失敗したときにボタンが出てしまう。安全側に倒す。
@@ -38,21 +41,23 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
   const canBuy = agreed && checkoutEnabled;
 
   return (
-    <section id={SectionId.Pricing} className="lp-sec relative bg-white text-ink overflow-x-clip !pb-0">
+    <section id={inOverlay ? undefined : SectionId.Pricing} className="lp-sec relative bg-white text-ink overflow-x-clip !pb-0">
       {/* ★2026-11-17 円と曲線の版。正本は designs/lp-creative/sections/pricing-pc.png・pricing-sp.png。見た目だけ替えた
           （決済の出し分け・リンク・同意・押せない時の title・料金と文は触っていない）。
           見出しの右上の写真は左下が大きな弧の形（.price-photo）。3つの値段は大きな円の札に置き、真ん中の7日間コースの円を
           ひと回り大きく青い縁に。円の下に項目と「準備中」。下の補足は淡い水色の波の上に。 */}
       {/* 見出しの右上の写真 */}
-      <div
-        className="absolute top-0 right-0 w-[78%] sm:w-[62%] lg:w-[51%] h-[150px] sm:h-[230px] lg:h-[335px] overflow-hidden price-photo pointer-events-none"
-        aria-hidden="true"
-      >
-        <ImageFrame slot="pricing.header" fill density="compact" hideChip imgClassName="object-[72%_30%] lg:object-[64%_30%]" />
-      </div>
+      {!inOverlay && (
+        <div
+          className="absolute top-0 right-0 w-[78%] sm:w-[62%] lg:w-[51%] h-[150px] sm:h-[230px] lg:h-[335px] overflow-hidden price-photo pointer-events-none"
+          aria-hidden="true"
+        >
+          <ImageFrame slot="pricing.header" fill density="compact" hideChip imgClassName="object-[72%_30%] lg:object-[64%_30%]" />
+        </div>
+      )}
 
       <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-[54px] relative z-10">
-        <div className="anim-hidden anim-up flex flex-col items-start mb-7 lg:mb-10 gap-1.5 lg:gap-2 pt-[96px] sm:pt-[150px] lg:pt-[110px]">
+        <div className={`anim-hidden anim-up flex flex-col items-start mb-7 lg:mb-10 gap-1.5 lg:gap-2 ${inOverlay ? 'pt-8 lg:pt-12' : 'pt-[96px] sm:pt-[150px] lg:pt-[110px]'}`}>
           <h2 className="text-[40px] md:text-6xl lg:text-[72px] leading-[1.15] font-black jp-display text-ink">
             料金プラン
           </h2>

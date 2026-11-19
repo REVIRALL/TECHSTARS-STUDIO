@@ -103,13 +103,15 @@ export const CheckoutResult: React.FC<CheckoutResultProps> = ({ outcome, onOpenP
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <a
-              href="/#pricing"
+            {/* ★2026-11-19 料金プランはページの区画ではなくポップアップ。その場で開く */}
+            <button
+              type="button"
+              onClick={() => onOpenPage(PageType.Pricing)}
               className="group inline-flex items-center justify-center gap-2 min-h-[56px] px-8 rounded-xl bg-brand-500 text-ink font-sans font-black shadow-cta hover:bg-brand-400 transition-colors"
             >
               料金プランへ戻る
               <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </a>
+            </button>
             {/* ★2026-11-17 fix-copy #15：相談の行き先は LMS の資料請求（前は LP の AI 診断の箱へ戻していた） */}
             <a
               href={REQUEST_URL}

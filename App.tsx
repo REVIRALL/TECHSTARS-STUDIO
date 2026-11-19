@@ -3,7 +3,6 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { StudioModel } from './components/StudioModel';
 import { Portfolio } from './components/Portfolio';
-import { Pricing } from './components/Pricing';
 import { Team } from './components/Team';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
@@ -53,7 +52,7 @@ const App: React.FC = () => {
     return (
       <div className="font-sans text-ink bg-white selection:bg-brand-200 selection:text-ink">
         <CheckoutResult outcome={checkoutOutcome} onOpenPage={handleOpenPage} />
-        <FixedPageOverlay page={currentPage} onClose={handleClosePage} />
+        <FixedPageOverlay page={currentPage} onClose={handleClosePage} onOpenPage={handleOpenPage} />
       </div>
     );
   }
@@ -67,14 +66,15 @@ const App: React.FC = () => {
         <StudioModel />
         {/* ★2026-11-17 fix-copy #8：7日間の説明を「カリキュラム」の1区画の表にまとめ、学習スケジュール（Process）は外した */}
         <Portfolio />
-        <Pricing onOpenPage={handleOpenPage} />
+        {/* ★2026-11-19 料金プランはページに置かない（ユーザー「index.htmlには出ないように」）。
+            ヘッダーの「料金プラン」「お申し込み」で開くポップアップ（FixedPageOverlay の Pricing）の中だけで出す */}
         <Team />
         <Contact />
       </main>
 
       <Footer onOpenPage={handleOpenPage} />
 
-      <FixedPageOverlay page={currentPage} onClose={handleClosePage} />
+      <FixedPageOverlay page={currentPage} onClose={handleClosePage} onOpenPage={handleOpenPage} />
 
       {/* ★2026-11-16 明るい版にしたので、暗い画面に掛けていたフィルムの粒の膜（grain-overlay）は外した */}
 
