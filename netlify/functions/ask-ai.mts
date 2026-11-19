@@ -21,8 +21,10 @@ import { MAKES, SCHEDULE, AFTER } from '../../content/program';
 const MODEL = 'claude-haiku-5-5';
 const MAX_INPUT = 400;
 
-// 1つの関数の実体の中だけで数える簡易の回数制限（同じ送り元から 10 分に 8 回まで）。
-// 実体が増えると数が分かれる。費用の上限は Anthropic の管理画面（Console）の使用上限で止める
+// ★送り元（Origin）の確認はブラウザ以外からは偽れる＝鍵の代わりにはならない（2026-11-19 の自動の安全点検の指摘）。
+//   乱用への備えは3段：①Netlify 側の回数制限（下の config・送り元の IP ごとに 1 分 10 回）
+//   ②この実体の中の回数制限（同じ送り元から 10 分に 8 回）③答えの長さの上限（max_tokens）。
+//   費用の最後の歯止めは Anthropic の管理画面（Console）の使用上限（spend limit）で掛ける。
 const WINDOW_MS = 10 * 60 * 1000;
 const PER_WINDOW = 8;
 const hits = new Map<string, number[]>();
@@ -52,8 +54,10 @@ function limited(key: string): boolean {
     return true;
   }
   list.push(now);
-  hits.set(key, list);
-  if (hits.size > 5000) hits.clear();
+  hits.delete(key);
+  hits.set(key, list); // 入れ直して「最後に来た順」の末尾へ
+  // 覚える送り元が増えすぎたら、いちばん前に来た物から消す（全部消すと制限が一度に外れる）
+  while (hits.size > 5000) hits.delete(hits.keys().next().value as string);
   return false;
 }
 
@@ -119,7 +123,7 @@ export default async (req: Request, context: { ip?: string }) => {
   try {
     const res = await client.messages.create({
       model: MODEL,
-      max_tokens: 2000,
+      max_tokens: 1000,
       // 短い質問への答えなので考える量は少なく（Haiku 5.5 の既定は medium）
       output_config: { effort: 'low' },
       system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
@@ -152,4 +156,9 @@ export default async (req: Request, context: { ip?: string }) => {
     }
     return json(502, { error: '現在AIサービスが混み合っており、応答できませんでした。後ほど再度お試しください。' });
   }
+};
+
+// Netlify の回数制限（送り元の IP とドメインごとに 60 秒で 10 回まで。超えると Netlify が 429 を返し、関数は動かない）
+export const config = {
+  rateLimit: { windowLimit: 10, windowSize: 60, aggregateBy: ['ip', 'domain'] },
 };
