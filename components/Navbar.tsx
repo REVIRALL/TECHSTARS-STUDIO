@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SectionId, PageType } from '../types';
 import { GenIcon, GenIconName } from './GenIcon';
+import { withImgVersion } from '../content/imgVersion';
 
 interface NavbarProps {
   onOpenPage: (page: PageType) => void;
@@ -30,7 +31,10 @@ type MobileItem =
 const MOBILE_ITEMS: MobileItem[] = [
   { label: '学習の流れ', icon: 'arrow-right', href: `#${SectionId.Model}` },
   { label: 'カリキュラム', icon: 'file-text', href: `#${SectionId.Portfolio}` },
-  { label: '料金プラン', icon: 'bar-chart', href: `#${SectionId.Pricing}` },
+  // ★2026-11-19 ユーザー「料金プランは、ヘッダーのところ押したら前みたいにポップアップで出るようにして」
+  //   → 区画へ飛ばさず、料金プランのポップアップを開く。同日「index.htmlには出ないように」で区画はページから外し、
+  //     ページにあったカード・同意・お支払いの補足ごとポップアップ（FixedPageOverlay の Pricing）へ移した
+  { label: '料金プラン', icon: 'bar-chart', page: PageType.Pricing },
   { label: '講師陣', icon: 'users', href: '#instructors' },
   { label: 'プログラム詳細', icon: 'laptop', page: PageType.Company },
   { label: 'よくある質問', icon: 'message-circle', page: PageType.FAQ },
@@ -89,9 +93,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
     // ★2026-11-17 学習の流れの区画は見出しと進め方の4段だけになったので、区画の頭（#model）へ飛ばす
     { label: '学習の流れ', href: `#${SectionId.Model}` },
     { label: 'カリキュラム', href: `#${SectionId.Portfolio}` },
-    { label: '料金プラン', href: `#${SectionId.Pricing}` },
+    { label: '料金プラン', page: PageType.Pricing },
     { label: '講師陣', href: '#instructors' },
-  ];
+  ] as ({ label: string; href: string } | { label: string; page: PageType })[];
 
   return (
     <>
@@ -126,15 +130,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-4">
             <div className="flex items-center">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                'href' in link ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <button
+                    key={link.label}
+                    type="button"
+                    onClick={() => onOpenPage(link.page)}
+                    className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
+                  >
+                    {link.label}
+                  </button>
+                ),
+              )}
               <button
                 onClick={() => onOpenPage(PageType.Company)}
                 className="px-2.5 xl:px-4 py-3 text-sm xl:text-[15px] font-bold text-ink hover:text-brand-700 transition-colors whitespace-nowrap"
@@ -149,12 +164,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
               </button>
             </div>
 
-            <a
-              href={`#${SectionId.Pricing}`}
+            {/* ★2026-11-19 料金プランの区画はページに無いので、料金プランのポップアップを開く */}
+            <button
+              type="button"
+              onClick={() => onOpenPage(PageType.Pricing)}
               className="ml-2 inline-flex items-center justify-center min-h-[48px] px-6 xl:px-8 rounded-xl bg-white text-ink font-black text-sm xl:text-base shadow-card hover:shadow-lift hover:text-brand-700 transition-[box-shadow,color] duration-300 whitespace-nowrap"
             >
               お申し込み
-            </a>
+            </button>
             <a
               href="https://lms.techstars.studio/login"
               target="_blank"
@@ -193,7 +210,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             {/* 右の写真：最初の画面の写真（講師と受講生）を大きな丸みの形に切り抜く */}
             <div aria-hidden="true" className="m-menu-photo">
               <img
-                src="/img/hero-backdrop-mobile.webp"
+                src={withImgVersion('/img/hero-backdrop-mobile.webp')}
                 alt=""
                 width={864}
                 height={1536}
@@ -237,13 +254,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
               </ul>
 
               <div className="m-menu-item m-menu-cta" style={{ '--i': MOBILE_ITEMS.length } as React.CSSProperties}>
-                <a
-                  href={`#${SectionId.Pricing}`}
-                  onClick={closeMenu}
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeMenu();
+                    onOpenPage(PageType.Pricing);
+                  }}
                   className="inline-flex w-full items-center justify-center min-h-[54px] px-6 rounded-full bg-brand-500 text-ink font-black text-[17px] shadow-cta hover:bg-brand-400 transition-colors"
                 >
                   お申し込み
-                </a>
+                </button>
                 <a
                   href="https://lms.techstars.studio/login"
                   target="_blank"

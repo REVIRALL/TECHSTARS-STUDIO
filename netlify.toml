@@ -88,10 +88,13 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # パス固定の画像。1日は使い回し、その後は裏で取り直しつつ表示は止めない
+# ★2026-11-19 古い物を先に見せる期間を30日→1日に縮めた。11/16 に写真を差し替えたのに、前に見た PC に
+#   前の暗い写真が出続けた。画面側は URL に版の印（content/imgVersion.ts）を付けて取り直させるが、
+#   印の上げ忘れがあっても1日で新しい物に替わるようにしておく
 [[headers]]
   for = "/img/*"
   [headers.values]
-    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=86400"
 
 # SPA のシェル。Netlify の既定と同じだが、誰かが /* に Cache-Control を足したときに
 # 静かに反転しないよう明示しておく

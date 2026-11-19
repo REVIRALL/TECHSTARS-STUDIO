@@ -38,5 +38,7 @@ export enum PageType {
   FAQ = 'faq',
   Privacy = 'privacy',
   Terms = 'terms',
-  Tokushoho = 'tokushoho'
+  Tokushoho = 'tokushoho',
+  /** ★2026-11-19 料金プランはページに置かず、このポップアップだけで出す（ユーザー「index.htmlには出ないように」） */
+  Pricing = 'pricing'
 }

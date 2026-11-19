@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ImageIcon, Sparkles, Monitor, Smartphone } from 'lucide-react';
 import { getSlot, variantFor, Device } from '../content/imageSlots';
+import { withImgVersion } from '../content/imgVersion';
 import { PromptModal } from './PromptModal';
 
 /**
@@ -90,7 +91,7 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
     const probe = new Image();
     probe.onload = () => !cancelled && setState('ready');
     probe.onerror = () => !cancelled && setState('missing');
-    probe.src = active.src;
+    probe.src = withImgVersion(active.src);
     return () => {
       cancelled = true;
     };
@@ -115,9 +116,9 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
       {/* --- 生成済み: 実画像 --- */}
       {state === 'ready' && (
         <picture>
-          {def.mobile && <source media="(max-width: 767px)" srcSet={def.mobile.src} />}
+          {def.mobile && <source media="(max-width: 767px)" srcSet={withImgVersion(def.mobile.src)} />}
           <img
-            src={def.desktop.src}
+            src={withImgVersion(def.desktop.src)}
             alt={def.decorative ? '' : def.alt}
             aria-hidden={def.decorative ? true : undefined}
             width={active.width}

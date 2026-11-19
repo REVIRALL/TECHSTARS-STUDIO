@@ -3,6 +3,7 @@ import { SectionId } from '../types';
 import { ImageFrame } from './ImageFrame';
 import { GenIcon } from './GenIcon';
 import { REQUEST_URL } from '../content/links';
+import { withImgVersion } from '../content/imgVersion';
 
 /**
  * ヒーロー。
@@ -56,7 +57,7 @@ const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
         style={{ aspectRatio: `${s.w} / ${s.h}` }}
       >
         <img
-          src={s.img}
+          src={withImgVersion(s.img)}
           width={s.w}
           height={s.h}
           alt=""
