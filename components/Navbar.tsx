@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SectionId, PageType } from '../types';
 import { GenIcon, GenIconName } from './GenIcon';
+import { withImgVersion } from '../content/imgVersion';
 
 interface NavbarProps {
   onOpenPage: (page: PageType) => void;
@@ -193,7 +194,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
             {/* 右の写真：最初の画面の写真（講師と受講生）を大きな丸みの形に切り抜く */}
             <div aria-hidden="true" className="m-menu-photo">
               <img
-                src="/img/hero-backdrop-mobile.webp"
+                src={withImgVersion('/img/hero-backdrop-mobile.webp')}
                 alt=""
                 width={864}
                 height={1536}

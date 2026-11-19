@@ -1,4 +1,5 @@
 import React from 'react';
+import { withImgVersion } from '../content/imgVersion';
 
 /**
  * 画像の印（アイコン）。線のアイコン（lucide-react）の代わりに使う。
@@ -64,7 +65,7 @@ interface Props {
 
 export const GenIcon: React.FC<Props> = ({ name, className = 'w-5 h-5', eager = false }) => (
   <img
-    src={`/img/icons/${name}.webp`}
+    src={withImgVersion(`/img/icons/${name}.webp`)}
     alt=""
     aria-hidden="true"
     width={128}
