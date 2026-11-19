@@ -46,18 +46,17 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 （このリポジトリを Netlify に接続していない期間でも、`dist/` をアップロードすれば反映できる）。
 ソースを変えたら **`npm run build` を流して `dist/` も一緒にコミットする**こと。片方だけ更新すると乖離する。
 
-## ★ビルド時の注意：GEMINI_API_KEY の有無でバンドルが変わる
+## ★「AIにその場で聞く」はサーバー側の関数から Claude Haiku を呼ぶ（2026-11-19〜）
 
-`vite.config.ts` が `GEMINI_API_KEY` を `process.env.API_KEY` に差し込む。
-`services/geminiService.ts` は キーが空なら即 `"APIキーが設定されていないため、AI機能を利用できません。"`
-を返すので、**キーが無いビルドでは Gemini のプロンプト文字列がツリーシェイクで丸ごと消える**。
-
-本番 Netlify には現在この環境変数が設定されていない。つまり:
-
-- **本番と同じ成果物を作りたいなら `.env.local` を外してビルドする**
-- 手元に `.env.local` を置いたままビルドすると本番とバンドルの中身が変わる（バグではない）
-
-このリポジトリの `dist/` は **`.env.local` 無し（＝本番と同条件）でビルドしたもの**。
+- 画面（`components/IdeaValidator.tsx` → `services/geminiService.ts`）は `/.netlify/functions/ask-ai` に質問を送るだけ。
+  画面の JS には鍵も AI の部品も入っていない。
+- 関数は `netlify/functions/ask-ai.mts`。`@anthropic-ai/sdk` で **Claude Haiku 5.5（`claude-haiku-5-5`）** を呼ぶ。
+  鍵は Netlify の環境変数 **`ANTHROPIC_API_KEY`**（範囲＝Functions だけ・秘密の扱い）。リポジトリにも `.env` にも置かない。
+- 答えの元は `content/program.ts` と `content/faq.ts`（よくある質問の正本。LP の表示も同じ物を読む）だけ。
+  収入・案件の約束と料金の金額は答えさせない。入力は400字まで・同じ送り元から10分に8回まで・送り元は techstars.studio と Netlify の下書きだけ。
+- 鍵の組織の残高（Anthropic の Console の Plans & Billing）が切れると、画面には「ただいま AI の受け付けを止めています」と出る。
+- 手元で試す：`npx esbuild netlify/functions/ask-ai.mts --bundle --platform=node --format=esm --outfile=<置き場>/ask-ai.mjs` で
+  まとめ、`ANTHROPIC_API_KEY` を環境変数に入れて default の関数に `Request` を渡す（origin は https://techstars.studio）。
 
 ### ★鍵をバンドルに焼き込ませないガード
 
@@ -80,9 +79,8 @@ Netlify。`netlify.toml` の指定は build=`npm run build` / publish=`dist`。
 | `GEMINI_API_KEY=AIzaSy...` | 警告が出て**バンドル内の出現 0件**（抑止される） |
 | `ALLOW_INLINE_API_KEY=1` 併用 | 埋め込まれる 1件（＝抑止しているのがこのガードだと確認できる） |
 
-**AI機能（`components/IdeaValidator.tsx`）をクライアント直叩きで本番稼働させる方法は無い。**
-動かすなら鍵をサーバ側に置く必要がある（Netlify Functions で Gemini を叩くプロキシを作り、
-フロントはそのエンドポイントを呼ぶ）。`ALLOW_INLINE_API_KEY=1` は検証用の逃げ道であって解決策ではない。
+このガードは今も残している（画面の JS はもう `process.env.API_KEY` を読まないが、誰かが戻したときに鍵が載らないように）。
+AI の鍵はサーバー側の関数にだけ置く（上の節）。
 
 ## セキュリティ方針（2026-09-21 の決済導線の監査で決めたこと）
 

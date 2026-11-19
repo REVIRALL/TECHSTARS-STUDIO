@@ -140,13 +140,14 @@ export const Contact: React.FC = () => {
                 ? 'メールで、資料のお届けとご質問の受け付けをしています。'
                 : '資料請求のページから、資料のお届けとご質問の受け付けをしています。'}
             </p>
-            {/* 相談の行き先（LMS の資料請求）と連絡先 */}
+            {/* 相談の行き先（LMS の資料請求）と連絡先。
+                ★2026-11-19 ユーザー「無料で資料請求・相談する　は白文字がいいね」→ 字と矢印を白に（地の色は変えていない） */}
             <a
               href={REQUEST_URL}
-              className="group mb-5 inline-flex items-center gap-3 min-h-[56px] lg:min-h-[64px] px-6 sm:px-8 lg:px-12 rounded-2xl bg-brand-500 text-ink text-[15px] min-[375px]:text-base sm:text-lg lg:text-[20px] font-black whitespace-nowrap shadow-cta hover:bg-brand-400 transition-colors duration-300"
+              className="group mb-5 inline-flex items-center gap-3 min-h-[56px] lg:min-h-[64px] px-6 sm:px-8 lg:px-12 rounded-2xl bg-brand-500 text-white text-[15px] min-[375px]:text-base sm:text-lg lg:text-[20px] font-black whitespace-nowrap shadow-cta hover:bg-brand-400 transition-colors duration-300"
             >
               無料で資料請求・相談する
-              <GenIcon name="arrow-right" className="w-6 h-6 lg:w-7 lg:h-7 group-hover:translate-x-1 transition-transform duration-300" />
+              <GenIcon name="arrow-right" className="w-6 h-6 lg:w-7 lg:h-7 brightness-0 invert group-hover:translate-x-1 transition-transform duration-300" />
             </a>
             <p className="text-sm sm:text-[15px] lg:text-base text-ink">
               <span className="font-bold">メール：</span>support@techstars.studio

@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preload" as="image" type="image/avif" fetchpriority="high" media="(min-width: 768px)" imagesrcset="/img/hero-backdrop-desktop-960w.avif?v=20261119 960w, /img/hero-backdrop-desktop-1280w.avif?v=20261119 1280w, /img/hero-backdrop-desktop-1600w.avif?v=20261119 1600w, /img/hero-backdrop-desktop-1920w.avif?v=20261119 1920w, /img/hero-backdrop-desktop-2560w.avif?v=20261119 2560w, /img/hero-backdrop-desktop-3840w.avif?v=20261119 3840w" imagesizes="(min-width: 2116px) 66vw, (min-width: 1506px) 1388px, (min-width: 1024px) 92vw, 178vh">
     <title>TechStars｜7日間で、動くシステムを3つ作るAI開発講座</title>
 
     <!-- SEO Meta Tags -->
@@ -30,9 +31,15 @@
     <link rel="apple-touch-icon" href="/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/assets/index-904Xe_aC.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-DgYhYdMu.css">
+    <!-- ★2026-11-19 読み込みを軽く：使っている太さ（400・500・700・900）だけを読む。300・600・800 はどこにも使っていない
+         （font-light・font-semibold・font-extrabold・font-weight の指定が0件）。この CSS は JS より先に読み切る必要があり、
+         前は 149KB あった -->
+    <!-- ★2026-11-19 この CSS は Google の別の場所から 120KB あり、普通に読むと読み切るまで JS（画面を作る物）が動かない。
+         ここでは読み始めるだけにして（preload）、当てるのは index.tsx（JS を待たせない）。字の形は前と同じ書体で、
+         書体が届くまでは端末の書体で出る（display=swap なので前も同じ動き） -->
+    <link rel="preload" as="style" data-fonts href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+  <script type="module" crossorigin src="/assets/index-Dutr2SSE.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DkMz4SUR.css">
 </head>
   <body class="bg-black text-white">
     <div id="root"></div>

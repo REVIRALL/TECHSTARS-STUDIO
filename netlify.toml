@@ -5,6 +5,11 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# ★2026-11-19「AIにその場で聞く」のサーバー側の関数。鍵は Netlify の環境変数 ANTHROPIC_API_KEY（scopes＝functions だけ）
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # ─────────────────────────────────────────────────────────────
 # リダイレクト（上から評価される。順番に意味がある）
 # ─────────────────────────────────────────────────────────────
@@ -59,8 +64,9 @@
     #   撤去前は第三者CDNが決済リンクを描くページでDOM全権を持っていた（href を書き換えられた）。
     #   style に 'unsafe-inline' が残るのは React の style={{...}} を数箇所使っているため。
     #   script 側には一切付けていない。
-    #   connect-src の Google は services/geminiService.ts 用。本番は鍵未設定で現在は発火しない。
-    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; connect-src 'self' https://generativelanguage.googleapis.com; manifest-src 'self'; base-uri 'none'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    #   ★2026-11-19「AIにその場で聞く」はサーバー側の関数（/.netlify/functions/ask-ai）から Claude を呼ぶ形にしたので、
+    #   画面から外の AI へは通信しない。connect-src は 'self' だけ。
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; connect-src 'self'; manifest-src 'self'; base-uri 'none'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
 
 # ─────────────────────────────────────────────────────────────────────
 # キャッシュ

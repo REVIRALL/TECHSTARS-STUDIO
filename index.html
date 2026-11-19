@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- hero-preload（vite.config.ts が最初の画面の写真の先読みをここに入れる） -->
     <title>TechStars｜7日間で、動くシステムを3つ作るAI開発講座</title>
 
     <!-- SEO Meta Tags -->
@@ -30,7 +31,13 @@
     <link rel="apple-touch-icon" href="/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- ★2026-11-19 読み込みを軽く：使っている太さ（400・500・700・900）だけを読む。300・600・800 はどこにも使っていない
+         （font-light・font-semibold・font-extrabold・font-weight の指定が0件）。この CSS は JS より先に読み切る必要があり、
+         前は 149KB あった -->
+    <!-- ★2026-11-19 この CSS は Google の別の場所から 120KB あり、普通に読むと読み切るまで JS（画面を作る物）が動かない。
+         ここでは読み始めるだけにして（preload）、当てるのは index.tsx（JS を待たせない）。字の形は前と同じ書体で、
+         書体が届くまでは端末の書体で出る（display=swap なので前も同じ動き） -->
+    <link rel="preload" as="style" data-fonts href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
 </head>
   <body class="bg-black text-white">
     <div id="root"></div>

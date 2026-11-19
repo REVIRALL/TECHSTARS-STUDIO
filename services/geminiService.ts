@@ -1,29 +1,23 @@
-import { GoogleGenAI, Type } from "@google/genai";
+/**
+ * 「AIにその場で聞く」の問い合わせ先。
+ *
+ * ★2026-11-19 画面の JS から AI を直に呼ぶのをやめ、Netlify の関数（netlify/functions/ask-ai.mts）に聞く形にした。
+ *   鍵を画面の JS に入れると誰でも読めるため、鍵はサーバー側（Netlify の環境変数 ANTHROPIC_API_KEY）にだけ置く。答えは Claude Haiku。
+ *   画面が Google の AI の部品（@google/genai）を読まなくなったので、この区画の JS も軽くなった。
+ */
+const ENDPOINT = '/.netlify/functions/ask-ai';
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
-
-export const validateBusinessIdea = async (idea: string): Promise<string> => {
-  if (!apiKey) {
-    return "APIキーが設定されていないため、AI機能を利用できません。";
-  }
-
+export const validateBusinessIdea = async (question: string): Promise<string> => {
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `あなたは熟練のベンチャーキャピタリスト兼プロダクトマネージャーです。
-      以下のビジネスアイデアに対して、簡潔に3つの視点（1. 強み・市場性、2. 懸念されるリスク、3. 最初のアクション）でフィードバックを行ってください。
-      トーンはプロフェッショナルかつ建設的に、日本語で出力してください。Markdown形式で出力してください。
-
-      ビジネスアイデア: ${idea}`,
-      config: {
-        thinkingConfig: { thinkingBudget: 0 } // 低レイテンシ重視
-      }
+    const r = await fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ question }),
     });
-
-    return response.text || "フィードバックを生成できませんでした。";
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    return "現在AIサービスが混み合っており、応答できませんでした。後ほど再度お試しください。";
+    const data = (await r.json().catch(() => ({}))) as { answer?: string; error?: string };
+    if (r.ok && data.answer) return data.answer;
+    return data.error || '現在AIサービスが混み合っており、応答できませんでした。後ほど再度お試しください。';
+  } catch {
+    return '通信できませんでした。インターネットの接続を確かめて、もう一度お試しください。';
   }
 };

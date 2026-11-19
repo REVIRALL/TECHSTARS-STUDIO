@@ -32,6 +32,26 @@ export interface ImageVariant {
   deliverWidth: number;
   /** コピーしてそのまま画像生成AIに貼れる完成プロンプト（英語） */
   prompt: string;
+  /**
+   * 幅違いを出し分ける画像だけ持つ（★2026-11-19 ヒーローの写真を 4K にした時に足した）。
+   * public/img/<名前>-<幅>w.avif と .webp を幅ごとに置き、ブラウザが画面の幅と画素の細かさで選ぶ。
+   * 元の大きな絵は assets-src/<名前>-master.webp。書き出しは `npm run img:responsive`。
+   */
+  responsive?: ResponsiveSet;
+}
+
+export interface ResponsiveSet {
+  /** 書き出す横幅（小さい順） */
+  widths: number[];
+  /** <img sizes>。画面に描く幅（object-fit と scale の拡大まで込み）。index.html の先読みも同じ値を使う */
+  sizes: string;
+  /** /img/hero-backdrop-desktop のような、幅と拡張子を除いた名前 */
+  base: string;
+}
+
+/** 幅違いの srcset（avif か webp） */
+export function srcsetOf(set: ResponsiveSet, ext: 'avif' | 'webp', withVersion: (src: string) => string = (s) => s): string {
+  return set.widths.map((w) => `${withVersion(`${set.base}-${w}w.${ext}`)} ${w}w`).join(', ');
 }
 
 export interface ImageSlot {
@@ -82,11 +102,16 @@ interface VariantSeed {
   composition: string;
   /** テキストを載せるため暗く空けておく領域の指定 */
   safeArea?: string;
+  /** 幅違いを出し分けるときだけ（ImageVariant.responsive） */
+  responsive?: { widths: number[]; sizes: string; fallback: number };
 }
 
 function compose(id: string, device: Device, v: VariantSeed): ImageVariant {
   const [width, height] = v.size;
-  const src = `/img/${id.replace(/\./g, '-')}-${device}.webp`;
+  const base = `/img/${id.replace(/\./g, '-')}-${device}`;
+  // 幅違いを出し分ける画像は、srcset を読まない古いブラウザ向けの1枚（fallback の幅の webp）を src にする
+  const src = v.responsive ? `${base}-${v.responsive.fallback}w.webp` : `${base}.webp`;
+  const responsive = v.responsive ? { widths: v.responsive.widths, sizes: v.responsive.sizes, base } : undefined;
 
   const prompt = [
     `### TechStars — ${id} / ${device.toUpperCase()} / ${width}x${height}px (${v.aspect})`,
@@ -117,7 +142,7 @@ function compose(id: string, device: Device, v: VariantSeed): ImageVariant {
     `--ar ${v.aspect.replace(':', ':')} --style raw --v 7 --no ${MJ_NO}`,
   ].join('\n');
 
-  return { src, width, height, aspect: v.aspect, deliverWidth: v.deliver, prompt };
+  return { src, width, height, aspect: v.aspect, deliverWidth: v.deliver, prompt, responsive };
 }
 
 interface SlotSeed {
@@ -157,18 +182,35 @@ export const IMAGE_SLOTS: ImageSlot[] = [
     role: 'ファーストビュー全面の写真。明るいコワーキングで講師と受講生が1台の画面をのぞき込んで笑う（マンツーマン指導の実感）。見出しが乗るので左側（スマホは上側）は明るく空ける。正本は designs/lp-stats/variants/2-section-fv/v2.png。',
     alt: '',
     decorative: true,
+    // ★2026-11-19 ユーザー「ヒーローセクションの二名の画像の画質悪いから４Kにして」「読み込み速度はあげて」
+    //   → 前は 1536×864（スマホ 864×1536）の webp を1枚だけ配り、PC の高精細な画面やスマホでは引き伸ばされてぼけていた。
+    //   描いた写真を Topaz（Higgsfield の topaz_image・Standard V2）で 3840×2160 / 2160×3840 に上げ、幅違いの avif と webp を
+    //   出し分ける。sizes は Hero.tsx の切り抜き（object-fit:cover と scale）を込みにした画面上の幅：
+    //   PC（1024px〜）＝枠の高さ min(42.5vw,640px) に 16:9 で合わせて ×1.22 → min(92vw,1388px)、2116px〜は枠の幅 53.8vw×1.22。
+    //   768〜1023px＝区画いっぱいの高さに 16:9 で合わせる（178vh）。スマホ＝高さに 9:16 で合わせて ×1.35（76vh）、
+    //   背の低い画面（高さ 600px 以下）は ×1.55 で実測が画面の高さとほぼ同じ幅（100vh）、横向きは幅に合わせて ×1.55（155vw）。
     desktop: {
-      size: [1536, 864],
+      size: [3840, 2160],
       aspect: '16:9',
-      deliver: 1920,
+      deliver: 3840,
+      responsive: {
+        widths: [960, 1280, 1600, 1920, 2560, 3840],
+        sizes: '(min-width: 2116px) 66vw, (min-width: 1506px) 1388px, (min-width: 1024px) 92vw, 178vh',
+        fallback: 1920,
+      },
       subject: `A bright co-working corner. A Japanese woman instructor in a white blouse leans in and points at a silver laptop screen while a young Japanese man in a navy jacket and white T-shirt, chin on hand, smiles at the screen. Both are laughing naturally. A paper coffee cup on the light wood table, green plants and big windows softly blurred behind.`,
       composition: `Horizontal 16:9, 50mm, eye level. The two people sit in the RIGHT 55% of the frame. The bottom 25% is the table, hands and laptop.`,
       safeArea: `The LEFT 45% of the frame is bright, softly blurred window light and plants only.`,
     },
     mobile: {
-      size: [864, 1536],
+      size: [2160, 3840],
       aspect: '9:16',
-      deliver: 1080,
+      deliver: 2160,
+      responsive: {
+        widths: [720, 1080, 1440, 2160],
+        sizes: '(orientation: landscape) 155vw, (max-height: 600px) 100vh, 76vh',
+        fallback: 1080,
+      },
       subject: `The same two people and the same scene as the desktop cut: the woman instructor pointing at the silver laptop and the young man smiling at it, in a bright co-working space with plants and big windows.`,
       composition: `Vertical 9:16, 50mm. The two people and the laptop sit in the BOTTOM half; their faces are 35-50% from the bottom.`,
       safeArea: `The TOP half of the frame is bright, softly blurred ceiling, window light and plants only.`,

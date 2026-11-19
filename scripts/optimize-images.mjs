@@ -42,7 +42,8 @@ const { IMAGE_SLOTS } = await loadSlots();
 const limits = new Map();
 for (const slot of IMAGE_SLOTS) {
   for (const v of [slot.desktop, slot.mobile]) {
-    if (v) limits.set(path.basename(v.src), v.deliverWidth);
+    // 幅違いを出し分ける画像は scripts/responsive-images.mjs が元の絵から作る（ここで縮めると画質が落ちる）
+    if (v && !v.responsive) limits.set(path.basename(v.src), v.deliverWidth);
   }
 }
 

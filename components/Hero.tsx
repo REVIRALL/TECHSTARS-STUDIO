@@ -56,15 +56,19 @@ const Emblems: React.FC<{ className?: string }> = ({ className = '' }) => (
         className="group relative h-[136px] sm:h-[150px] lg:h-[168px] xl:h-[184px] transition-transform duration-300 hover:-translate-y-1"
         style={{ aspectRatio: `${s.w} / ${s.h}` }}
       >
-        <img
-          src={withImgVersion(s.img)}
-          width={s.w}
-          height={s.h}
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          className="absolute inset-0 h-full w-full select-none [filter:drop-shadow(0_8px_14px_rgba(11,27,46,0.18))]"
-        />
+        {/* ★2026-11-19 読み込みを軽く：同じ絵の avif（画質 70・1枚 57KB→38KB）を先に。読めないブラウザは今までの webp */}
+        <picture>
+          <source type="image/avif" srcSet={withImgVersion(s.img.replace(/\.webp$/, '.avif'))} />
+          <img
+            src={withImgVersion(s.img)}
+            width={s.w}
+            height={s.h}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            className="absolute inset-0 h-full w-full select-none [filter:drop-shadow(0_8px_14px_rgba(11,27,46,0.18))]"
+          />
+        </picture>
         <div className="absolute inset-x-[22%] top-[29%] bottom-[19%] flex flex-col items-center justify-center text-center">
           <dd className="flex items-baseline justify-center gap-0.5 leading-none">
             <span className="text-[26px] sm:text-[30px] lg:text-[34px] xl:text-[38px] font-black tracking-[-0.04em] tabular-nums text-brand-700">

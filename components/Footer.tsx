@@ -1,3 +1,4 @@
+import { withImgVersion } from '../content/imgVersion';
 import React from 'react';
 import { PageType } from '../types';
 import { ImageFrame } from './ImageFrame';
@@ -32,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPage }) => {
         <div className="flex flex-col md:flex-row justify-between items-start gap-10 md:gap-12 mb-12 lg:mb-14">
           <div className="anim-hidden anim-up">
             <div className="flex items-center gap-3 sm:gap-4 mb-4">
-              <img src="/logo.png" alt="TechStars" width={698} height={626} loading="lazy" className="h-14 sm:h-16 w-auto" />
+              <img src={withImgVersion('/img/logo-216.webp')} alt="TechStars" width={241} height={216} loading="lazy" className="h-14 sm:h-16 w-auto" />
               <div className="flex items-baseline gap-1.5 whitespace-nowrap">
                 <span className="font-black text-ink text-xl sm:text-2xl tracking-tight">TECHSTARS</span>
                 <span className="font-black text-brand-700 text-xl sm:text-2xl tracking-tight">AI</span>

@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SectionId, PageType } from '../types';
 import { GenIcon, GenIconName } from './GenIcon';
 import { withImgVersion } from '../content/imgVersion';
+import { getSlot, srcsetOf } from '../content/imageSlots';
+
+/** メニューの写真＝最初の画面のスマホの写真の幅違い */
+const HERO_SP = getSlot('hero.backdrop')!.mobile!.responsive!;
 
 interface NavbarProps {
   onOpenPage: (page: PageType) => void;
@@ -113,11 +117,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           {/* Logo */}
           {/* ★2026-11-17 行き先を「#」から最初の画面（#home）に（押す検査で「行き先が無い」と出た） */}
           <a href="#home" onClick={closeMenu} className="flex items-center gap-2 md:gap-3 group z-50 shrink-0 min-h-[44px]">
+            {/* ★2026-11-19 読み込みを軽く：/logo.png（698×626・60KB）を描く高さ（40〜48px）×3 倍の細かさまでに縮めた写し（16KB）。
+                縦横比は同じ（241×216）なので見た目は変わらない。/logo.png はファビコン・共有の絵に残す */}
             <img
-              src="/logo.png"
+              src={withImgVersion('/img/logo-216.webp')}
               alt="TechStars"
-              width={698}
-              height={626}
+              width={241}
+              height={216}
               className="h-10 lg:h-12 w-auto group-hover:scale-105 transition-transform duration-300"
             />
             <div className="flex items-baseline gap-1.5 whitespace-nowrap">
@@ -209,15 +215,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPage }) => {
           <>
             {/* 右の写真：最初の画面の写真（講師と受講生）を大きな丸みの形に切り抜く */}
             <div aria-hidden="true" className="m-menu-photo">
-              <img
-                src={withImgVersion('/img/hero-backdrop-mobile.webp')}
-                alt=""
-                width={864}
-                height={1536}
-                decoding="async"
-                draggable={false}
-                className="h-full w-full object-cover select-none"
-              />
+              {/* ★2026-11-19 写真を 4K の幅違いにした（content/imageSlots.ts の hero.backdrop）。メニューの写真は画面の高さの約 52%
+                  （枠の高さ 84% に 9:16 で合わせて ×1.1）に描くので、その幅に合う1枚を選ばせる */}
+              <picture>
+                <source type="image/avif" srcSet={srcsetOf(HERO_SP, 'avif', withImgVersion)} sizes="52vh" />
+                <img
+                  src={withImgVersion(HERO_SP.base + '-1080w.webp')}
+                  srcSet={srcsetOf(HERO_SP, 'webp', withImgVersion)}
+                  sizes="52vh"
+                  alt=""
+                  width={2160}
+                  height={3840}
+                  decoding="async"
+                  draggable={false}
+                  className="h-full w-full object-cover select-none"
+                />
+              </picture>
             </div>
             {/* 地の淡い水色の円（案の絵の位置） */}
             <span aria-hidden="true" className="dot m-menu-dot w-[30px] h-[30px] right-[22%] top-[26%] z-[2]" />

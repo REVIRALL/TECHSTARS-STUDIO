@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ImageIcon, Sparkles, Monitor, Smartphone } from 'lucide-react';
-import { getSlot, variantFor, Device } from '../content/imageSlots';
+import { getSlot, variantFor, srcsetOf, Device } from '../content/imageSlots';
 import { withImgVersion } from '../content/imgVersion';
 import { PromptModal } from './PromptModal';
 
@@ -79,13 +79,16 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
 }) => {
   const def = getSlot(slot);
   const device = useDevice();
-  const [state, setState] = useState<'probing' | 'ready' | 'missing'>('probing');
+  // ★2026-11-19 最初の画面の画像（priority）は在るかの下見をしない。下見の1枚を読み終わるまで <picture> を出さない作りで、
+  //   写真の表示が JS の後の「下見の読み込み」1回ぶん遅れていた（しかも幅違いの srcset と別の URL を読むので二重に読む）。
+  //   最初の画面の写真は必ず置いてあるので、初めから表示する
+  const [state, setState] = useState<'probing' | 'ready' | 'missing'>(priority ? 'ready' : 'probing');
   const [openPrompt, setOpenPrompt] = useState(false);
 
   const active = def ? variantFor(def, device) : undefined;
 
   useEffect(() => {
-    if (!active) return;
+    if (!active || priority) return;
     let cancelled = false;
     setState('probing');
     const probe = new Image();
@@ -116,9 +119,21 @@ export const ImageFrame: React.FC<ImageFrameProps> = ({
       {/* --- 生成済み: 実画像 --- */}
       {state === 'ready' && (
         <picture>
-          {def.mobile && <source media="(max-width: 767px)" srcSet={withImgVersion(def.mobile.src)} />}
+          {/* 幅違いを出し分ける画像（imageSlots の responsive）：avif を先に、読めないブラウザは webp。index.html の先読みと同じ srcset・sizes */}
+          {def.mobile?.responsive && (
+            <>
+              <source media="(max-width: 767px)" type="image/avif" srcSet={srcsetOf(def.mobile.responsive, 'avif', withImgVersion)} sizes={def.mobile.responsive.sizes} />
+              <source media="(max-width: 767px)" type="image/webp" srcSet={srcsetOf(def.mobile.responsive, 'webp', withImgVersion)} sizes={def.mobile.responsive.sizes} />
+            </>
+          )}
+          {def.mobile && !def.mobile.responsive && <source media="(max-width: 767px)" srcSet={withImgVersion(def.mobile.src)} />}
+          {def.desktop.responsive && (
+            <source type="image/avif" srcSet={srcsetOf(def.desktop.responsive, 'avif', withImgVersion)} sizes={def.desktop.responsive.sizes} />
+          )}
           <img
             src={withImgVersion(def.desktop.src)}
+            srcSet={def.desktop.responsive ? srcsetOf(def.desktop.responsive, 'webp', withImgVersion) : undefined}
+            sizes={def.desktop.responsive?.sizes}
             alt={def.decorative ? '' : def.alt}
             aria-hidden={def.decorative ? true : undefined}
             width={active.width}
