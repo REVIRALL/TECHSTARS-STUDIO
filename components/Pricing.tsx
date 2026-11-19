@@ -133,20 +133,30 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                   )}
                 </h3>
                 <p className="mt-1.5 lg:mt-2.5 max-w-[21em] text-sm lg:text-[13px] xl:text-[17px] text-ink-soft leading-snug [word-break:keep-all] [overflow-wrap:anywhere]">{plan.tagline}</p>
-                {/* ★2026-11-17 REVIRALL の main（2609ff2）の直しを取り込む：面談を受けた方に適用される「面談特典価格」の札と注記 */}
-                {plan.priceLabel && (
-                  <span className="mt-2.5 xl:mt-3 rounded-full bg-brand-50 px-3 py-0.5 text-[12px] xl:text-[14px] font-bold text-brand-700">{plan.priceLabel}</span>
+                {/* ★2026-11-17 REVIRALL の main（2609ff2）の直しを取り込む：面談を受けた方に適用される「面談特典価格」の札と注記。
+                    円の中の大きな値段は前のまま面談特典価格。2026-11-19 から通常価格を円の下に足した（下の「通常価格」） */}
+                {plan.offer && (
+                  <span className="mt-2.5 xl:mt-3 rounded-full bg-brand-50 px-3 py-0.5 text-[12px] xl:text-[14px] font-bold text-brand-700">{plan.offer.label}</span>
                 )}
                 <span className="mt-3 lg:mt-3 xl:mt-5 text-[40px] lg:text-[38px] xl:text-[60px] leading-none font-black italic tracking-tight text-brand-700">
-                  {formatYen(plan.amount)}
+                  {formatYen(plan.offer ? plan.offer.amount : plan.amount)}
                 </span>
-                <p className="mt-2.5 lg:mt-2.5 xl:mt-4 text-[13px] xl:text-[16px] text-ink-mute">{plan.taxNote}</p>
-                {plan.priceLabel && (
+                <p className="mt-2.5 lg:mt-2.5 xl:mt-4 text-[13px] xl:text-[16px] text-ink-mute">{plan.offer ? plan.offer.taxNote : plan.taxNote}</p>
+                {plan.offer && (
                   <p className="mt-1.5 whitespace-nowrap text-[12px] xl:text-[13px] text-ink-mute leading-snug">面談を受けた方に適用される価格です。</p>
                 )}
               </div>
 
-              <ul className="mt-7 lg:mt-9 space-y-3 mb-7 flex-1">
+              {/* ★2026-11-19 ユーザー「通常額もだして」：通常価格（LP から申し込む値段）。円の中は込み合うので円の下に置く */}
+              {plan.offer && (
+                <div className="mt-6 lg:mt-7 mx-auto flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 rounded-2xl bg-slate-50 px-5 py-3 text-center">
+                  <span className="text-[13px] xl:text-[14px] font-bold text-ink-soft">通常価格</span>
+                  <span className="text-[22px] xl:text-[26px] font-black text-ink tracking-tight">{formatYen(plan.amount)}</span>
+                  <span className="text-[12px] xl:text-[13px] text-ink-mute">{plan.taxNote}</span>
+                </div>
+              )}
+
+              <ul className={`${plan.offer ? 'mt-6 lg:mt-7' : 'mt-7 lg:mt-9'} space-y-3 mb-7 flex-1`}>
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-[15px] lg:text-[14px] xl:text-[15px] text-ink-soft leading-relaxed">
                     <GenIcon name="check" className="w-6 h-6 mt-0.5" />
@@ -161,53 +171,56 @@ export const Pricing: React.FC<PricingProps> = ({ onOpenPage }) => {
                 </p>
               )}
 
-              {/* ★2026-11-18 ユーザー決定：面談特典価格のプランは LP から申し込ませない。面談を受けた方にだけ決済リンクを送る。
-                  ここには決済の URL を置かない（stripeConfig.ts で常に空文字）。行き先は資料請求・相談のページ */}
-              {plan.afterInterview ? (
-                <div className="flex flex-col gap-3">
-                  <p className="text-[13px] lg:text-[14px] text-ink-mute leading-relaxed lg:px-2">
-                    面談を受けた方に、お申し込みのご案内（お支払いのリンク）をお送りします。
-                  </p>
+              {/* ★面談特典価格のあるプラン：先に面談の相談（特典価格のリンクは面談を受けた方にだけ送る。URL は配信物に入れない）、
+                  その下に通常価格で申し込むボタン。特典価格の無いプランは「このプランを申し込む」だけ */}
+              <div className="flex flex-col gap-3">
+                {plan.offer && (
+                  <>
+                    <p className="text-[13px] lg:text-[14px] text-ink-mute leading-relaxed lg:px-2">
+                      面談を受けた方に、{plan.offer.label}でのお申し込みのご案内（お支払いのリンク）をお送りします。
+                    </p>
+                    <a
+                      href={REQUEST_URL}
+                      className={`group flex items-center justify-center gap-2 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl font-sans font-black text-base lg:text-lg transition-colors duration-300 ${
+                        plan.highlight
+                          ? 'bg-brand-500 text-ink shadow-cta hover:bg-brand-400'
+                          : 'bg-white text-ink shadow-card ring-1 ring-slate-200 hover:text-brand-700 hover:ring-brand-400'
+                      }`}
+                    >
+                      資料請求・面談のご相談
+                      <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </a>
+                  </>
+                )}
+                {canBuy ? (
                   <a
-                    href={REQUEST_URL}
+                    href={plan.paymentLink}
                     className={`group flex items-center justify-center gap-2 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl font-sans font-black text-base lg:text-lg transition-colors duration-300 ${
-                      plan.highlight
+                      plan.highlight && !plan.offer
                         ? 'bg-brand-500 text-ink shadow-cta hover:bg-brand-400'
                         : 'bg-white text-ink shadow-card ring-1 ring-slate-200 hover:text-brand-700 hover:ring-brand-400'
                     }`}
                   >
-                    資料請求・面談のご相談
+                    {plan.offer ? '通常価格で申し込む' : 'このプランを申し込む'}
                     <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </a>
-                </div>
-              ) : canBuy ? (
-                <a
-                  href={plan.paymentLink}
-                  className={`group flex items-center justify-center gap-2 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl font-sans font-black text-base lg:text-lg transition-colors duration-300 ${
-                    plan.highlight
-                      ? 'bg-brand-500 text-ink shadow-cta hover:bg-brand-400'
-                      : 'bg-white text-ink shadow-card ring-1 ring-slate-200 hover:text-brand-700 hover:ring-brand-400'
-                  }`}
-                >
-                  このプランを申し込む
-                  <GenIcon name="arrow-up-right" className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  aria-disabled="true"
-                  title={
-                    checkoutEnabled
-                      ? '下の同意チェックを入れるとお申し込みに進めます'
-                      : 'オンライン決済は現在準備中です'
-                  }
-                  className="flex items-center justify-center gap-2.5 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl bg-slate-200 text-ink-mute font-sans font-black text-base lg:text-lg cursor-not-allowed"
-                >
-                  <GenIcon name="lock" className="w-6 h-6" />
-                  {checkoutEnabled ? '同意が必要です' : '準備中'}
-                </button>
-              )}
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    aria-disabled="true"
+                    title={
+                      checkoutEnabled
+                        ? '下の同意チェックを入れるとお申し込みに進めます'
+                        : 'オンライン決済は現在準備中です'
+                    }
+                    className="flex items-center justify-center gap-2.5 w-full min-h-[60px] lg:min-h-[66px] px-6 rounded-2xl bg-slate-200 text-ink-mute font-sans font-black text-base lg:text-lg cursor-not-allowed"
+                  >
+                    <GenIcon name="lock" className="w-6 h-6" />
+                    {checkoutEnabled ? '同意が必要です' : '準備中'}
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

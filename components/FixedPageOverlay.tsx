@@ -114,7 +114,13 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                                  {PLANS.map((p) => (
                                     <div key={p.code} className="flex items-baseline justify-between gap-3">
                                        <span className="text-xs text-slate-600">{p.name}</span>
-                                       <span className="font-bold text-brand-700">{formatYen(p.amount)}</span>
+                                       {/* ★2026-11-19 通常価格と面談特典価格の両方を出す */}
+                                       <span className="text-right">
+                                          <span className="font-bold text-brand-700">{p.offer && <span className="text-[11px] font-normal text-slate-500 mr-1">通常価格</span>}{formatYen(p.amount)}</span>
+                                          {p.offer && (
+                                             <span className="block text-[11px] text-slate-500">{p.offer.label} {formatYen(p.offer.amount)}</span>
+                                          )}
+                                       </span>
                                     </div>
                                  ))}
                                  <p className="text-[12px] text-slate-500 pt-1">表示はすべて税込の請求額です</p>
@@ -436,18 +442,27 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-200 pb-6">
                     <dt className="text-slate-500">販売価格</dt>
                     <dd className="md:col-span-2 text-ink space-y-2">
+                       {/* ★2026-11-19 通常価格（本サイトから申し込む値段）と、面談を受けた方の面談特典価格を両方載せる */}
                        {PLANS.map((p) => (
-                          <div key={p.code} className="flex items-baseline justify-between gap-4 max-w-sm">
-                             <span className="opacity-80">{p.name}{p.priceLabel && <span className="block text-xs mt-1">{p.priceLabel}</span>}</span>
-                             <span className="font-bold whitespace-nowrap">{formatYen(p.amount)}</span>
-                          </div>
+                          <React.Fragment key={p.code}>
+                             <div className="flex items-baseline justify-between gap-4 max-w-sm">
+                                <span className="opacity-80">{p.name}{p.offer && <span className="block text-xs mt-1">通常価格</span>}</span>
+                                <span className="font-bold whitespace-nowrap">{formatYen(p.amount)}</span>
+                             </div>
+                             {p.offer && (
+                                <div className="flex items-baseline justify-between gap-4 max-w-sm">
+                                   <span className="opacity-80">{p.name}<span className="block text-xs mt-1">{p.offer.label}（面談を受けた方）</span></span>
+                                   <span className="font-bold whitespace-nowrap">{formatYen(p.offer.amount)}</span>
+                                </div>
+                             )}
+                          </React.Fragment>
                        ))}
                        <div className="flex items-baseline justify-between gap-4 max-w-sm">
                           <span className="opacity-80">LMSの利用期間の延長（任意・1か月）</span>
                           <span className="font-bold">{formatYen(33000)}</span>
                        </div>
                        <p className="text-xs text-slate-500 pt-1">表示価格はすべて消費税を含んだ請求額です。</p>
-                       <p className="text-xs text-slate-400">LMSのみ・1対1コンサルプランの表示額は、面談を受けた方に適用される面談特典価格です。</p>
+                       <p className="text-xs text-slate-400">LMSのみ・1対1コンサルプランは、本サイトからのお申し込みは通常価格です。面談特典価格は、面談を受けた方にお送りするご案内からのお申し込みに適用されます。</p>
                     </dd>
                  </div>
 
@@ -501,10 +516,11 @@ export const FixedPageOverlay: React.FC<FixedPageOverlayProps> = ({ page, onClos
                        お申し込みの経路にかかわらず、クーリングオフの期間が過ぎた後も、提供期間の末日までいつでも解約できます。
                        解約手数料・違約金はかかりません。ご連絡は <a href="mailto:support@techstars.studio?subject=%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB%E3%81%AE%E3%81%94%E9%80%A3%E7%B5%A1" className="text-brand-700 underline underline-offset-4 hover:text-brand-800">support@techstars.studio</a>、公式LINE、書面またはお電話で受け付け、ご連絡を発した日を解約日とします。<br/><br/>
                        ・利用開始前（LMSのアカウントのお知らせ前）の解約：受領済みの代金を全額返金します。<br/>
-                       ・利用開始後の解約：LMSのみ（面談特典価格）は、受講料217,800円（税込）×（経過日数－利用不能日数）÷基準日数（1円未満切捨て）を、受領済みの受講料から差し引いて返金します。<br/>
+                       {/* ★2026-11-19 通常価格を足した。計算の形は面談特典価格と同じで、受講料の額だけが違う（公開前に顧問の確認を取ること） */}
+                       ・利用開始後の解約：LMSのみは、受講料（通常価格は327,800円、面談特典価格は217,800円。いずれも税込）×（経過日数－利用不能日数）÷基準日数（1円未満切捨て）を、受領済みの受講料から差し引いて返金します。<br/>
                        経過日数は利用開始日から解約日まで（両日を含む）、基準日数は当初の3か月の提供期間の総日数（両日を含み、延長日数を除く）です。
                        利用不能日数は、経過日数のうち、当社の責めに帰すべき事由で1日合計6時間以上利用できない日が連続3日以上続き、延長の対象となった日数と、契約違反の疑いによる利用停止後に該当事実が確認できなかった停止日数（連続3日未満を含む）です。<br/>
-                       1対1コンサルプラン（面談特典価格）は、LMS分217,800円の提供期間の総日数に対する日割りと、実施済みの講師コンサルティング1回につき55,000円を差し引いて返金します（欠席・キャンセルで実施しなかった回は数えません）。<br/>
+                       1対1コンサルプランは、LMS分（通常価格は327,800円、面談特典価格は217,800円）の提供期間の総日数に対する日割りと、実施済みの講師コンサルティング1回につき55,000円を差し引いて返金します（欠席・キャンセルで実施しなかった回は数えません）。<br/>
                        ・LMSの利用期間の延長：延長が始まる前の取消しは全額、始まった後の解約は日割りで差し引いて返金します。<br/>
                        ・ビジネスプランの解約・返金の条件は、個別契約で定めます。<br/>
                        上記クーリングオフの対象となる場合は、そちらの取り扱いを優先します。

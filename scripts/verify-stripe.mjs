@@ -12,19 +12,9 @@
  *
  * 検査が効いているかは `--self-test` で確かめる（対応をわざと入れ替えて赤くなることを見る）。
  */
-import { readFileSync } from 'node:fs';
+import { readPlans } from './plans.mjs';
 
 const API = 'https://api.stripe.com/v1';
-
-/** stripeConfig.ts から code と amount を読む（TSを実行せずに済ませる） */
-function readPlans() {
-  const src = readFileSync('services/stripeConfig.ts', 'utf8');
-  const plans = [];
-  const re = /code:\s*'([a-z0-9_]+)'[\s\S]*?amount:\s*(\d+)/g;
-  let m;
-  while ((m = re.exec(src)) !== null) plans.push({ code: m[1], amount: Number(m[2]) });
-  return plans;
-}
 
 async function stripe(path, key) {
   const r = await fetch(API + path, { headers: { Authorization: `Bearer ${key}` } });
@@ -33,38 +23,57 @@ async function stripe(path, key) {
   return j;
 }
 
+/**
+ * ★2026-11-19〜 プランごとに値段が1つか2つ。LP から申し込む値段（amount＝regular）と、
+ *   面談を受けた方にだけ送る面談特典価格（offer.amount＝offer）。リンクの metadata.price_kind で見分ける
+ *   （price_kind の無い古いリンクは regular とみなす。stripe-setup.mjs の kindOfLink と同じ）。
+ */
 function compare(plans, links) {
   const problems = [];
+  const kindOf = (l) => (l.metadata?.price_kind === 'offer' ? 'offer' : 'regular');
   for (const p of plans) {
-    const l = links.find((x) => x.metadata?.plan_code === p.code);
-    if (!l) {
-      problems.push(`${p.code}: 対応する Payment Link が Stripe に無い`);
-      continue;
+    const want = [['regular', p.amount, 'LPの表示'], ...(p.offer ? [['offer', p.offer.amount, '面談特典価格']] : [])];
+    for (const [kind, amount, label] of want) {
+      const found = links.filter((x) => x.metadata?.plan_code === p.code && kindOf(x) === kind);
+      if (found.length === 0) {
+        problems.push(`${p.code}: ${label}（${kind}）の Payment Link が Stripe に無い`);
+        continue;
+      }
+      if (found.length > 1) problems.push(`${p.code}: ${label}（${kind}）の有効な Payment Link が ${found.length} 本ある（どれを配るか決まらない）`);
+      const l = found[0];
+      const total = l.line_items?.data?.[0]?.amount_total;
+      if (total !== amount) problems.push(`${p.code}: ${label} ${amount} 円 ≠ Stripe の請求 ${total} 円`);
+      const back = l.after_completion?.redirect?.url ?? '';
+      const q = /[?&]plan=([a-z0-9_]+)/.exec(back);
+      if (!q) problems.push(`${p.code}: 戻り先URLに ?plan= が無い (${back || '未設定'})`);
+      else if (q[1] !== p.code) problems.push(`${p.code}: 戻り先の ?plan=${q[1]} が対応していない`);
     }
-    const total = l.line_items?.data?.[0]?.amount_total;
-    if (total !== p.amount) {
-      problems.push(`${p.code}: LPの表示 ${p.amount} 円 ≠ Stripe の請求 ${total} 円`);
+    for (const x of links.filter((x) => x.metadata?.plan_code === p.code && kindOf(x) === 'offer' && !p.offer)) {
+      problems.push(`${p.code}: 面談特典価格の無いプランに特典のリンク ${x.id} が有効のまま`);
     }
-    const back = l.after_completion?.redirect?.url ?? '';
-    const q = /[?&]plan=([a-z0-9_]+)/.exec(back);
-    if (!q) problems.push(`${p.code}: 戻り先URLに ?plan= が無い (${back || '未設定'})`);
-    else if (q[1] !== p.code) problems.push(`${p.code}: 戻り先の ?plan=${q[1]} が対応していない`);
   }
   return problems;
 }
 
 if (process.argv.includes('--self-test')) {
   console.log('[verify-stripe] 自己検査: 対応をわざと壊して、検出できるか見る');
-  const plans = [{ code: 'a', amount: 100 }, { code: 'b', amount: 200 }];
-  const good = [
-    { metadata: { plan_code: 'a' }, line_items: { data: [{ amount_total: 100 }] }, after_completion: { redirect: { url: 'https://x/?plan=a' } } },
-    { metadata: { plan_code: 'b' }, line_items: { data: [{ amount_total: 200 }] }, after_completion: { redirect: { url: 'https://x/?plan=b' } } },
-  ];
+  // a は通常価格 150・面談特典価格 100 の2本、b は1本だけ
+  const plans = [{ code: 'a', amount: 150, offer: { amount: 100 } }, { code: 'b', amount: 200, offer: null }];
+  const link = (code, total, kind, back = code) => ({
+    metadata: { plan_code: code, ...(kind ? { price_kind: kind } : {}) },
+    line_items: { data: [{ amount_total: total }] },
+    after_completion: { redirect: { url: `https://x/?plan=${back}` } },
+  });
+  const good = [link('a', 150, 'regular'), link('a', 100, 'offer'), link('b', 200)];
   const cases = [
     ['正常（対照。0件であるべき）', good, 0],
-    ['金額がズレている', [{ ...good[0], line_items: { data: [{ amount_total: 999 }] } }, good[1]], 1],
-    ['戻り先の plan が入れ替わっている', [{ ...good[0], after_completion: { redirect: { url: 'https://x/?plan=b' } } }, good[1]], 1],
-    ['Payment Link が無い', [good[1]], 1],
+    ['金額がズレている', [link('a', 999, 'regular'), good[1], good[2]], 1],
+    ['通常価格と特典価格のリンクが入れ替わっている', [link('a', 100, 'regular'), link('a', 150, 'offer'), good[2]], 2],
+    ['戻り先の plan が入れ替わっている', [link('a', 150, 'regular', 'b'), good[1], good[2]], 1],
+    ['Payment Link が無い', [good[1], good[2]], 1],
+    ['面談特典価格のリンクが無い', [good[0], good[2]], 1],
+    ['同じ種類のリンクが2本有効', [...good, link('a', 150, 'regular')], 1],
+    ['特典価格の無いプランに特典のリンク', [...good, link('b', 150, 'offer')], 1],
   ];
   let bad = 0;
   for (const [label, links, expect] of cases) {
